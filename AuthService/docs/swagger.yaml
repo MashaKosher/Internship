@@ -1,0 +1,114 @@
+basePath: /
+definitions:
+  models.Role:
+    enum:
+    - user
+    - admin
+    type: string
+    x-enum-varnames:
+    - UserRole
+    - AdminRole
+  models.User:
+    properties:
+      password:
+        minLength: 1
+        type: string
+      username:
+        minLength: 1
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  models.UserResponse:
+    properties:
+      id:
+        type: integer
+      role:
+        $ref: '#/definitions/models.Role'
+      token:
+        type: string
+      username:
+        type: string
+    type: object
+externalDocs:
+  description: OpenAPI
+  url: https://swagger.io/resources/open-api/
+host: localhost:8080
+info:
+  contact: {}
+  description: Auth server API
+  title: Auth service
+  version: "1.0"
+paths:
+  /:
+    get:
+      description: Returns a simple greeting message
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Get greeting message
+      tags:
+      - greeting
+  /auth/check-token:
+    get:
+      description: Проверяет токен JWT, извлекает userId и возвращает статус токена.
+        Если токен недействителен, очищает куку.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Проверка токена JWT
+      tags:
+      - authentication
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Returns a message indicating the login endpoint
+      parameters:
+      - description: Login request body
+        in: body
+        name: models.User
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User successfully logged
+          schema:
+            $ref: '#/definitions/models.UserResponse'
+      summary: User login
+      tags:
+      - authentication
+  /auth/signup:
+    post:
+      consumes:
+      - application/json
+      description: Returns a message indicating the sign-up endpoint
+      parameters:
+      - description: Sign up request body
+        in: body
+        name: models.User
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User successfully registered
+          schema:
+            $ref: '#/definitions/models.UserResponse'
+      summary: Sign up user
+      tags:
+      - authentication
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"
