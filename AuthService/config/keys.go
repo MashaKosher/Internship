@@ -4,17 +4,13 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
-	"fmt"
 	"os"
 	"path/filepath"
 	"sync"
 )
 
-// func main() {
-// 	ReadKeys()
-// 	fmt.Println(RSAkeys.PublicKey)
-// 	fmt.Println(RSAkeys.PrivateKey)
-// }
+const PUBLIC_KEY = "PUBLIC KEY"
+const PRIVATE_KEY = "PRIVATE KEY"
 
 type Keys struct {
 	PublicKey  *rsa.PublicKey
@@ -28,8 +24,8 @@ func ReadKeys() {
 
 	var wg sync.WaitGroup
 	wg.Add(2)
-	go readPublic(publicPath, &wg)
-	go readPrivate(privatePath, &wg)
+	go readPath(PUBLIC_KEY, publicPath, &wg)
+	go readPath(PRIVATE_KEY, privatePath, &wg)
 	wg.Wait()
 }
 
@@ -38,56 +34,88 @@ func composePathes() (string, string) {
 	if err != nil {
 		panic(err)
 	}
-	publicPath := filepath.Join(currentDir, "config", "internal", Envs.PublicKeyFile)
-	privatePath := filepath.Join(currentDir, "config", "internal", Envs.PrivateKeyFile)
-
+	publicPath := filepath.Join(currentDir, Envs.PublicKeyFile)
+	privatePath := filepath.Join(currentDir, Envs.PrivateKeyFile)
 	return publicPath, privatePath
 }
 
-func readPublic(filePath string, wg *sync.WaitGroup) {
+func readPath(keyType, filePath string, wg *sync.WaitGroup) {
 	defer wg.Done()
 	keyData, err := os.ReadFile(filePath)
 	if err != nil {
-		fmt.Println("Ошибка чтения публичного ключа:", err)
-		return
+		Logger.Error("Error while reading " + keyType + " file")
+		panic("Error while reading " + keyType + " file")
 	}
 
 	block, _ := pem.Decode(keyData)
-	if block == nil || block.Type != "PUBLIC KEY" {
-		fmt.Println("неверный формат публичного ключа")
-		return
+	if block == nil && (block.Type != PUBLIC_KEY || block.Type != PRIVATE_KEY) {
+		Logger.Error("Invalid Key format")
+		panic("Invalid Key format")
 	}
 
-	publicKey, err := x509.ParsePKIXPublicKey(block.Bytes)
-	if err != nil {
-		fmt.Println("Ошибка парсинга публичного ключа:", err)
-		return
+	if keyType == PUBLIC_KEY {
+		publicKey, err := x509.ParsePKIXPublicKey(block.Bytes)
+		if err != nil {
+			Logger.Error("Error while parsing " + keyType + " file")
+			panic("Error while parsing " + keyType + " file")
+		}
+		RSAkeys.PublicKey = publicKey.(*rsa.PublicKey)
+	} else {
+		privateKey, err := x509.ParsePKCS8PrivateKey(block.Bytes)
+		if err != nil {
+			Logger.Error("Error while parsing " + keyType + " file")
+			panic("Error while parsing " + keyType + " file")
+		}
+		RSAkeys.PrivateKey = privateKey.(*rsa.PrivateKey)
 	}
 
-	RSAkeys.PublicKey = publicKey.(*rsa.PublicKey)
-	fmt.Println("Публичный ключ загружен:", RSAkeys.PublicKey)
+	Logger.Info(keyType + " readed succesfully")
 }
 
-func readPrivate(filePath string, wg *sync.WaitGroup) {
-	defer wg.Done()
-	keyData, err := os.ReadFile(filePath)
-	if err != nil {
-		fmt.Println("Ошибка чтения приватного ключа:", err)
-		return
-	}
+// func readPublic(filePath string, wg *sync.WaitGroup) {
+// 	defer wg.Done()
+// 	keyData, err := os.ReadFile(filePath)
+// 	if err != nil {
+// 		fmt.Println("Ошибка чтения публичного ключа:", err)
+// 		return
+// 	}
 
-	block, _ := pem.Decode(keyData)
-	if block == nil || block.Type != "PRIVATE KEY" {
-		fmt.Println("неверный формат приватного ключа")
-		return
-	}
+// 	block, _ := pem.Decode(keyData)
+// 	if block == nil || block.Type != "PUBLIC KEY" {
+// 		fmt.Println("неверный формат публичного ключа")
+// 		return
+// 	}
 
-	privateKey, err := x509.ParsePKCS8PrivateKey(block.Bytes)
-	if err != nil {
-		fmt.Println("Ошибка парсинга приватного ключа:", err)
-		return
-	}
+// 	publicKey, err := x509.ParsePKIXPublicKey(block.Bytes)
+// 	if err != nil {
+// 		fmt.Println("Ошибка парсинга публичного ключа:", err)
+// 		return
+// 	}
 
-	RSAkeys.PrivateKey = privateKey.(*rsa.PrivateKey)
-	fmt.Println("Приватный ключ загружен:", RSAkeys.PrivateKey)
-}
+// 	RSAkeys.PublicKey = publicKey.(*rsa.PublicKey)
+// 	fmt.Println("Публичный ключ загружен:", RSAkeys.PublicKey)
+// }
+
+// func readPrivate(filePath string, wg *sync.WaitGroup) {
+// 	defer wg.Done()
+// 	keyData, err := os.ReadFile(filePath)
+// 	if err != nil {
+// 		fmt.Println("Ошибка чтения приватного ключа:", err)
+// 		return
+// 	}
+
+// 	block, _ := pem.Decode(keyData)
+// 	if block == nil || block.Type != "PRIVATE KEY" {
+// 		fmt.Println("неверный формат приватного ключа")
+// 		return
+// 	}
+
+// 	privateKey, err := x509.ParsePKCS8PrivateKey(block.Bytes)
+// 	if err != nil {
+// 		fmt.Println("Ошибка парсинга приватного ключа:", err)
+// 		return
+// 	}
+
+// 	RSAkeys.PrivateKey = privateKey.(*rsa.PrivateKey)
+// 	fmt.Println("Приватный ключ загружен:", RSAkeys.PrivateKey)
+// }

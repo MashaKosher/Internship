@@ -31,6 +31,8 @@ definitions:
         type: string
       id:
         type: integer
+      refresh-token:
+        type: string
       role:
         $ref: '#/definitions/models.Role'
       token-type:
@@ -50,14 +52,24 @@ info:
 paths:
   /auth/check-token:
     get:
-      description: Проверяет токен JWT, извлекает userId и возвращает статус токена.
-        Если токен недействителен, очищает куку.
+      description: Verifying access, extract sub and returns Token status. Clears
+        the Cookies, if there any error
       produces:
       - application/json
       responses:
         "200":
-          description: OK
-      summary: Проверка токена JWT
+          description: Access Token is Valid
+          schema:
+            $ref: '#/definitions/models.UserResponse'
+        "400":
+          description: Invalid access Token or No such User
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Verifying access Token
       tags:
       - authentication
   /auth/login:
@@ -88,6 +100,28 @@ paths:
           schema:
             $ref: '#/definitions/models.ErrorResponse'
       summary: User login
+      tags:
+      - authentication
+  /auth/refresh:
+    get:
+      description: Verifying access, extract sub and returns Token status. Clears
+        the Cookies, if there any error
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Refresh Token is Valid
+          schema:
+            $ref: '#/definitions/models.UserResponse'
+        "400":
+          description: Invalid access Token or No such User
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Verifying refresh Token and returning Access
       tags:
       - authentication
   /auth/signup:

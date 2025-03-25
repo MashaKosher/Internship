@@ -17,17 +17,32 @@ const docTemplate = `{
     "paths": {
         "/auth/check-token": {
             "get": {
-                "description": "Проверяет токен JWT, извлекает userId и возвращает статус токена. Если токен недействителен, очищает куку.",
+                "description": "Verifying access, extract sub and returns Token status. Clears the Cookies, if there any error",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "authentication"
                 ],
-                "summary": "Проверка токена JWT",
+                "summary": "Verifying access Token",
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "Access Token is Valid",
+                        "schema": {
+                            "$ref": "#/definitions/models.UserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid access Token or No such User",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
                     }
                 }
             }
@@ -65,6 +80,38 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Invalid Username or Password",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/refresh": {
+            "get": {
+                "description": "Verifying access, extract sub and returns Token status. Clears the Cookies, if there any error",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "authentication"
+                ],
+                "summary": "Verifying refresh Token and returning Access",
+                "responses": {
+                    "200": {
+                        "description": "Refresh Token is Valid",
+                        "schema": {
+                            "$ref": "#/definitions/models.UserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid access Token or No such User",
                         "schema": {
                             "$ref": "#/definitions/models.ErrorResponse"
                         }
@@ -158,6 +205,9 @@ const docTemplate = `{
                 },
                 "id": {
                     "type": "integer"
+                },
+                "refresh-token": {
+                    "type": "string"
                 },
                 "role": {
                     "$ref": "#/definitions/models.Role"

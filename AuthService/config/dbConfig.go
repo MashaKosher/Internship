@@ -15,7 +15,8 @@ func ConncetDB() {
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s", Envs.DBHost, Envs.DBUser, Envs.DBPassword, Envs.DBName, Envs.DBPort, Envs.DBSSLMode)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		Logger.Error("Failed connection to DB")
+		Logger.Error("Failed connection to DB: " + err.Error())
+		panic("Failed connection to DB: " + err.Error())
 	}
 	Logger.Info("Successful connection to DB")
 	DB = db
