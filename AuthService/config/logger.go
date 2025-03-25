@@ -8,9 +8,8 @@ var Logger *zap.Logger
 
 func CreateLogger() {
 	config := zap.NewProductionConfig()
-	config.OutputPaths = []string{"stdout", "app.log"}
+	config.OutputPaths = []string{"stdout", Envs.LogFileName}
 
-	// logger, err := zap.NewProduction()
 	logger, err := config.Build()
 	if err != nil {
 		panic(err)

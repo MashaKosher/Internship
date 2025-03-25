@@ -1,18 +1,2 @@
-{"level":"info","ts":1742769070.2938972,"caller":"config/logger.go:20","msg":"Program start"}
-{"level":"info","ts":1742769070.3037694,"caller":"config/dbConfig.go:31","msg":"All is good"}
-{"level":"info","ts":1742769074.8729882,"caller":"config/logger.go:20","msg":"Program start"}
-{"level":"info","ts":1742769074.8870678,"caller":"config/dbConfig.go:31","msg":"All is good"}
-{"level":"info","ts":1742769114.303735,"caller":"config/logger.go:20","msg":"Program start"}
-{"level":"info","ts":1742769114.3210857,"caller":"config/dbConfig.go:31","msg":"All is good"}
-{"level":"info","ts":1742769158.018346,"caller":"auth/controllers.go:127","msg":"1"}
-{"level":"info","ts":1742769260.2295911,"caller":"config/logger.go:20","msg":"Program start"}
-{"level":"info","ts":1742769260.2463555,"caller":"config/dbConfig.go:31","msg":"All is good"}
-{"level":"info","ts":1742769343.3263822,"caller":"config/logger.go:20","msg":"Program start"}
-{"level":"info","ts":1742769343.3451233,"caller":"config/dbConfig.go:31","msg":"All is good"}
-{"level":"info","ts":1742769364.8517845,"caller":"auth/controllers.go:48","msg":"User created: {40 1 $2a$10$MPtbwcq5sZAshDx9u6IYE.Zs1JQklUW/wrT5VOTA3YFJFfDAcGbyW user}"}
-{"level":"info","ts":1742769426.381551,"caller":"config/logger.go:20","msg":"Program start"}
-{"level":"info","ts":1742769426.390945,"caller":"config/dbConfig.go:31","msg":"All is good"}
-{"level":"info","ts":1742769571.8669436,"caller":"config/logger.go:20","msg":"Program start"}
-{"level":"info","ts":1742769571.8752084,"caller":"config/dbConfig.go:31","msg":"All is good"}
-{"level":"info","ts":1742769593.4108686,"caller":"config/logger.go:20","msg":"Program start"}
-{"level":"info","ts":1742769593.419435,"caller":"config/dbConfig.go:31","msg":"All is good"}
+{"level":"info","ts":1742819298.2105389,"caller":"config/logger.go:19","msg":"Program start"}
+{"level":"info","ts":1742819298.233757,"caller":"config/dbConfig.go:20","msg":"Successful connection to DB"}

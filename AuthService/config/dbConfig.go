@@ -2,11 +2,9 @@ package config
 
 import (
 	"fmt"
-	"os"
 
 	models "authservice/models"
 
-	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -14,36 +12,14 @@ import (
 var DB *gorm.DB
 
 func ConncetDB() {
-	godotenv.Load()
-	dbHost := os.Getenv("POSTGRES_HOST")
-	dbPort := os.Getenv("POSTGRES_PORT")
-	dbName := os.Getenv("POSTGRES_DB")
-	dbUser := os.Getenv("POSTGRES_USER")
-	dbPassword := os.Getenv("POSTGRES_PASSWORD")
-
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s", dbHost, dbUser, dbPassword, dbName, dbPort, "disable")
-
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s", Envs.DBHost, Envs.DBUser, Envs.DBPassword, Envs.DBName, Envs.DBPort, Envs.DBSSLMode)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		Logger.Fatal("failed to connect to the database:")
+		Logger.Error("Failed connection to DB")
 	}
-
-	Logger.Info("All is good")
-
+	Logger.Info("Successful connection to DB")
 	DB = db
-
 	AutoMigrations(DB)
-
-	// tables, err := DB.Migrator().GetTables()
-	// if err != nil {
-	// 	Logger.Fatal("failed to get tables:" + err.Error())
-	// }
-
-	// // Вывод всех таблиц
-	// for _, table := range tables {
-	// 	Logger.Info(table)
-	// }
-
 }
 
 func AutoMigrations(conncetion *gorm.DB) {

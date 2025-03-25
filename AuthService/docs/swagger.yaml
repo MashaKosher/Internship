@@ -1,5 +1,10 @@
 basePath: /
 definitions:
+  models.ErrorResponse:
+    properties:
+      message:
+        type: string
+    type: object
   models.Role:
     enum:
     - user
@@ -22,11 +27,13 @@ definitions:
     type: object
   models.UserResponse:
     properties:
+      access-token:
+        type: string
       id:
         type: integer
       role:
         $ref: '#/definitions/models.Role'
-      token:
+      token-type:
         type: string
       username:
         type: string
@@ -41,17 +48,6 @@ info:
   title: Auth service
   version: "1.0"
 paths:
-  /:
-    get:
-      description: Returns a simple greeting message
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      summary: Get greeting message
-      tags:
-      - greeting
   /auth/check-token:
     get:
       description: Проверяет токен JWT, извлекает userId и возвращает статус токена.
@@ -83,6 +79,14 @@ paths:
           description: User successfully logged
           schema:
             $ref: '#/definitions/models.UserResponse'
+        "400":
+          description: Invalid Username or Password
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
       summary: User login
       tags:
       - authentication

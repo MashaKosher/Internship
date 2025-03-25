@@ -7,7 +7,7 @@ import (
 )
 
 func Handlers(app *fiber.App) {
-	// Swagger initialize
+	// Swagger route initialize
 	routes.SwaggerRoutes(app)
 
 	// Auth routes initialize

@@ -48,6 +48,7 @@ func SignUp(c *fiber.Ctx) error {
 	config.Logger.Info("User created: " + fmt.Sprint(user))
 	token, err := GenerateToken(&user)
 	if err != nil {
+		config.Logger.Error("Problem with generating JWT" + err.Error())
 		return fiber.NewError(fiber.StatusInternalServerError, "Problem with generating JWT")
 	}
 
@@ -68,29 +69,36 @@ func SignUp(c *fiber.Ctx) error {
 // @Produce json
 // @Param models.User body models.User true "Login request body"
 // @Success 200 {object} models.UserResponse "User successfully logged"
+// @Failure 400 {object} models.ErrorResponse "Invalid Username or Password"
+// @Failure 500 {object} models.ErrorResponse "Internal Server Error"
 // @Router /auth/login [post]
 func Login(c *fiber.Ctx) error {
 	var user models.User
 	c.BodyParser(&user)
+	config.Logger.Info(fmt.Sprintf("User with id %s is trying to log in", user.Username))
 
 	if err := validate.Struct(user); err != nil {
+		config.Logger.Error("Body validation error: " + err.Error())
 		return fiber.NewError(fiber.StatusBadRequest, "Invalid data")
 	}
 
 	// IF USER WITH SUCH NAME EXISTS
-	DBUser, err := FindUser(&user)
+	DBUser, err := FindUserByName(user.Username)
 	if err != nil {
+		config.Logger.Error("No user with such Username: " + user.Username)
 		return fiber.NewError(fiber.StatusBadRequest, "Invalid Username")
 	}
 
 	// COMPARING HASHED PASSWORD FROM DB WITH RAW PASSWORD FROM JSON
 	if err := ValidatePassword(DBUser.Password, user.Password); err != nil {
+		config.Logger.Error("Invalid password: " + user.Password)
 		return fiber.NewError(fiber.StatusBadRequest, "Invalid Password")
 	}
 
 	// GENERATING TOKEN
 	token, err := GenerateToken(&DBUser)
 	if err != nil {
+		config.Logger.Error("Problem with generating JWT")
 		return fiber.NewError(fiber.StatusInternalServerError, "Problem with generating JWT")
 	}
 
@@ -112,16 +120,18 @@ func Login(c *fiber.Ctx) error {
 func CheckToken(c *fiber.Ctx) error {
 	var token string = c.Cookies("jwt")
 
+	// Token Validation
 	validatedToken, err := TokenValidation(token)
 
-	// if token is invalid we clear the cookie
+	// if token is invalid we clear the cookie and throw error
 	if err != nil {
-		config.Logger.Error("Inavlid Token")
 		c.ClearCookie()
-		return fiber.NewError(fiber.StatusBadRequest, "Unexpceted signing method")
+		config.Logger.Error("Inavlid Token: " + err.Error())
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
-	unvalidatedUserId := validatedToken.Claims.(jwt.MapClaims)["userId"]
+	// Becoming User id from payload
+	unvalidatedUserId := validatedToken.Claims.(jwt.MapClaims)["sub"]
 
 	userId, ok := unvalidatedUserId.(float64)
 	if !ok {
@@ -129,13 +139,13 @@ func CheckToken(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Invalid Id")
 	}
 
-	if err := FindUserById(int(userId)); err != nil {
-		config.Logger.Error("No User with such id: " + fmt.Sprint(userId))
+	// Search User by Id in DB
+	DBUser, err := FindUserById(int(userId))
+	if err != nil {
 		c.ClearCookie()
+		config.Logger.Error("No User with such id: " + fmt.Sprint(userId))
 		return fiber.NewError(fiber.StatusBadRequest, "No such User")
 	}
 
-	return c.JSON(fiber.Map{
-		"token status": userId,
-	})
+	return c.JSON(ConvertUserToResponse(token, &DBUser))
 }

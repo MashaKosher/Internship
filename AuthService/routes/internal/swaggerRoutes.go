@@ -6,6 +6,5 @@ import (
 )
 
 func SwaggerRoutes(app *fiber.App) {
-
 	app.Get("/swagger/*", fiberSwagger.WrapHandler)
 }

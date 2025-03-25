@@ -1,13 +1,13 @@
 package auth
 
 import (
+	config "authservice/config"
 	models "authservice/models"
 	"errors"
-	"os"
+	"fmt"
 	"time"
 
 	"github.com/golang-jwt/jwt"
-	"github.com/joho/godotenv"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -19,23 +19,25 @@ func HashPassword(passwrod string) (string, error) {
 	return string(hashed), nil
 }
 
-func GenerateToken(user *models.User) (string, error) {
-	// Becoming a secret
-	godotenv.Load()
-	secret := []byte(os.Getenv("JWT_SECRET"))
-	method := jwt.SigningMethodHS256
+func ValidatePassword(HashedPass, RawPass string) error {
+	return bcrypt.CompareHashAndPassword([]byte(HashedPass), []byte(RawPass))
+}
 
-	// method := jwt.SigningMethodRS256
+func GenerateToken(user *models.User) (string, error) {
+
+	privateKey := config.RSAkeys.PrivateKey
+	method := jwt.SigningMethodRS256
+	config.Logger.Info("Signing Method: " + method.Name + " Private key: " + fmt.Sprint(privateKey))
 
 	// Filling payload
 	claims := jwt.MapClaims{
-		"userId":   user.ID,
+		"sub":      user.ID,
 		"username": user.Username,
-		"exp":      time.Now().Add(time.Minute * 2).Unix(),
+		"exp":      time.Now().Add(time.Minute * 1).Unix(),
 	}
 
 	// Generating token
-	token, err := jwt.NewWithClaims(method, claims).SignedString(secret)
+	token, err := jwt.NewWithClaims(method, claims).SignedString(privateKey)
 	if err != nil {
 		return "", err
 	}
@@ -43,54 +45,31 @@ func GenerateToken(user *models.User) (string, error) {
 	return token, nil
 }
 
-func ConvertUserToResponse(token string, user *models.User) models.UserResponse {
-	return models.UserResponse{
-		Role:     user.Role,
-		ID:       user.ID,
-		Username: user.Username,
-		Token:    token,
-	}
-}
-
-func ValidatePassword(HashedPass, RawPass string) error {
-	return bcrypt.CompareHashAndPassword([]byte(HashedPass), []byte(RawPass))
-}
-
 func TokenValidation(token string) (*jwt.Token, error) {
-	godotenv.Load()
-	secret := []byte(os.Getenv("JWT_SECRET"))
-	restoken, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
-		if t.Method.Alg() != jwt.GetSigningMethod("HS256").Alg() {
-			return nil, errors.New("Invalid signing method")
+	publicKey := config.RSAkeys.PublicKey
+	validatedToken, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
+		if t.Method.Alg() != jwt.GetSigningMethod("RS256").Alg() {
+			return nil, errors.New("invalid signing method")
 		}
-		return secret, nil
+		return publicKey, nil
 	})
 
-	return restoken, err
+	if exp, ok := validatedToken.Claims.(jwt.MapClaims)["exp"].(float64); ok {
+		expirationTime := time.Unix(int64(exp), 0)
+		if time.Now().After(expirationTime) {
+			return nil, errors.New("token expired")
+		}
+	}
+
+	return validatedToken, err
 }
 
-// func CheckToken(token string) (int, error){
-// 	godotenv.Load()
-// 	secret := []byte(os.Getenv("JWT_SECRET"))
-// 	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
-// 		if t.Method.Alg() != jwt.GetSigningMethod("HS256").Alg() {
-// 			return nil, fiber.NewError(400, "Unexpceted signing method")
-// 		}
-
-// 		return secret, nil
-// 	})
-
-// 	// if token is invalid we clear the cookie
-// 	if err != nil {
-// 		c.ClearCookie()
-// 		return fiber.NewError(400, "Invalid Token")
-// 	}
-
-// 	userId := token.Claims.(jwt.MapClaims)["userId"]
-
-// 	if err := db.DB.Model(&models.User{}).Where("id = ?", userId).Error; errors.Is(err, gorm.ErrRecordNotFound) {
-// 		c.ClearCookie()
-// 		return fiber.NewError(400, "No such User")
-// 	}
-
-// }
+func ConvertUserToResponse(token string, user *models.User) models.UserResponse {
+	return models.UserResponse{
+		Role:      user.Role,
+		ID:        user.ID,
+		Username:  user.Username,
+		Token:     token,
+		TokenType: "Bearer",
+	}
+}

@@ -15,23 +15,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/": {
-            "get": {
-                "description": "Returns a simple greeting message",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "greeting"
-                ],
-                "summary": "Get greeting message",
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
         "/auth/check-token": {
             "get": {
                 "description": "Проверяет токен JWT, извлекает userId и возвращает статус токена. Если токен недействителен, очищает куку.",
@@ -79,6 +62,18 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/models.UserResponse"
                         }
+                    },
+                    "400": {
+                        "description": "Invalid Username or Password",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
                     }
                 }
             }
@@ -119,6 +114,14 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "models.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "models.Role": {
             "type": "string",
             "enum": [
@@ -150,13 +153,16 @@ const docTemplate = `{
         "models.UserResponse": {
             "type": "object",
             "properties": {
+                "access-token": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },
                 "role": {
                     "$ref": "#/definitions/models.Role"
                 },
-                "token": {
+                "token-type": {
                     "type": "string"
                 },
                 "username": {
