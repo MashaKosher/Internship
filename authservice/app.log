@@ -1,0 +1,6 @@
+{"level":"info","ts":1743095281.236714,"caller":"logger/logger.go:21","msg":"Program start"}
+{"level":"info","ts":1743095281.2371857,"caller":"keys/keys.go:28","msg":"publicPath: /app/internal/config/keys/jwt-public.pem"}
+{"level":"info","ts":1743095281.2381334,"caller":"keys/keys.go:29","msg":"privatePath: /app/internal/config/keys/jwt-private.pem"}
+{"level":"info","ts":1743095281.2395537,"caller":"keys/keys.go:78","msg":"PUBLIC KEY readed succesfully"}
+{"level":"info","ts":1743095281.2407417,"caller":"keys/keys.go:78","msg":"PRIVATE KEY readed succesfully"}
+{"level":"info","ts":1743095281.261398,"caller":"db/db.go:22","msg":"Successful connection to DB"}

@@ -1,0 +1,141 @@
+definitions:
+  models.ErrorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  models.Role:
+    enum:
+    - user
+    - admin
+    type: string
+    x-enum-varnames:
+    - UserRole
+    - AdminRole
+  models.User:
+    properties:
+      password:
+        minLength: 1
+        type: string
+      username:
+        minLength: 1
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  models.UserResponse:
+    properties:
+      access-token:
+        type: string
+      id:
+        type: integer
+      refresh-token:
+        type: string
+      role:
+        $ref: '#/definitions/models.Role'
+      token-type:
+        type: string
+      username:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /auth/check-token:
+    get:
+      description: Verifying access, extract sub and returns Token status. Clears
+        the Cookies, if there any error
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Access Token is Valid
+          schema:
+            $ref: '#/definitions/models.UserResponse'
+        "400":
+          description: Invalid access Token or No such User
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Verifying access Token
+      tags:
+      - authentication
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Returns a message indicating the login endpoint
+      parameters:
+      - description: Login request body
+        in: body
+        name: models.User
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User successfully logged
+          schema:
+            $ref: '#/definitions/models.UserResponse'
+        "400":
+          description: Invalid Username or Password
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: User login
+      tags:
+      - authentication
+  /auth/refresh:
+    get:
+      description: Verifying access, extract sub and returns Token status. Clears
+        the Cookies, if there any error
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Refresh Token is Valid
+          schema:
+            $ref: '#/definitions/models.UserResponse'
+        "400":
+          description: Invalid access Token or No such User
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Verifying refresh Token and returning Access
+      tags:
+      - authentication
+  /auth/signup:
+    post:
+      consumes:
+      - application/json
+      description: Returns a message indicating the sign-up endpoint
+      parameters:
+      - description: Sign up request body
+        in: body
+        name: models.User
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User successfully registered
+          schema:
+            $ref: '#/definitions/models.UserResponse'
+      summary: Sign up user
+      tags:
+      - authentication
+swagger: "2.0"
