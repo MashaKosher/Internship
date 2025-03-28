@@ -49,9 +49,7 @@ func main() {
 
 	handler.Handlers(app)
 
-	// app.Listen(":" + string(config.Cfg.Server.Port))
-	app.Listen(":8080")
-
+	app.Listen(":" + config.Cfg.Server.Port)
 }
 
 // package main

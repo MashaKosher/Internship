@@ -84,18 +84,16 @@ func SignUp(c *fiber.Ctx) error {
 
 }
 
-// Login
-//
-//	@Summary		User login
-//	@Description	Returns a message indicating the login endpoint
-//	@Tags			authentication
-//	@Accept			json
-//	@Produce		json
-//	@Param			models.User	body		models.User				true	"Login request body"
-//	@Success		200			{object}	models.UserResponse		"User successfully logged"
-//	@Failure		400			{object}	models.ErrorResponse	"Invalid Username or Password"
-//	@Failure		500			{object}	models.ErrorResponse	"Internal Server Error"
-//	@Router			/auth/login [post]
+// @Summary		User login
+// @Description	Returns a message indicating the login endpoint
+// @Tags			authentication
+// @Accept			json
+// @Produce		json
+// @Param			models.User	body		models.User				true	"Login request body"
+// @Success		200			{object}	models.UserResponse		"User successfully logged"
+// @Failure		400			{object}	models.ErrorResponse	"Invalid Username or Password"
+// @Failure		500			{object}	models.ErrorResponse	"Internal Server Error"
+// @Router			/auth/login [post]
 func Login(c *fiber.Ctx) error {
 	var user entity.User
 	c.BodyParser(&user)
@@ -151,16 +149,14 @@ func Login(c *fiber.Ctx) error {
 	return c.JSON(convert.ConvertUserToResponse(accessToken, refreshToken, &DBUser))
 }
 
-// CheckToken check access Token From cookies
-//
-//	@Summary		Verifying access Token
-//	@Description	Verifying access, extract sub and returns Token status. Clears the Cookies, if there any error
-//	@Tags			authentication
-//	@Produce		json
-//	@Success		200	{object}	models.UserResponse		"Access Token is Valid"
-//	@Failure		400	{object}	models.ErrorResponse	"Invalid access Token or No such User"
-//	@Failure		500	{object}	models.ErrorResponse	"Internal Server Error"
-//	@Router			/auth/check-token [get]
+// @Summary		Verifying access Token
+// @Description	Verifying access, extract sub and returns Token status. Clears the Cookies, if there any error
+// @Tags			authentication
+// @Produce		json
+// @Success		200	{object}	models.UserResponse		"Access Token is Valid"
+// @Failure		400	{object}	models.ErrorResponse	"Invalid access Token or No such User"
+// @Failure		500	{object}	models.ErrorResponse	"Internal Server Error"
+// @Router			/auth/check-token [get]
 func CheckToken(c *fiber.Ctx) error {
 	var accessToken string = c.Cookies(tokens.ACCESS_TOKEN)
 
@@ -209,16 +205,14 @@ func CheckToken(c *fiber.Ctx) error {
 	return c.JSON(convert.ConvertUserToResponse(accessToken, "", &DBUser))
 }
 
-// Refresh Access Token
-//
-//	@Summary		Verifying refresh Token and returning Access
-//	@Description	Verifying access, extract sub and returns Token status. Clears the Cookies, if there any error
-//	@Tags			authentication
-//	@Produce		json
-//	@Success		200	{object} models.UserResponse		"Refresh Token is Valid"
-//	@Failure		400	{object}	models.ErrorResponse	"Invalid access Token or No such User"
-//	@Failure		500	{object}	models.ErrorResponse	"Internal Server Error"
-//	@Router			/auth/refresh [get]
+// @Summary		Verifying refresh Token and returning Access
+// @Description	Verifying access, extract sub and returns Token status. Clears the Cookies, if there any error
+// @Tags			authentication
+// @Produce		json
+// @Success		200	{object} models.UserResponse		"Refresh Token is Valid"
+// @Failure		400	{object}	models.ErrorResponse	"Invalid access Token or No such User"
+// @Failure		500	{object}	models.ErrorResponse	"Internal Server Error"
+// @Router			/auth/refresh [get]
 func Refresh(c *fiber.Ctx) error {
 	var refreshToken string = c.Cookies(tokens.REFRESH_TOKEN)
 

@@ -1,9 +1,6 @@
 package repository
 
 import (
-	// db "authservice/config"
-	// models "authservice/models"
-
 	"authservice/internal/entity"
 
 	"authservice/internal/db"
