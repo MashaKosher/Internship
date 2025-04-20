@@ -1,27 +1,3 @@
-// package logger
-
-// import (
-// 	cnf "authservice/internal/config"
-
-// 	"go.uber.org/zap"
-// )
-
-// var Logger *zap.Logger
-
-// func CreateLogger() {
-// 	config := zap.NewProductionConfig()
-// 	config.OutputPaths = []string{"stdout", cnf.Cfg.LogFileName}
-
-// 	logger, err := config.Build()
-// 	if err != nil {
-// 		panic(err)
-// 	}
-
-// 	Logger = logger
-// 	Logger.Info("Program start")
-
-// }
-
 package logger
 
 import (
@@ -45,12 +21,11 @@ func CreateLogger() *os.File {
 	Logger = logger
 	Logger.Info("Program start")
 
-	return creteLogFile()
+	return createLogFile()
 
 }
 
-func creteLogFile() *os.File {
-
+func createLogFile() *os.File {
 	logFile, err := os.OpenFile(config.AppConfig.Logger.FileName, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0666)
 	if err != nil {
 		panic("Log error: " + err.Error())

@@ -2,7 +2,9 @@ package tokens
 
 import (
 	"authservice/internal/keys"
+	"authservice/internal/logger"
 	"errors"
+	"fmt"
 
 	"time"
 
@@ -18,11 +20,15 @@ func TokenVerify(token string) (*jwt.Token, error) {
 		return publicKey, nil
 	})
 
+	logger.Logger.Info("\nToken is valid need to check time\n")
+
 	if exp, ok := validatedToken.Claims.(jwt.MapClaims)["exp"].(float64); ok {
 		expirationTime := time.Unix(int64(exp), 0)
+		logger.Logger.Info(fmt.Sprint("Now: ", time.Now(), " Exp: ", expirationTime))
 		if time.Now().After(expirationTime) {
 			return nil, errors.New("token expired")
 		}
+
 	}
 
 	return validatedToken, err

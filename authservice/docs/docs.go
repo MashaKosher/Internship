@@ -63,19 +63,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Access Token is Valid",
                         "schema": {
-                            "$ref": "#/definitions/models.UserResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid access Token or No such User",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/entity.UserResponse"
                         }
                     }
                 }
@@ -97,11 +85,11 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "Login request body",
-                        "name": "models.User",
+                        "name": "entity.User",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/entity.User"
                         }
                     }
                 ],
@@ -109,19 +97,7 @@ const docTemplate = `{
                     "200": {
                         "description": "User successfully logged",
                         "schema": {
-                            "$ref": "#/definitions/models.UserResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid Username or Password",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/entity.UserResponse"
                         }
                     }
                 }
@@ -141,19 +117,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Refresh Token is Valid",
                         "schema": {
-                            "$ref": "#/definitions/models.UserResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid access Token or No such User",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/entity.UserResponse"
                         }
                     }
                 }
@@ -175,11 +139,11 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "Sign up request body",
-                        "name": "models.User",
+                        "name": "entity.User",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/entity.User"
                         }
                     }
                 ],
@@ -187,7 +151,7 @@ const docTemplate = `{
                     "200": {
                         "description": "User successfully registered",
                         "schema": {
-                            "$ref": "#/definitions/models.UserResponse"
+                            "$ref": "#/definitions/entity.UserResponse"
                         }
                     }
                 }
@@ -209,11 +173,11 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "Sign up request body",
-                        "name": "models.User",
+                        "name": "entity.User",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/entity.User"
                         }
                     }
                 ],
@@ -221,7 +185,7 @@ const docTemplate = `{
                     "200": {
                         "description": "User successfully registered",
                         "schema": {
-                            "$ref": "#/definitions/models.UserResponse"
+                            "$ref": "#/definitions/entity.UserResponse"
                         }
                     }
                 }
@@ -245,15 +209,7 @@ const docTemplate = `{
                 }
             }
         },
-        "models.ErrorResponse": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.Role": {
+        "entity.Role": {
             "type": "string",
             "enum": [
                 "user",
@@ -264,7 +220,7 @@ const docTemplate = `{
                 "AdminRole"
             ]
         },
-        "models.User": {
+        "entity.User": {
             "type": "object",
             "required": [
                 "password",
@@ -281,7 +237,7 @@ const docTemplate = `{
                 }
             }
         },
-        "models.UserResponse": {
+        "entity.UserResponse": {
             "type": "object",
             "properties": {
                 "access-token": {
@@ -294,7 +250,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "role": {
-                    "$ref": "#/definitions/models.Role"
+                    "$ref": "#/definitions/entity.Role"
                 },
                 "token-type": {
                     "type": "string"

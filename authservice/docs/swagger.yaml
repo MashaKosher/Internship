@@ -10,12 +10,7 @@ definitions:
       message:
         type: string
     type: object
-  models.ErrorResponse:
-    properties:
-      message:
-        type: string
-    type: object
-  models.Role:
+  entity.Role:
     enum:
     - user
     - admin
@@ -23,7 +18,7 @@ definitions:
     x-enum-varnames:
     - UserRole
     - AdminRole
-  models.User:
+  entity.User:
     properties:
       password:
         minLength: 1
@@ -35,7 +30,7 @@ definitions:
     - password
     - username
     type: object
-  models.UserResponse:
+  entity.UserResponse:
     properties:
       access-token:
         type: string
@@ -44,7 +39,7 @@ definitions:
       refresh-token:
         type: string
       role:
-        $ref: '#/definitions/models.Role'
+        $ref: '#/definitions/entity.Role'
       token-type:
         type: string
       username:
@@ -92,15 +87,7 @@ paths:
         "200":
           description: Access Token is Valid
           schema:
-            $ref: '#/definitions/models.UserResponse'
-        "400":
-          description: Invalid access Token or No such User
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            $ref: '#/definitions/entity.UserResponse'
       summary: Verifying access Token
       tags:
       - Token
@@ -112,25 +99,17 @@ paths:
       parameters:
       - description: Login request body
         in: body
-        name: models.User
+        name: entity.User
         required: true
         schema:
-          $ref: '#/definitions/models.User'
+          $ref: '#/definitions/entity.User'
       produces:
       - application/json
       responses:
         "200":
           description: User successfully logged
           schema:
-            $ref: '#/definitions/models.UserResponse'
-        "400":
-          description: Invalid Username or Password
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            $ref: '#/definitions/entity.UserResponse'
       summary: User login
       tags:
       - Login
@@ -144,15 +123,7 @@ paths:
         "200":
           description: Refresh Token is Valid
           schema:
-            $ref: '#/definitions/models.UserResponse'
-        "400":
-          description: Invalid access Token or No such User
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            $ref: '#/definitions/entity.UserResponse'
       summary: Verifying refresh Token and returning Access
       tags:
       - Token
@@ -164,17 +135,17 @@ paths:
       parameters:
       - description: Sign up request body
         in: body
-        name: models.User
+        name: entity.User
         required: true
         schema:
-          $ref: '#/definitions/models.User'
+          $ref: '#/definitions/entity.User'
       produces:
       - application/json
       responses:
         "200":
           description: User successfully registered
           schema:
-            $ref: '#/definitions/models.UserResponse'
+            $ref: '#/definitions/entity.UserResponse'
       summary: Sign up user
       tags:
       - SignUp
@@ -186,17 +157,17 @@ paths:
       parameters:
       - description: Sign up request body
         in: body
-        name: models.User
+        name: entity.User
         required: true
         schema:
-          $ref: '#/definitions/models.User'
+          $ref: '#/definitions/entity.User'
       produces:
       - application/json
       responses:
         "200":
           description: User successfully registered
           schema:
-            $ref: '#/definitions/models.UserResponse'
+            $ref: '#/definitions/entity.UserResponse'
       summary: Sign up user
       tags:
       - SignUp

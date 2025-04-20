@@ -4,7 +4,6 @@ import (
 	_ "authservice/docs"
 	"authservice/internal/adapter/kafka/consumers"
 	"authservice/internal/handler"
-	"fmt"
 
 	"authservice/internal/config"
 	"authservice/internal/db"
@@ -27,8 +26,6 @@ func main() {
 
 	config.Load()
 
-	fmt.Println("File Log Name: " + config.AppConfig.Logger.FileName)
-
 	// Creating Log File
 	logFile := logger.CreateLogger()
 	defer logFile.Close()
@@ -45,7 +42,6 @@ func main() {
 
 	go consumers.ConsumerAnswerTokens()
 
-	// consumers.AnswerTokens()
 	handler.Handlers(app)
 
 	app.Listen(":" + config.AppConfig.Server.Port)

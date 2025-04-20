@@ -23,10 +23,14 @@ var validate = validator.New()
 // @Tags			SignUp
 // @Accept			json
 // @Produce		json
-// @Param			models.User	body		models.User			true	"Sign up request body"
-// @Success		200			{object}	models.UserResponse	"User successfully registered"
+// @Param			entity.User	body		entity.User			true	"Sign up request body"
+// @Success		200			{object}	entity.UserResponse	"User successfully registered"
 // @Router			/auth/sign-up/user [post]
 func UserSignUp(c *fiber.Ctx) error {
+	return SignUp(entity.UserRole, c)
+}
+
+func SignUp(role entity.Role, c *fiber.Ctx) error {
 	var user entity.User
 	c.BodyParser(&user)
 	logger.Logger.Info(fmt.Sprintf("User with UserName %s is trying to sign up", user.Username))
@@ -45,6 +49,7 @@ func UserSignUp(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Problems with hashing password")
 	}
 	user.Password = hashed
+	user.Role = role
 
 	// Figure out if user exists
 	if _, err := repo.FindUserByName(user.Username); err == nil {
@@ -85,7 +90,6 @@ func UserSignUp(c *fiber.Ctx) error {
 	logger.Logger.Info("Refresh JWT created successfully")
 
 	return c.JSON(convert.ConvertUserToResponse(accessToken, refreshToken, &user))
-
 }
 
 // @Summary		Sign up user
@@ -93,70 +97,11 @@ func UserSignUp(c *fiber.Ctx) error {
 // @Tags			SignUp
 // @Accept			json
 // @Produce		json
-// @Param			models.User	body		models.User			true	"Sign up request body"
-// @Success		200			{object}	models.UserResponse	"User successfully registered"
+// @Param			entity.User	body		entity.User			true	"Sign up request body"
+// @Success		200			{object}	entity.UserResponse	"User successfully registered"
 // @Router			/auth/sign-up/admin [post]
 func AdminSignUp(c *fiber.Ctx) error {
-	var user entity.User
-	c.BodyParser(&user)
-	logger.Logger.Info(fmt.Sprintf("User with UserName %s is trying to sign up", user.Username))
-
-	// Veryfing income credentials
-	if err := validate.Struct(user); err != nil {
-		logger.Logger.Error("Body validation error: " + err.Error())
-		return fiber.NewError(fiber.StatusBadRequest, "Invalid data")
-	}
-	logger.Logger.Info("User credentials verified successfully")
-
-	// Hashing Password to store in DB
-	hashed, err := passwords.HashPassword(user.Password)
-	if err != nil {
-		logger.Logger.Error("Problems with hashing password: " + err.Error())
-		return fiber.NewError(fiber.StatusInternalServerError, "Problems with hashing password")
-	}
-	user.Password = hashed
-	user.Role = "admin"
-
-	// Figure out if user exists
-	if _, err := repo.FindUserByName(user.Username); err == nil {
-		logger.Logger.Error("User with such username already exists: " + user.Username)
-		return fiber.NewError(fiber.StatusBadRequest, "User with such username already exists")
-	}
-
-	// Adding User to DB
-	if err := repo.CreateUser(&user); err != nil {
-		logger.Logger.Error("Problem with creating User with UserName: " + user.Username)
-		return fiber.NewError(fiber.StatusInternalServerError, "Problem with adding user to DB")
-	}
-	logger.Logger.Info("User created with ID: " + fmt.Sprint(user.ID))
-
-	// Creating Access Token
-	accessToken, err := tokens.CreateToken(tokens.ACCESS_TOKEN, &user)
-	if err != nil {
-		logger.Logger.Error("Problem with creating Access JWT Token" + err.Error())
-		return fiber.NewError(fiber.StatusInternalServerError, "Problem with creating Access JWT Token")
-	}
-	c.Cookie(&fiber.Cookie{
-		Name:  tokens.ACCESS_TOKEN,
-		Value: accessToken,
-	})
-	logger.Logger.Info("Access JWT created successfully")
-
-	// Creating Refresh Token
-	refreshToken, err := tokens.CreateToken(tokens.REFRESH_TOKEN, &user)
-	if err != nil {
-		logger.Logger.Error("Problem with creating Refresh JWT Token" + err.Error())
-		return fiber.NewError(fiber.StatusInternalServerError, "Problem with creating Refresh JWT Token")
-	}
-
-	c.Cookie(&fiber.Cookie{
-		Name:  tokens.REFRESH_TOKEN,
-		Value: refreshToken,
-	})
-	logger.Logger.Info("Refresh JWT created successfully")
-
-	return c.JSON(convert.ConvertUserToResponse(accessToken, refreshToken, &user))
-
+	return SignUp(entity.AdminRole, c)
 }
 
 // @Summary		User login
@@ -164,10 +109,8 @@ func AdminSignUp(c *fiber.Ctx) error {
 // @Tags			Login
 // @Accept			json
 // @Produce		json
-// @Param			models.User	body		models.User				true	"Login request body"
-// @Success		200			{object}	models.UserResponse		"User successfully logged"
-// @Failure		400			{object}	models.ErrorResponse	"Invalid Username or Password"
-// @Failure		500			{object}	models.ErrorResponse	"Internal Server Error"
+// @Param			entity.User	body		entity.User				true	"Login request body"
+// @Success		200			{object}	entity.UserResponse		"User successfully logged"
 // @Router			/auth/login [post]
 func Login(c *fiber.Ctx) error {
 	var user entity.User
@@ -228,9 +171,7 @@ func Login(c *fiber.Ctx) error {
 // @Description	Verifying access, extract sub and returns Token status. Clears the Cookies, if there any error
 // @Tags			Token
 // @Produce		json
-// @Success		200	{object}	models.UserResponse		"Access Token is Valid"
-// @Failure		400	{object}	models.ErrorResponse	"Invalid access Token or No such User"
-// @Failure		500	{object}	models.ErrorResponse	"Internal Server Error"
+// @Success		200	{object}	entity.UserResponse		"Access Token is Valid"
 // @Router			/auth/check-token [get]
 func CheckToken(c *fiber.Ctx) error {
 	var accessToken string = c.Cookies(tokens.ACCESS_TOKEN)
@@ -284,9 +225,7 @@ func CheckToken(c *fiber.Ctx) error {
 // @Description	Verifying access, extract sub and returns Token status. Clears the Cookies, if there any error
 // @Tags			Token
 // @Produce		json
-// @Success		200	{object} models.UserResponse		"Refresh Token is Valid"
-// @Failure		400	{object}	models.ErrorResponse	"Invalid access Token or No such User"
-// @Failure		500	{object}	models.ErrorResponse	"Internal Server Error"
+// @Success		200	{object} entity.UserResponse		"Refresh Token is Valid"
 // @Router			/auth/refresh [get]
 func Refresh(c *fiber.Ctx) error {
 	var refreshToken string = c.Cookies(tokens.REFRESH_TOKEN)
@@ -361,7 +300,6 @@ func ChangePassword(c *fiber.Ctx) error {
 
 	var newPassword entity.Password
 	c.BodyParser(&newPassword)
-	// logger.Logger.Info(fmt.Sprintf("User with UserName %s is trying to log in", user.Username))
 
 	// Veryfing income credentials
 	if err := validate.Struct(newPassword); err != nil {

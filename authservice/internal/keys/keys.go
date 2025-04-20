@@ -49,28 +49,24 @@ func readPath(keyType, filePath string, wg *sync.WaitGroup) {
 	defer wg.Done()
 	keyData, err := os.ReadFile(filePath)
 	if err != nil {
-		logger.Logger.Error("Error while reading " + keyType + " file")
-		panic("Error while reading " + keyType + " file")
+		logger.Logger.Fatal("Error while reading " + keyType + " file")
 	}
 
 	block, _ := pem.Decode(keyData)
-	if block == nil && (block.Type != PUBLIC_KEY || block.Type != PRIVATE_KEY) {
-		logger.Logger.Error("Invalid Key format")
-		panic("Invalid Key format")
+	if block == nil || (block.Type != PUBLIC_KEY && block.Type != PRIVATE_KEY) {
+		logger.Logger.Fatal("Invalid Key format")
 	}
 
 	if keyType == PUBLIC_KEY {
 		publicKey, err := x509.ParsePKIXPublicKey(block.Bytes)
 		if err != nil {
-			logger.Logger.Error("Error while parsing " + keyType + " file")
-			panic("Error while parsing " + keyType + " file")
+			logger.Logger.Fatal("Error while parsing " + keyType + " file")
 		}
 		RSAkeys.PublicKey = publicKey.(*rsa.PublicKey)
 	} else {
 		privateKey, err := x509.ParsePKCS8PrivateKey(block.Bytes)
 		if err != nil {
-			logger.Logger.Error("Error while parsing " + keyType + " file")
-			panic("Error while parsing " + keyType + " file")
+			logger.Logger.Fatal("Error while parsing " + keyType + " file")
 		}
 		RSAkeys.PrivateKey = privateKey.(*rsa.PrivateKey)
 	}
