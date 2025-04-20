@@ -2,21 +2,22 @@ package main
 
 import (
 	_ "authservice/docs"
+	"authservice/internal/adapter/kafka/consumers"
+	"authservice/internal/handler"
 	"fmt"
-	"os"
-
-	"github.com/gofiber/fiber/v2"
 
 	"authservice/internal/config"
 	"authservice/internal/db"
-	"authservice/internal/handler"
 	"authservice/internal/keys"
+
 	"authservice/internal/logger"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 // @title						Auth service
-// @version					1.0
-// @description				Auth server API
+// @version						1.0
+// @description					Auth server API
 // @host						localhost:8080
 // @BasePath					/
 // @securityDefinitions.basic	BasicAuth
@@ -24,18 +25,13 @@ import (
 // @externalDocs.url			https://swagger.io/resources/open-api/
 func main() {
 
-	config.LoadEnvs()
+	config.Load()
 
-	fmt.Println("File Log Name: " + config.Cfg.LogFileName)
+	fmt.Println("File Log Name: " + config.AppConfig.Logger.FileName)
 
 	// Creating Log File
-	logFile, err := os.OpenFile(config.Cfg.LogFileName, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0666)
-	if err != nil {
-		panic("Log error: " + err.Error())
-	}
+	logFile := logger.CreateLogger()
 	defer logFile.Close()
-
-	logger.CreateLogger()
 	defer logger.Logger.Sync()
 	defer logger.Logger.Info("Program end")
 
@@ -47,32 +43,10 @@ func main() {
 
 	db.ConncetDB()
 
+	go consumers.ConsumerAnswerTokens()
+
+	// consumers.AnswerTokens()
 	handler.Handlers(app)
 
-	app.Listen(":" + config.Cfg.Server.Port)
+	app.Listen(":" + config.AppConfig.Server.Port)
 }
-
-// package main
-
-// import (
-// 	"os"
-// 	"authservice/internal/config"
-// 	"authservice/internal/keys"
-// 	"authservice/internal/logger"
-// )
-
-// func main() {
-// 	// Loading env vars from .env
-// 	config.LoadEnvs()
-// 	// Creating Log File
-// 	logFile, err := os.OpenFile(config.Cfg.LogFileName, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0666)
-// 	if err != nil {
-// 		panic("Log error: " + err.Error())
-// 	}
-// 	defer logFile.Close()
-
-// 	logger.CreateLogger()
-// 	defer logger.Logger.Sync()
-// 	defer logger.Logger.Info("Program end")
-// 	keys.ReadRSAKeys()
-// }

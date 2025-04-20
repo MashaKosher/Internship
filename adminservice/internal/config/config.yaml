@@ -1,0 +1,19 @@
+server:
+  host: localhost
+  port: 8004
+
+
+db:
+  host: localhost
+  port: 5434
+  name: admin
+  user: postgres
+  password: postgres
+  ssl_mode: disable
+
+
+  
+
+
+
+

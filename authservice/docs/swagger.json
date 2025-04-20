@@ -1,9 +1,48 @@
 {
     "swagger": "2.0",
     "info": {
-        "contact": {}
+        "description": "Auth server API",
+        "title": "Auth service",
+        "contact": {},
+        "version": "1.0"
     },
+    "host": "localhost:8080",
+    "basePath": "/",
     "paths": {
+        "/auth/change-password": {
+            "post": {
+                "description": "Updates authenticated user's password after validation",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Change Password"
+                ],
+                "summary": "Change user password",
+                "parameters": [
+                    {
+                        "description": "New password details",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.Password"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Password changed successfully",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/auth/check-token": {
             "get": {
                 "description": "Verifying access, extract sub and returns Token status. Clears the Cookies, if there any error",
@@ -11,7 +50,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "authentication"
+                    "Token"
                 ],
                 "summary": "Verifying access Token",
                 "responses": {
@@ -46,7 +85,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "authentication"
+                    "Login"
                 ],
                 "summary": "User login",
                 "parameters": [
@@ -89,7 +128,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "authentication"
+                    "Token"
                 ],
                 "summary": "Verifying refresh Token and returning Access",
                 "responses": {
@@ -114,7 +153,7 @@
                 }
             }
         },
-        "/auth/signup": {
+        "/auth/sign-up/admin": {
             "post": {
                 "description": "Returns a message indicating the sign-up endpoint",
                 "consumes": [
@@ -124,7 +163,41 @@
                     "application/json"
                 ],
                 "tags": [
-                    "authentication"
+                    "SignUp"
+                ],
+                "summary": "Sign up user",
+                "parameters": [
+                    {
+                        "description": "Sign up request body",
+                        "name": "models.User",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User successfully registered",
+                        "schema": {
+                            "$ref": "#/definitions/models.UserResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/sign-up/user": {
+            "post": {
+                "description": "Returns a message indicating the sign-up endpoint",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SignUp"
                 ],
                 "summary": "Sign up user",
                 "parameters": [
@@ -150,6 +223,22 @@
         }
     },
     "definitions": {
+        "entity.Password": {
+            "type": "object",
+            "properties": {
+                "new-password": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.Response": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "models.ErrorResponse": {
             "type": "object",
             "properties": {
@@ -209,5 +298,14 @@
                 }
             }
         }
+    },
+    "securityDefinitions": {
+        "BasicAuth": {
+            "type": "basic"
+        }
+    },
+    "externalDocs": {
+        "description": "OpenAPI",
+        "url": "https://swagger.io/resources/open-api/"
     }
 }

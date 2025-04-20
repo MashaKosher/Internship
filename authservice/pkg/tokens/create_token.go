@@ -38,10 +38,12 @@ func fillClaims(tokenType string, user *entity.User) jwt.MapClaims {
 	if tokenType == ACCESS_TOKEN {
 		claims["username"] = user.Username
 		claims["type"] = ACCESS_TOKEN
-		claims["exp"] = time.Now().Add(time.Minute * 1).Unix()
+		claims["exp"] = time.Now().Add(time.Minute * 15).Unix()
+		// claims["exp"] = time.Now().Add(time.Minute * 1).Unix()
 	} else {
 		claims["type"] = REFRESH_TOKEN
-		claims["exp"] = time.Now().Add(time.Minute * 30).Unix()
+		// claims["exp"] = time.Now().Add(time.Minute * 30).Unix()
+		claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
 	}
 	return claims
 }

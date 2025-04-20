@@ -1,0 +1,401 @@
+basePath: /
+definitions:
+  entity.BalanceBody:
+    properties:
+      balance:
+        type: number
+    type: object
+  entity.Error:
+    properties:
+      error:
+        type: string
+    type: object
+  entity.Leaderboard:
+    properties:
+      user-id:
+        type: integer
+      win:
+        type: integer
+    type: object
+  entity.Response:
+    properties:
+      message:
+        type: string
+    type: object
+  entity.SearchParams:
+    properties:
+      name:
+        type: string
+    type: object
+  entity.Season:
+    properties:
+      end-date:
+        type: string
+      fund:
+        type: integer
+      id:
+        type: integer
+      start-date:
+        type: string
+      status:
+        type: string
+    type: object
+  entity.SeasonListElement:
+    properties:
+      season-id:
+        type: integer
+      status:
+        type: string
+    type: object
+  entity.TypeResponse:
+    properties:
+      balance:
+        type: number
+      login:
+        type: string
+      message:
+        type: string
+      win-rate:
+        type: number
+    type: object
+  entity.User:
+    properties:
+      balance:
+        type: number
+      login:
+        type: string
+      win-rate:
+        type: number
+    type: object
+host: localhost:8006
+info:
+  contact: {}
+  description: This is a sample API for demonstrating Swagger with Gin.
+  title: Example API
+  version: "1.0"
+paths:
+  /check-token:
+    get:
+      description: Verifies JWT token validity and returns user information
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Token validation response with user data
+          schema:
+            $ref: '#/definitions/entity.TypeResponse'
+        "400":
+          description: Invalid token format
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "401":
+          description: Missing or invalid token
+          schema:
+            $ref: '#/definitions/entity.Error'
+      summary: Validate JWT token
+      tags:
+      - Authentication
+  /daily-task:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает ежедневную задачу для текущей даты
+      produces:
+      - application/json
+      responses: {}
+      summary: Получить ежедневную задачу
+      tags:
+      - Tasks
+  /elastic/create-index:
+    get:
+      description: Recreates Elasticsearch index and imports all users from database
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Returns count of indexed users
+          schema:
+            $ref: '#/definitions/entity.Response'
+        "500":
+          description: Elasticsearch operation failed
+          schema:
+            $ref: '#/definitions/entity.Error'
+      summary: Rebuild user search index
+      tags:
+      - Elastic
+  /elastic/fuzzy:
+    post:
+      consumes:
+      - application/json
+      description: Performs a fuzzy search that accounts for typos and similar spellings
+      parameters:
+      - description: Search parameters
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.SearchParams'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of found users
+          schema:
+            items:
+              $ref: '#/definitions/entity.User'
+            type: array
+        "400":
+          description: Invalid request format
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "500":
+          description: Elasticsearch error
+          schema:
+            $ref: '#/definitions/entity.Error'
+      summary: Fuzzy search users by name
+      tags:
+      - Elastic
+  /elastic/strict:
+    post:
+      consumes:
+      - application/json
+      description: Performs a case-sensitive exact match search for users by name
+      parameters:
+      - description: Search parameters
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.SearchParams'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of found users
+          schema:
+            items:
+              $ref: '#/definitions/entity.User'
+            type: array
+        "400":
+          description: Invalid request format
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "500":
+          description: Elasticsearch error
+          schema:
+            $ref: '#/definitions/entity.Error'
+      summary: Search users by exact name
+      tags:
+      - Elastic
+  /elastic/wildcard:
+    post:
+      consumes:
+      - application/json
+      description: Performs a wildcard search for users by name (supports * and ?
+        patterns)
+      parameters:
+      - description: Search parameters
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.SearchParams'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of found users
+          schema:
+            items:
+              $ref: '#/definitions/entity.User'
+            type: array
+        "400":
+          description: Invalid request format
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "500":
+          description: Elasticsearch error
+          schema:
+            $ref: '#/definitions/entity.Error'
+      summary: Search users by name using wildcard pattern
+      tags:
+      - Elastic
+  /seasons/:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of all seasons
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.SeasonListElement'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entity.Error'
+      summary: Get all seasons
+      tags:
+      - Seasons
+  /seasons/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get season information by season ID
+      parameters:
+      - description: Season ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Season'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entity.Error'
+      summary: Get season by ID
+      tags:
+      - Seasons
+  /seasons/{id}/leader-board:
+    get:
+      consumes:
+      - application/json
+      description: Get leaderboard for specific season by ID
+      parameters:
+      - description: Season ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Leaderboard'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entity.Error'
+      summary: Get season leaderboard
+      tags:
+      - Seasons
+  /seasons/current:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of all seasons with 'current' status
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/entity.Error'
+      summary: Get current seasons
+      tags:
+      - Seasons
+  /seasons/planned:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of all seasons with 'planned' status
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/entity.Error'
+      summary: Get planned seasons
+      tags:
+      - Seasons
+  /user/deposit:
+    post:
+      consumes:
+      - application/json
+      description: Allows authenticated user to deposit funds to their balance
+      parameters:
+      - description: Deposit amount details
+        in: body
+        name: deposit
+        required: true
+        schema:
+          $ref: '#/definitions/entity.BalanceBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Returns new balance
+          schema:
+            $ref: '#/definitions/entity.Response'
+        "400":
+          description: Invalid token, negative amount or bad request
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "401":
+          description: Unauthorized (missing or invalid token)
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/entity.Error'
+      summary: Deposit funds to user account
+      tags:
+      - User
+  /user/info:
+    get:
+      description: Returns current user's information based on valid JWT token
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User information
+          schema:
+            $ref: '#/definitions/entity.User'
+        "400":
+          description: Invalid token or conversion error
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "401":
+          description: Unauthorized (when token is missing)
+          schema:
+            $ref: '#/definitions/entity.Error'
+      summary: Get authenticated user information
+      tags:
+      - User
+swagger: "2.0"

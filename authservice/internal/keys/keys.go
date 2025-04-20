@@ -40,8 +40,8 @@ func composePathes() (string, string) {
 	if err != nil {
 		panic(err)
 	}
-	publicPath := filepath.Join(currentDir, config.Cfg.PublicKeyFile)
-	privatePath := filepath.Join(currentDir, config.Cfg.PrivateKeyFile)
+	publicPath := filepath.Join(currentDir, config.AppConfig.RSAKeys.PublicKeyFile)
+	privatePath := filepath.Join(currentDir, config.AppConfig.RSAKeys.PrivateKeyFile)
 	return publicPath, privatePath
 }
 

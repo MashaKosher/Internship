@@ -1,4 +1,15 @@
+basePath: /
 definitions:
+  entity.Password:
+    properties:
+      new-password:
+        type: string
+    type: object
+  entity.Response:
+    properties:
+      message:
+        type: string
+    type: object
   models.ErrorResponse:
     properties:
       message:
@@ -39,9 +50,38 @@ definitions:
       username:
         type: string
     type: object
+externalDocs:
+  description: OpenAPI
+  url: https://swagger.io/resources/open-api/
+host: localhost:8080
 info:
   contact: {}
+  description: Auth server API
+  title: Auth service
+  version: "1.0"
 paths:
+  /auth/change-password:
+    post:
+      consumes:
+      - application/json
+      description: Updates authenticated user's password after validation
+      parameters:
+      - description: New password details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Password'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Password changed successfully
+          schema:
+            $ref: '#/definitions/entity.Response'
+      summary: Change user password
+      tags:
+      - Change Password
   /auth/check-token:
     get:
       description: Verifying access, extract sub and returns Token status. Clears
@@ -63,7 +103,7 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Verifying access Token
       tags:
-      - authentication
+      - Token
   /auth/login:
     post:
       consumes:
@@ -93,7 +133,7 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: User login
       tags:
-      - authentication
+      - Login
   /auth/refresh:
     get:
       description: Verifying access, extract sub and returns Token status. Clears
@@ -115,8 +155,8 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Verifying refresh Token and returning Access
       tags:
-      - authentication
-  /auth/signup:
+      - Token
+  /auth/sign-up/admin:
     post:
       consumes:
       - application/json
@@ -137,5 +177,30 @@ paths:
             $ref: '#/definitions/models.UserResponse'
       summary: Sign up user
       tags:
-      - authentication
+      - SignUp
+  /auth/sign-up/user:
+    post:
+      consumes:
+      - application/json
+      description: Returns a message indicating the sign-up endpoint
+      parameters:
+      - description: Sign up request body
+        in: body
+        name: models.User
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User successfully registered
+          schema:
+            $ref: '#/definitions/models.UserResponse'
+      summary: Sign up user
+      tags:
+      - SignUp
+securityDefinitions:
+  BasicAuth:
+    type: basic
 swagger: "2.0"

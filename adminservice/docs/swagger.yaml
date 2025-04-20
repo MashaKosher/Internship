@@ -1,0 +1,182 @@
+basePath: /
+definitions:
+  entity.DBDailyTasks:
+    properties:
+      games-amount:
+        type: integer
+      referals-amount:
+        type: integer
+    type: object
+  entity.DailyTasks:
+    properties:
+      games-amount:
+        type: integer
+      referals-amount:
+        type: integer
+      task-date:
+        type: string
+    type: object
+  entity.DetailSeasonJson:
+    properties:
+      end-date:
+        type: string
+      end-time:
+        type: string
+      fund:
+        type: integer
+      start-date:
+        type: string
+      start-time:
+        type: string
+    type: object
+  entity.SeasonJson:
+    properties:
+      end-date:
+        type: string
+      start-date:
+        type: string
+    type: object
+  entity.SettingsJson:
+    properties:
+      lose-amount:
+        type: number
+      waiting-time:
+        type: integer
+      win-amount:
+        type: number
+    type: object
+externalDocs:
+  description: OpenAPI
+  url: https://swagger.io/resources/open-api/
+host: localhost:8004
+info:
+  contact: {}
+  description: Admin server API
+  title: Admin service
+  version: "1.0"
+paths:
+  /daily-tasks:
+    delete:
+      consumes:
+      - application/json
+      description: Deelete todays task
+      produces:
+      - application/json
+      responses: {}
+      summary: Delete daily tasks
+      tags:
+      - DailyTasks
+    post:
+      consumes:
+      - application/json
+      description: Create a new set of daily tasks
+      parameters:
+      - description: Daily tasks object
+        in: body
+        name: tasks
+        required: true
+        schema:
+          $ref: '#/definitions/entity.DBDailyTasks'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.DailyTasks'
+      summary: Create daily tasks
+      tags:
+      - DailyTasks
+  /deatil-plan:
+    post:
+      consumes:
+      - application/json
+      description: Обрабатывает запрос на планирование сезона и проверяет права пользователя
+      parameters:
+      - description: Информация о сезоне
+        in: body
+        name: season
+        required: true
+        schema:
+          $ref: '#/definitions/entity.DetailSeasonJson'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User is admin
+          schema:
+            type: string
+      summary: Детальное палнирование сезона
+      tags:
+      - Season Planing
+  /plan:
+    post:
+      consumes:
+      - application/json
+      description: Обрабатывает запрос на планирование сезона и проверяет права пользователя
+      parameters:
+      - description: Информация о сезоне
+        in: body
+        name: season
+        required: true
+        schema:
+          $ref: '#/definitions/entity.SeasonJson'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User is admin
+          schema:
+            type: string
+      summary: Планирование сезона
+      tags:
+      - Season Planing
+  /settings:
+    post:
+      consumes:
+      - application/json
+      description: Update game configuration settings for authenticated user
+      parameters:
+      - description: Game settings object
+        in: body
+        name: settings
+        required: true
+        schema:
+          $ref: '#/definitions/entity.SettingsJson'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.SettingsJson'
+      summary: Update game settings
+      tags:
+      - Settings
+  /statistic/players:
+    get:
+      consumes:
+      - application/json
+      description: Get season statistic
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Get season statistic
+      tags:
+      - Statistic
+  /statistic/seasons:
+    get:
+      consumes:
+      - application/json
+      description: Get seasons statistic
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Get seasons statistic
+      tags:
+      - Statistic
+swagger: "2.0"

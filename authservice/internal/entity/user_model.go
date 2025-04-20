@@ -8,7 +8,8 @@ const (
 )
 
 type User struct {
-	ID       uint   `json:"-" gorm:"primaryKey"`
+	ID uint `json:"-" gorm:"primaryKey"`
+	// Username string `json:"username" validate:"required,min=1" gorm:"unique;not null"`
 	Username string `json:"username" validate:"required,min=1"`
 	Password string `json:"password" validate:"required,min=1"`
 	Role     Role   `json:"-" gorm:"default:user"`

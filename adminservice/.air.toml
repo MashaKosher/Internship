@@ -1,0 +1,43 @@
+# .air.toml
+root = "."
+tmp_dir = "./tmp"
+
+[build]
+
+  cmd = "swag init --generalInfo ./cmd/admin/main.go  && go build -o tmp/main ./cmd/admin"
+  delay = 1000
+  exclude_dir = ["assets", "tmp", "vendor", "docs"]
+  exclude_file = []
+  exclude_regex = ["_test.go"]
+
+  include_dir = []
+  include_ext = ["go", "env"]
+  include_file = []
+  kill_delay = "0s"
+  log = "build-errors.log"
+
+  post_cmd = []
+  pre_cmd = []
+
+  rerun_delay = 500
+
+
+[color]
+  app = ""
+  build = "yellow"
+  main = "magenta"
+  runner = "green"
+  watcher = "cyan"
+
+[log]
+  main_only = false
+  silent = false
+  time = false
+
+[misc]
+  clean_on_exit = true
+
+
+[screen]
+  clear_on_rebuild = false
+  keep_scroll = true

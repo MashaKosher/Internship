@@ -2,7 +2,7 @@ package db
 
 import (
 	"authservice/internal/config"
-	"authservice/internal/db/models"
+	"authservice/internal/entity"
 	"authservice/internal/logger"
 	"fmt"
 
@@ -13,7 +13,7 @@ import (
 var DB *gorm.DB
 
 func ConncetDB() {
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s", config.Cfg.DB.Host, config.Cfg.DB.User, config.Cfg.DB.Password, config.Cfg.DB.Name, config.Cfg.DB.Port, config.Cfg.DB.SSLMode)
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s", config.AppConfig.DB.Host, config.AppConfig.DB.User, config.AppConfig.DB.Password, config.AppConfig.DB.Name, config.AppConfig.DB.Port, config.AppConfig.DB.SSLMode)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		logger.Logger.Error("Failed connection to DB: " + err.Error())
@@ -26,6 +26,6 @@ func ConncetDB() {
 
 func AutoMigrations(conncetion *gorm.DB) {
 	conncetion.Debug().AutoMigrate(
-		&models.User{},
+		&entity.User{},
 	)
 }

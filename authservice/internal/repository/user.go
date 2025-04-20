@@ -7,6 +7,7 @@ import (
 )
 
 func CreateUser(user *entity.User) error {
+
 	err := db.DB.Save(user).Error
 	return err
 }
@@ -26,4 +27,9 @@ func FindUserById(userId int) (entity.User, error) {
 		return DBUser, err
 	}
 	return DBUser, nil
+}
+
+func ChangeUserPassword(userID int, newPassword string) error {
+	result := db.DB.Model(&entity.User{}).Where("id = ?", userID).Update("password", newPassword)
+	return result.Error
 }

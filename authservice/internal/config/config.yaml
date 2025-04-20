@@ -1,0 +1,26 @@
+server:
+  host: localhost
+  port: 8080
+
+db:
+  host: localhost
+  port: 5433
+  name: auth
+  user: postgres
+  password: postgres
+  ssl_mode: disable
+
+
+logger:
+  filename: app.log
+
+rsa_keys:
+  public: internal/config/keys/jwt-public.pem
+  private: internal/config/keys/jwt-private.pem
+
+
+kafka:
+  host: localhost
+  port: 9092
+  auth_topic_send: jwtCheckAnswer
+  auth_topic_recieve: jwtCheckRequest

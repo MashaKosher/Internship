@@ -1,0 +1,279 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Admin server API",
+        "title": "Admin service",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8004",
+    "basePath": "/",
+    "paths": {
+        "/daily-tasks": {
+            "post": {
+                "description": "Create a new set of daily tasks",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "DailyTasks"
+                ],
+                "summary": "Create daily tasks",
+                "parameters": [
+                    {
+                        "description": "Daily tasks object",
+                        "name": "tasks",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.DBDailyTasks"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.DailyTasks"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Deelete todays task",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "DailyTasks"
+                ],
+                "summary": "Delete daily tasks",
+                "responses": {}
+            }
+        },
+        "/deatil-plan": {
+            "post": {
+                "description": "Обрабатывает запрос на планирование сезона и проверяет права пользователя",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Season Planing"
+                ],
+                "summary": "Детальное палнирование сезона",
+                "parameters": [
+                    {
+                        "description": "Информация о сезоне",
+                        "name": "season",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.DetailSeasonJson"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User is admin",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/plan": {
+            "post": {
+                "description": "Обрабатывает запрос на планирование сезона и проверяет права пользователя",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Season Planing"
+                ],
+                "summary": "Планирование сезона",
+                "parameters": [
+                    {
+                        "description": "Информация о сезоне",
+                        "name": "season",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.SeasonJson"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User is admin",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/settings": {
+            "post": {
+                "description": "Update game configuration settings for authenticated user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Update game settings",
+                "parameters": [
+                    {
+                        "description": "Game settings object",
+                        "name": "settings",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.SettingsJson"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.SettingsJson"
+                        }
+                    }
+                }
+            }
+        },
+        "/statistic/players": {
+            "get": {
+                "description": "Get season statistic",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistic"
+                ],
+                "summary": "Get season statistic",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/statistic/seasons": {
+            "get": {
+                "description": "Get seasons statistic",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistic"
+                ],
+                "summary": "Get seasons statistic",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "entity.DBDailyTasks": {
+            "type": "object",
+            "properties": {
+                "games-amount": {
+                    "type": "integer"
+                },
+                "referals-amount": {
+                    "type": "integer"
+                }
+            }
+        },
+        "entity.DailyTasks": {
+            "type": "object",
+            "properties": {
+                "games-amount": {
+                    "type": "integer"
+                },
+                "referals-amount": {
+                    "type": "integer"
+                },
+                "task-date": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.DetailSeasonJson": {
+            "type": "object",
+            "properties": {
+                "end-date": {
+                    "type": "string"
+                },
+                "end-time": {
+                    "type": "string"
+                },
+                "fund": {
+                    "type": "integer"
+                },
+                "start-date": {
+                    "type": "string"
+                },
+                "start-time": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.SeasonJson": {
+            "type": "object",
+            "properties": {
+                "end-date": {
+                    "type": "string"
+                },
+                "start-date": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.SettingsJson": {
+            "type": "object",
+            "properties": {
+                "lose-amount": {
+                    "type": "number"
+                },
+                "waiting-time": {
+                    "type": "integer"
+                },
+                "win-amount": {
+                    "type": "number"
+                }
+            }
+        }
+    },
+    "externalDocs": {
+        "description": "OpenAPI",
+        "url": "https://swagger.io/resources/open-api/"
+    }
+}
