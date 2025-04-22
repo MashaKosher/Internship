@@ -30,19 +30,6 @@ definitions:
       new-password:
         type: string
     type: object
-  entity.Response:
-    properties:
-      message:
-        type: string
-    type: object
-  entity.Role:
-    enum:
-    - user
-    - admin
-    type: string
-    x-enum-varnames:
-    - UserRole
-    - AdminRole
   entity.User:
     properties:
       password:
@@ -54,21 +41,6 @@ definitions:
     required:
     - password
     - username
-    type: object
-  entity.UserResponse:
-    properties:
-      access-token:
-        type: string
-      id:
-        type: integer
-      refresh-token:
-        type: string
-      role:
-        $ref: '#/definitions/entity.Role'
-      token-type:
-        type: string
-      username:
-        type: string
     type: object
 externalDocs:
   description: OpenAPI
@@ -84,9 +56,10 @@ paths:
     post:
       consumes:
       - application/json
-      description: Updates authenticated user's password after validation
+      description: Changes password for authenticated user. Requires valid access
+        token in cookies.
       parameters:
-      - description: New password details
+      - description: New password data
         in: body
         name: request
         required: true
@@ -96,26 +69,82 @@ paths:
       - application/json
       responses:
         "200":
-          description: Password changed successfully
+          description: Password successfully changed
           schema:
-            $ref: '#/definitions/entity.Response'
+            $ref: '#/definitions/auth.UserInDTO'
+        "400":
+          description: Invalid input data
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "401":
+          description: Unauthorized - Invalid or expired token
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "403":
+          description: Forbidden - Password doesn't meet requirements
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/entity.Error'
+      security:
+      - ApiKeyAuth: []
       summary: Change user password
       tags:
       - Change Password
-  /auth/check-token:
+  /auth/check/access:
     get:
-      description: Verifying access, extract sub and returns Token status. Clears
-        the Cookies, if there any error
+      description: Verifies JWT refresh token from cookies and returns user data if
+        valid. Clears cookies on any error.
       produces:
       - application/json
       responses:
         "200":
-          description: Access Token is Valid
+          description: Refresh token is valid
           schema:
-            $ref: '#/definitions/entity.UserResponse'
-      summary: Verifying access Token
+            $ref: '#/definitions/auth.UserInDTO'
+        "401":
+          description: Unauthorized - Invalid or expired token
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "403":
+          description: Forbidden - Token validation failed
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/entity.Error'
+      summary: Verify refresh token
       tags:
-      - Token
+      - Check Token
+  /auth/check/refresh:
+    get:
+      description: Verifies JWT refresh token from cookies and returns user data if
+        valid. Clears cookies on any error.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Refresh token is valid
+          schema:
+            $ref: '#/definitions/auth.UserInDTO'
+        "401":
+          description: Unauthorized - Invalid or expired token
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "403":
+          description: Forbidden - Token validation failed
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/entity.Error'
+      summary: Verify refresh token
+      tags:
+      - Check Token
   /auth/login:
     post:
       consumes:
@@ -154,65 +183,84 @@ paths:
             $ref: '#/definitions/entity.Error'
       summary: User login
       tags:
-      - Auth
-  /auth/refresh:
-    get:
-      description: Verifying access, extract sub and returns Token status. Clears
-        the Cookies, if there any error
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Refresh Token is Valid
-          schema:
-            $ref: '#/definitions/entity.UserResponse'
-      summary: Verifying refresh Token and returning Access
-      tags:
-      - Token
+      - Login
   /auth/sign-up/admin:
     post:
       consumes:
       - application/json
-      description: Returns a message indicating the sign-up endpoint
+      description: Creates a new user account with Admin privileges (requires special
+        permissions)
       parameters:
-      - description: Sign up request body
+      - description: Admin registration data
         in: body
-        name: entity.User
+        name: request
         required: true
         schema:
           $ref: '#/definitions/entity.User'
       produces:
       - application/json
       responses:
-        "200":
-          description: User successfully registered
+        "201":
+          description: Admin successfully registered
           schema:
-            $ref: '#/definitions/entity.UserResponse'
-      summary: Sign up user
+            $ref: '#/definitions/auth.UserInDTO'
+        "400":
+          description: Invalid input data
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "401":
+          description: Unauthorized - Only existing admins can create new admins
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "403":
+          description: Forbidden - Insufficient permissions
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "409":
+          description: Conflict - Username already exists
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/entity.Error'
+      summary: Register new admin
       tags:
-      - SignUp
+      - Sign Up
   /auth/sign-up/user:
     post:
       consumes:
       - application/json
-      description: Returns a message indicating the sign-up endpoint
+      description: Creates a new user account with default User role
       parameters:
-      - description: Sign up request body
+      - description: User registration data
         in: body
-        name: entity.User
+        name: request
         required: true
         schema:
           $ref: '#/definitions/entity.User'
       produces:
       - application/json
       responses:
-        "200":
-          description: User successfully registered
+        "201":
+          description: Successfully registered
           schema:
-            $ref: '#/definitions/entity.UserResponse'
-      summary: Sign up user
+            $ref: '#/definitions/auth.UserInDTO'
+        "400":
+          description: Invalid input data
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "409":
+          description: Conflict - Username already exists
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/entity.Error'
+      summary: Register new user
       tags:
-      - SignUp
+      - Sign Up
 securityDefinitions:
   BasicAuth:
     type: basic

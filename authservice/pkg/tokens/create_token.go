@@ -10,11 +10,13 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
-const ACCESS_TOKEN = "access"
-const REFRESH_TOKEN = "refresh"
+type TokenType string
 
-func CreateToken(tokenType string, user *entity.User) (string, error) {
-	logger.Logger.Info("Creating " + tokenType + " token " + " for User with ID " + fmt.Sprint(user.ID))
+const ACCESS_TOKEN TokenType = "access"
+const REFRESH_TOKEN TokenType = "refresh"
+
+func CreateToken(tokenType TokenType, user *entity.User) (string, error) {
+	logger.Logger.Info("Creating " + string(tokenType) + " token " + " for User with ID " + fmt.Sprint(user.ID))
 	privateKey := keys.RSAkeys.PrivateKey
 	method := jwt.SigningMethodRS256
 	logger.Logger.Info("Signing Method: " + method.Name + "with Private key ")
@@ -30,19 +32,19 @@ func CreateToken(tokenType string, user *entity.User) (string, error) {
 	return token, nil
 }
 
-func fillClaims(tokenType string, user *entity.User) jwt.MapClaims {
+func fillClaims(tokenType TokenType, user *entity.User) jwt.MapClaims {
 	claims := jwt.MapClaims{
 		"sub": user.ID,
 		"iat": time.Now().Unix(),
 	}
 	if tokenType == ACCESS_TOKEN {
 		claims["username"] = user.Username
-		claims["type"] = ACCESS_TOKEN
+		claims["type"] = string(ACCESS_TOKEN)
 		claims["exp"] = time.Now().Add(time.Minute * 15).Unix()
 		// claims["exp"] = time.Now().Add(time.Second * 30).Unix()
 		// claims["exp"] = time.Now().Add(time.Minute * 1).Unix()
 	} else {
-		claims["type"] = REFRESH_TOKEN
+		claims["type"] = string(REFRESH_TOKEN)
 		// claims["exp"] = time.Now().Add(time.Minute * 30).Unix()
 		// claims["exp"] = time.Now().Add(time.Minute).Unix()
 		claims["exp"] = time.Now().Add(time.Hour * 24).Unix()

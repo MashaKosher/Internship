@@ -1,7 +1,7 @@
 package internal
 
 import (
-	"authservice/internal/service"
+	"authservice/internal/entity"
 	"authservice/pkg/logger"
 	"authservice/pkg/tokens"
 	"fmt"
@@ -26,21 +26,28 @@ func InitAuthRoutes(app *fiber.App, authUsecase usecase.Auth) {
 	api := app.Group("/auth")
 	{
 		api.Post("/login", r.login)
-		// ////////////////////////////////
-		api.Get("/check-token", service.CheckToken)
-		api.Get("/refresh", service.Refresh)
+
+		check := api.Group("/check")
+		{
+			check.Get("/access", r.checkAccessToken)
+			check.Get("/refresh", r.checkRefreshToken)
+
+		}
+
 		signUp := api.Group("/sign-up")
 		{
-			signUp.Post("/user", service.UserSignUp)
-			signUp.Post("/admin", service.AdminSignUp)
+			signUp.Post("/user", r.userSignUp)
+			signUp.Post("/admin", r.adminSignUp)
+
 		}
-		api.Post("/change-password", service.ChangePassword)
+		api.Post("/change-password", r.changePassword)
+		//////////////////////////////////
 	}
 }
 
 // @Summary      User login
 // @Description  Authenticates user and returns JWT tokens in cookies and response body
-// @Tags         Auth
+// @Tags         Login
 // @Accept       json
 // @Produce      json
 // @Param		 auth.UserInDTO	body  auth.UserInDTO	true	"Login request body"
@@ -65,20 +72,159 @@ func (r *authRoutes) login(c *fiber.Ctx) error {
 
 	outUser, err := r.u.Login(user)
 	if err != nil {
+		c.ClearCookie()
 		return err
 	}
 
 	c.Cookie(&fiber.Cookie{
-		Name:  tokens.ACCESS_TOKEN,
+		Name:  string(tokens.ACCESS_TOKEN),
 		Value: outUser.AccessToken,
 	})
 	logger.Logger.Info("Access JWT created successfully")
 
 	c.Cookie(&fiber.Cookie{
-		Name:  tokens.REFRESH_TOKEN,
+		Name:  string(tokens.REFRESH_TOKEN),
 		Value: outUser.RefreshToken,
 	})
 	logger.Logger.Info("Refresh JWT created successfully")
 
 	return c.JSON(outUser)
+}
+
+// @Summary      Verify refresh token
+// @Description  Verifies JWT refresh token from cookies and returns user data if valid. Clears cookies on any error.
+// @Tags         Check Token
+// @Produce      json
+// @Success      200 {object} auth.UserInDTO "Refresh token is valid"
+// @Failure      401 {object} entity.Error "Unauthorized - Invalid or expired token"
+// @Failure      403 {object} entity.Error "Forbidden - Token validation failed"
+// @Failure      500 {object} entity.Error "Internal server error"
+// @Router       /auth/check/access [get]
+func (r *authRoutes) checkAccessToken(c *fiber.Ctx) error {
+	var accessToken string = c.Cookies(string(tokens.ACCESS_TOKEN))
+	outUser, err := r.u.CheckAccessToken(accessToken)
+	if err != nil {
+		c.ClearCookie()
+		return err
+	}
+	return c.JSON(outUser)
+}
+
+// @Summary      Verify refresh token
+// @Description  Verifies JWT refresh token from cookies and returns user data if valid. Clears cookies on any error.
+// @Tags         Check Token
+// @Produce      json
+// @Success      200 {object} auth.UserInDTO "Refresh token is valid"
+// @Failure      401 {object} entity.Error "Unauthorized - Invalid or expired token"
+// @Failure      403 {object} entity.Error "Forbidden - Token validation failed"
+// @Failure      500 {object} entity.Error "Internal server error"
+// @Router       /auth/check/refresh [get]
+func (r *authRoutes) checkRefreshToken(c *fiber.Ctx) error {
+	var refreshToken string = c.Cookies(string(tokens.REFRESH_TOKEN))
+	outUser, err := r.u.CheckRefreshToken(refreshToken)
+	if err != nil {
+		c.ClearCookie()
+		return err
+	}
+	return c.JSON(outUser)
+
+}
+
+// @Summary      Register new user
+// @Description  Creates a new user account with default User role
+// @Tags         Sign Up
+// @Accept       json
+// @Produce      json
+// @Param        request body entity.User true "User registration data"
+// @Success      201 {object} auth.UserInDTO "Successfully registered"
+// @Failure      400 {object} entity.Error "Invalid input data"
+// @Failure      409 {object} entity.Error "Conflict - Username already exists"
+// @Failure      500 {object} entity.Error "Internal server error"
+// @Router       /auth/sign-up/user [post]
+func (r *authRoutes) userSignUp(c *fiber.Ctx) error {
+	var user entity.User
+	c.BodyParser(&user)
+	logger.Logger.Info(fmt.Sprintf("User with UserName %s is trying to log in", user.Username))
+
+	// Veryfing income credentials
+	if err := r.v.Struct(user); err != nil {
+		logger.Logger.Error("Body validation error: " + err.Error())
+		return fiber.NewError(fiber.StatusBadRequest, "Invalid data")
+	}
+	logger.Logger.Info("User credentials verified successfully")
+
+	outUser, err := r.u.UserSignUp(user)
+	if err != nil {
+		c.ClearCookie()
+		return err
+	}
+	return c.JSON(outUser)
+}
+
+// @Summary      Register new admin
+// @Description  Creates a new user account with Admin privileges (requires special permissions)
+// @Tags         Sign Up
+// @Accept       json
+// @Produce      json
+// @Param        request body entity.User true "Admin registration data"
+// @Success      201 {object} auth.UserInDTO  "Admin successfully registered"
+// @Failure      400 {object} entity.Error "Invalid input data"
+// @Failure      401 {object} entity.Error "Unauthorized - Only existing admins can create new admins"
+// @Failure      403 {object} entity.Error "Forbidden - Insufficient permissions"
+// @Failure      409 {object} entity.Error "Conflict - Username already exists"
+// @Failure      500 {object} entity.Error "Internal server error"
+// @Router       /auth/sign-up/admin [post]}
+func (r *authRoutes) adminSignUp(c *fiber.Ctx) error {
+	var user entity.User
+	c.BodyParser(&user)
+	logger.Logger.Info(fmt.Sprintf("User with UserName %s is trying to log in", user.Username))
+
+	// Veryfing income credentials
+	if err := r.v.Struct(user); err != nil {
+		logger.Logger.Error("Body validation error: " + err.Error())
+		return fiber.NewError(fiber.StatusBadRequest, "Invalid data")
+	}
+	logger.Logger.Info("User credentials verified successfully")
+
+	outUser, err := r.u.AdminSignUp(user)
+	if err != nil {
+		c.ClearCookie()
+		return err
+	}
+	return c.JSON(outUser)
+
+}
+
+// @Summary      Change user password
+// @Description  Changes password for authenticated user. Requires valid access token in cookies.
+// @Tags         Change Password
+// @Accept       json
+// @Produce      json
+// @Param        request body entity.Password true "New password data"
+// @Success      200 {object} auth.UserInDTO "Password successfully changed"
+// @Failure      400 {object} entity.Error "Invalid input data"
+// @Failure      401 {object} entity.Error "Unauthorized - Invalid or expired token"
+// @Failure      403 {object} entity.Error "Forbidden - Password doesn't meet requirements"
+// @Failure      500 {object} entity.Error "Internal server error"
+// @Security     ApiKeyAuth
+// @Router       /auth/change-password [post]
+func (r *authRoutes) changePassword(c *fiber.Ctx) error {
+	var newPassword entity.Password
+	c.BodyParser(&newPassword)
+
+	// Veryfing income credentials
+	if err := r.v.Struct(newPassword); err != nil {
+		logger.Logger.Error("Body validation error: " + err.Error())
+		return fiber.NewError(fiber.StatusBadRequest, "Invalid data")
+	}
+
+	var accessToken string = c.Cookies(string(tokens.ACCESS_TOKEN))
+
+	outUser, err := r.u.ChangePassword(newPassword, accessToken)
+	if err != nil {
+		c.ClearCookie()
+		return err
+	}
+	return c.JSON(outUser)
+
 }

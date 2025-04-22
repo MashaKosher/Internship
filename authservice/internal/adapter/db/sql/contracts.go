@@ -3,7 +3,6 @@ package sql
 import "authservice/internal/entity"
 
 type (
-	// TranslationRepo -.
 	AuthRepo interface {
 		CreateUser(user *entity.User) error
 		FindUserByName(username string) (entity.User, error)

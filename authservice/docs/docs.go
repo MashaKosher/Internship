@@ -17,7 +17,12 @@ const docTemplate = `{
     "paths": {
         "/auth/change-password": {
             "post": {
-                "description": "Updates authenticated user's password after validation",
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Changes password for authenticated user. Requires valid access token in cookies.",
                 "consumes": [
                     "application/json"
                 ],
@@ -30,7 +35,7 @@ const docTemplate = `{
                 "summary": "Change user password",
                 "parameters": [
                     {
-                        "description": "New password details",
+                        "description": "New password data",
                         "name": "request",
                         "in": "body",
                         "required": true,
@@ -41,29 +46,109 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Password changed successfully",
+                        "description": "Password successfully changed",
                         "schema": {
-                            "$ref": "#/definitions/entity.Response"
+                            "$ref": "#/definitions/auth.UserInDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input data",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or expired token",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - Password doesn't meet requirements",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
                         }
                     }
                 }
             }
         },
-        "/auth/check-token": {
+        "/auth/check/access": {
             "get": {
-                "description": "Verifying access, extract sub and returns Token status. Clears the Cookies, if there any error",
+                "description": "Verifies JWT refresh token from cookies and returns user data if valid. Clears cookies on any error.",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Token"
+                    "Check Token"
                 ],
-                "summary": "Verifying access Token",
+                "summary": "Verify refresh token",
                 "responses": {
                     "200": {
-                        "description": "Access Token is Valid",
+                        "description": "Refresh token is valid",
                         "schema": {
-                            "$ref": "#/definitions/entity.UserResponse"
+                            "$ref": "#/definitions/auth.UserInDTO"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or expired token",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - Token validation failed",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/check/refresh": {
+            "get": {
+                "description": "Verifies JWT refresh token from cookies and returns user data if valid. Clears cookies on any error.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Check Token"
+                ],
+                "summary": "Verify refresh token",
+                "responses": {
+                    "200": {
+                        "description": "Refresh token is valid",
+                        "schema": {
+                            "$ref": "#/definitions/auth.UserInDTO"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or expired token",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - Token validation failed",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
                         }
                     }
                 }
@@ -79,7 +164,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Auth"
+                    "Login"
                 ],
                 "summary": "User login",
                 "parameters": [
@@ -127,29 +212,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/auth/refresh": {
-            "get": {
-                "description": "Verifying access, extract sub and returns Token status. Clears the Cookies, if there any error",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Token"
-                ],
-                "summary": "Verifying refresh Token and returning Access",
-                "responses": {
-                    "200": {
-                        "description": "Refresh Token is Valid",
-                        "schema": {
-                            "$ref": "#/definitions/entity.UserResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/auth/sign-up/admin": {
             "post": {
-                "description": "Returns a message indicating the sign-up endpoint",
+                "description": "Creates a new user account with Admin privileges (requires special permissions)",
                 "consumes": [
                     "application/json"
                 ],
@@ -157,13 +222,13 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "SignUp"
+                    "Sign Up"
                 ],
-                "summary": "Sign up user",
+                "summary": "Register new admin",
                 "parameters": [
                     {
-                        "description": "Sign up request body",
-                        "name": "entity.User",
+                        "description": "Admin registration data",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -172,10 +237,40 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "User successfully registered",
+                    "201": {
+                        "description": "Admin successfully registered",
                         "schema": {
-                            "$ref": "#/definitions/entity.UserResponse"
+                            "$ref": "#/definitions/auth.UserInDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input data",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Only existing admins can create new admins",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - Insufficient permissions",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict - Username already exists",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
                         }
                     }
                 }
@@ -183,7 +278,7 @@ const docTemplate = `{
         },
         "/auth/sign-up/user": {
             "post": {
-                "description": "Returns a message indicating the sign-up endpoint",
+                "description": "Creates a new user account with default User role",
                 "consumes": [
                     "application/json"
                 ],
@@ -191,13 +286,13 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "SignUp"
+                    "Sign Up"
                 ],
-                "summary": "Sign up user",
+                "summary": "Register new user",
                 "parameters": [
                     {
-                        "description": "Sign up request body",
-                        "name": "entity.User",
+                        "description": "User registration data",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -206,10 +301,28 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "User successfully registered",
+                    "201": {
+                        "description": "Successfully registered",
                         "schema": {
-                            "$ref": "#/definitions/entity.UserResponse"
+                            "$ref": "#/definitions/auth.UserInDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input data",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict - Username already exists",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
                         }
                     }
                 }
@@ -264,25 +377,6 @@ const docTemplate = `{
                 }
             }
         },
-        "entity.Response": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
-        "entity.Role": {
-            "type": "string",
-            "enum": [
-                "user",
-                "admin"
-            ],
-            "x-enum-varnames": [
-                "UserRole",
-                "AdminRole"
-            ]
-        },
         "entity.User": {
             "type": "object",
             "required": [
@@ -297,29 +391,6 @@ const docTemplate = `{
                 "username": {
                     "type": "string",
                     "minLength": 1
-                }
-            }
-        },
-        "entity.UserResponse": {
-            "type": "object",
-            "properties": {
-                "access-token": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "refresh-token": {
-                    "type": "string"
-                },
-                "role": {
-                    "$ref": "#/definitions/entity.Role"
-                },
-                "token-type": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
                 }
             }
         }

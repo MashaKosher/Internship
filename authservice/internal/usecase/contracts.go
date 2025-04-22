@@ -1,16 +1,17 @@
 package usecase
 
-import "authservice/internal/usecase/auth"
+import (
+	"authservice/internal/entity"
+	"authservice/internal/usecase/auth"
+)
 
 type (
-	// Translation -.
 	Auth interface {
 		Login(user auth.UserInDTO) (auth.LoginOutDTO, error)
-		// CheckToken(c *fiber.Ctx) error
-		// Refresh(c *fiber.Ctx) error
-		// UserSignUp(c *fiber.Ctx) error
-		// AdminSignUp(c *fiber.Ctx) error
-		// ChangePassword(c *fiber.Ctx) error
-
+		CheckAccessToken(accessToken string) (auth.LoginOutDTO, error)
+		CheckRefreshToken(refreshToken string) (auth.LoginOutDTO, error)
+		UserSignUp(user entity.User) (auth.LoginOutDTO, error)
+		AdminSignUp(user entity.User) (auth.LoginOutDTO, error)
+		ChangePassword(newPassword entity.Password, accessToken string) (auth.LoginOutDTO, error)
 	}
 )

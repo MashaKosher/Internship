@@ -1,19 +1,6 @@
-{"level":"info","ts":1745340087.1213398,"caller":"keys/keys.go:28","msg":"publicPath: /home/mashakosher/proga/InternShip/authservice/internal/config/keys/jwt-public.pem"}
-{"level":"info","ts":1745340087.1214225,"caller":"keys/keys.go:29","msg":"privatePath: /home/mashakosher/proga/InternShip/authservice/internal/config/keys/jwt-private.pem"}
-{"level":"info","ts":1745340087.1216552,"caller":"keys/keys.go:74","msg":"PUBLIC KEY readed succesfully"}
-{"level":"info","ts":1745340087.1219375,"caller":"keys/keys.go:74","msg":"PRIVATE KEY readed succesfully"}
-{"level":"info","ts":1745340087.1374922,"caller":"sql/connect.go:26","msg":"Successful connection to DB"}
-{"level":"info","ts":1745340087.237143,"caller":"consumers/auth_consumer.go:25","msg":"Kafka Answer Auth Tokens Consumer connected successfully"}
-{"level":"info","ts":1745340097.0740566,"caller":"v1/auth.go:57","msg":"User with UserName string is trying to log in"}
-{"level":"info","ts":1745340097.0742428,"caller":"v1/auth.go:64","msg":"User credentials verified successfully"}
-{"level":"info","ts":1745340097.076354,"caller":"auth/auth.go:31","msg":"User found, his ID: 1"}
-{"level":"info","ts":1745340097.1768465,"caller":"auth/auth.go:38","msg":"User with ID 1 has correct password"}
-{"level":"info","ts":1745340097.1769195,"caller":"tokens/create_token.go:17","msg":"Creating access token  for User with ID 1"}
-{"level":"info","ts":1745340097.1769502,"caller":"tokens/create_token.go:20","msg":"Signing Method: RS256with Private key "}
-{"level":"info","ts":1745340097.1792943,"caller":"tokens/create_token.go:17","msg":"Creating refresh token  for User with ID 1"}
-{"level":"info","ts":1745340097.1793227,"caller":"tokens/create_token.go:20","msg":"Signing Method: RS256with Private key "}
-{"level":"info","ts":1745340097.1817136,"caller":"v1/auth.go:75","msg":"Access JWT created successfully"}
-{"level":"info","ts":1745340097.1817608,"caller":"v1/auth.go:81","msg":"Refresh JWT created successfully"}
-{"level":"info","ts":1745340103.8478522,"caller":"v1/auth.go:57","msg":"User with UserName string4 is trying to log in"}
-{"level":"info","ts":1745340103.8479147,"caller":"v1/auth.go:64","msg":"User credentials verified successfully"}
-{"level":"error","ts":1745340103.9033072,"caller":"auth/auth.go:28","msg":"No user with such Username: string4","stacktrace":"authservice/internal/usecase/auth.(*UseCase).Login\n\t/home/mashakosher/proga/InternShip/authservice/internal/usecase/auth/auth.go:28\nauthservice/internal/controller/http/v1.(*authRoutes).login\n\t/home/mashakosher/proga/InternShip/authservice/internal/controller/http/v1/auth.go:66\ngithub.com/gofiber/fiber/v2.(*App).next\n\t/home/mashakosher/goproject/pkg/mod/github.com/gofiber/fiber/v2@v2.52.6/router.go:145\ngithub.com/gofiber/fiber/v2.(*App).handler\n\t/home/mashakosher/goproject/pkg/mod/github.com/gofiber/fiber/v2@v2.52.6/router.go:172\ngithub.com/valyala/fasthttp.(*Server).serveConn\n\t/home/mashakosher/goproject/pkg/mod/github.com/valyala/fasthttp@v1.51.0/server.go:2359\ngithub.com/valyala/fasthttp.(*workerPool).workerFunc\n\t/home/mashakosher/goproject/pkg/mod/github.com/valyala/fasthttp@v1.51.0/workerpool.go:224\ngithub.com/valyala/fasthttp.(*workerPool).getCh.func1\n\t/home/mashakosher/goproject/pkg/mod/github.com/valyala/fasthttp@v1.51.0/workerpool.go:196"}
+{"level":"info","ts":1745346650.7503834,"caller":"keys/keys.go:28","msg":"publicPath: /home/mashakosher/proga/InternShip/authservice/internal/config/keys/jwt-public.pem"}
+{"level":"info","ts":1745346650.7504537,"caller":"keys/keys.go:29","msg":"privatePath: /home/mashakosher/proga/InternShip/authservice/internal/config/keys/jwt-private.pem"}
+{"level":"info","ts":1745346650.7507262,"caller":"keys/keys.go:74","msg":"PUBLIC KEY readed succesfully"}
+{"level":"info","ts":1745346650.7509456,"caller":"keys/keys.go:74","msg":"PRIVATE KEY readed succesfully"}
+{"level":"info","ts":1745346650.7695298,"caller":"sql/connect.go:26","msg":"Successful connection to DB"}
+{"level":"info","ts":1745346650.8375633,"caller":"consumers/auth_consumer.go:25","msg":"Kafka Answer Auth Tokens Consumer connected successfully"}
