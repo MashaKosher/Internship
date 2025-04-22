@@ -3,9 +3,9 @@ package app
 import (
 	"authservice/internal/adapter/kafka/consumers"
 	"authservice/internal/config"
-	"authservice/internal/handler"
-	"authservice/internal/keys"
+	v1 "authservice/internal/controller/http"
 	db "authservice/pkg/client/sql"
+	"authservice/pkg/keys"
 	"authservice/pkg/logger"
 
 	"github.com/gofiber/fiber/v2"
@@ -28,7 +28,8 @@ func Run() {
 
 	go consumers.ConsumerAnswerTokens()
 
-	handler.Handlers(app)
+	// handler.Handlers(app)
+	v1.NewRouter(app)
 
 	app.Listen(":" + config.AppConfig.Server.Port)
 }

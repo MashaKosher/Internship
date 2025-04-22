@@ -1,12 +1,12 @@
-package handler
+package http
 
 import (
-	routes "authservice/internal/handler/internal"
+	routes "authservice/internal/controller/http/v1"
 
 	"github.com/gofiber/fiber/v2"
 )
 
-func Handlers(app *fiber.App) {
+func NewRouter(app *fiber.App) {
 	// Swagger route initialize
 	routes.SwaggerRoutes(app)
 
