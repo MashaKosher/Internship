@@ -1,9 +1,9 @@
-package db
+package sql
 
 import (
 	"authservice/internal/config"
 	"authservice/internal/entity"
-	"authservice/internal/logger"
+	"authservice/pkg/logger"
 	"fmt"
 
 	"gorm.io/driver/postgres"

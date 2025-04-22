@@ -2,7 +2,7 @@ package pkg
 
 import (
 	"authservice/internal/entity"
-	"authservice/internal/logger"
+	"authservice/pkg/logger"
 	"encoding/json"
 	"fmt"
 

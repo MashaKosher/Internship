@@ -1,8 +1,10 @@
 package brokercheck
 
 import (
-	"authservice/internal/logger"
-	repo "authservice/internal/repository"
+	// repo "authservice/internal/adapter/db/sql"
+
+	repo "authservice/internal/adapter/db/sql"
+	"authservice/pkg/logger"
 	"authservice/pkg/tokens"
 	"fmt"
 

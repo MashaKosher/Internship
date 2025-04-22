@@ -2,7 +2,7 @@ package tokens
 
 import (
 	"authservice/internal/keys"
-	"authservice/internal/logger"
+	"authservice/pkg/logger"
 	"errors"
 	"fmt"
 

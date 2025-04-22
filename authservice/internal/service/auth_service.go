@@ -6,8 +6,11 @@ import (
 	"github.com/gofiber/fiber/v2"
 
 	"authservice/internal/entity"
-	"authservice/internal/logger"
-	repo "authservice/internal/repository"
+	"authservice/pkg/logger"
+
+	// repo "authservice/internal/repository"
+
+	repo "authservice/internal/adapter/db/sql"
 
 	"authservice/pkg/convert"
 	"authservice/pkg/passwords"

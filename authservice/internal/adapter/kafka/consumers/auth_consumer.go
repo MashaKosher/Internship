@@ -3,9 +3,9 @@ package consumers
 import (
 	"authservice/internal/config"
 	"authservice/internal/entity"
-	"authservice/internal/logger"
 	"authservice/pkg"
 	"authservice/pkg/brokercheck"
+	"authservice/pkg/logger"
 	"fmt"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"

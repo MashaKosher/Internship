@@ -3,10 +3,10 @@ package app
 import (
 	"authservice/internal/adapter/kafka/consumers"
 	"authservice/internal/config"
-	"authservice/internal/db"
 	"authservice/internal/handler"
 	"authservice/internal/keys"
-	"authservice/internal/logger"
+	db "authservice/pkg/client/sql"
+	"authservice/pkg/logger"
 
 	"github.com/gofiber/fiber/v2"
 )

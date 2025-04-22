@@ -2,7 +2,7 @@ package keys
 
 import (
 	"authservice/internal/config"
-	"authservice/internal/logger"
+	"authservice/pkg/logger"
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"

@@ -1,9 +1,9 @@
-package repository
+package sql
 
 import (
 	"authservice/internal/entity"
 
-	"authservice/internal/db"
+	db "authservice/pkg/client/sql"
 )
 
 func CreateUser(user *entity.User) error {
