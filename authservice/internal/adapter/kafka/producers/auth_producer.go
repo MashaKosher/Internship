@@ -25,9 +25,7 @@ func AnswerToken(answer entity.AuthAnswer, partition int32) {
 
 	err = p.Produce(&message, deliveryChan)
 	if err != nil {
-		logger.Logger.Error("Failed to produce message: " + err.Error())
-		panic(err)
-
+		logger.Logger.Fatal("Failed to produce message: " + err.Error())
 	}
 
 	go func() {

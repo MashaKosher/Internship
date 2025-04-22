@@ -7,6 +7,11 @@ import (
 	db "authservice/pkg/client/sql"
 	"authservice/pkg/keys"
 	"authservice/pkg/logger"
+	"context"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	authRepo "authservice/internal/adapter/db/sql/auth"
 	"authservice/internal/usecase/auth"
@@ -27,6 +32,8 @@ func Run() {
 		AppName: "Auth Service",
 	})
 
+	// httpServer := httpserver.New(httpserver.Port(config.AppConfig.Server.Host))
+
 	// Получаем сущность DB
 	db := db.ConncetDB()
 
@@ -37,8 +44,49 @@ func Run() {
 
 	go consumers.ConsumerAnswerTokens()
 
-	// handler.Handlers(app)
 	v1.NewRouter(app, authUseCase)
 
-	app.Listen(":" + config.AppConfig.Server.Port)
+	// // Waiting signal
+	// interrupt := make(chan os.Signal, 1)
+	// signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
+
+	// select {
+	// case s := <-interrupt:
+	// 	logger.Logger.Info("app - Run - signal: " + s.String())
+	// case err := <-httpServer.Notify():
+	// 	logger.Logger.Error("app - Run - httpServer.Notify: " + err.Error())
+
+	// }
+
+	// // Shutdown
+	// err := httpServer.Shutdown()
+	// if err != nil {
+	// 	logger.Logger.Error("app - Run - httpServer.Shutdown: " + err.Error())
+	// }
+
+	// app.Listen(":" + config.AppConfig.Server.Port)
+
+	go func() {
+		if err := app.Listen(":" + config.AppConfig.Server.Port); err != nil {
+			logger.Logger.Error("Server error:" + err.Error())
+		}
+	}()
+
+	// Канал для получения сигналов ОС
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM) // Перехватываем SIGINT и SIGTERM
+	<-quit                                               // Ждем сигнал завершения
+
+	logger.Logger.Info("Shutting down server...")
+
+	// Создаем контекст с таймаутом для graceful shutdown
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	// Останавливаем сервер
+	if err := app.ShutdownWithContext(ctx); err != nil {
+		logger.Logger.Fatal("Server forced to shutdown: " + err.Error())
+	}
+
+	logger.Logger.Info("Server gracefully stopped")
 }
