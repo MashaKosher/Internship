@@ -5,16 +5,15 @@ import (
 	"adminservice/internal/adapter/kafka/producers"
 	"adminservice/internal/entity"
 	"context"
-	"fmt"
 	"log"
 	"net/http"
-	"sync"
 )
 
 func CheckToken(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Println("Middlewware for token check")
 
+		// Extracting Access Token
 		accessToken, err := r.Cookie("access")
 		if err != nil || (len(accessToken.String()) == 0) {
 			http.Error(w, "No token", http.StatusBadRequest)
@@ -23,31 +22,26 @@ func CheckToken(next http.Handler) http.Handler {
 
 		log.Println(accessToken.Value)
 
+		// Extracting Refresh Token
 		refreshToken, _ := r.Cookie("refresh")
 
+		// Executing Auth Response to AuthService
+		producers.CheckToken(accessToken.Value, refreshToken.Value)
+		log.Println("Auth Request sent")
+
+		// Recieving Auth Response from AuthService
 		var val entity.AuthAnswer
-		var wg sync.WaitGroup
-		wg.Add(1)
-
-		go func() {
-			defer wg.Done()
-			producers.CheckToken(accessToken.Value, refreshToken.Value)
-			fmt.Println("Request sent")
-		}()
-
-		wg.Wait()
-
 		val, _ = consumers.AnswerTokens()
-		fmt.Println("Answer received")
+		log.Println("Auth answer received")
 		log.Println(val)
 
-		// If token is not valid fiels Err will be not empty
+		// If Refresh token is not valid field Err will be not empty
 		if len(val.Err) != 0 {
 			http.Error(w, "Access Token expired", http.StatusBadRequest)
 			return
 		}
 
-		// If refresh token is valid, we recieve new access
+		// If refresh token is valid, we recieve new access and set it in Cookie
 		if len(val.NewAccessToken) != 0 {
 			log.Println("New access Token")
 			http.SetCookie(w, &http.Cookie{

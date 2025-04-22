@@ -1,17 +1,18 @@
-{"level":"info","ts":1745079996.1836507,"caller":"consumer/asynq_consumer.go:39","msg":"Asynq consumer connected successfully"}
-{"level":"info","ts":1745079996.1836238,"caller":"elastic/elastic_connect.go:22","msg":"Elastic connected successfully"}
-{"level":"info","ts":1745079996.1885707,"caller":"consumers/season_consumer.go:33","msg":"RecieveSeasonInfo is working"}
-{"level":"info","ts":1745079996.1894085,"caller":"consumers/daily_task_consumer.go:31","msg":"RecieveSeasonInfo is working"}
-{"level":"info","ts":1745079996.1904302,"caller":"elastic/elastic_connect.go:37","msg":"Index User Index exitss"}
-{"level":"info","ts":1745079996.1925666,"caller":"elastic/elastic_connect.go:48","msg":"Index Season Index exitss"}
-{"level":"info","ts":1745079998.6212583,"caller":"middleware/auth.go:21","msg":"Middleware for Token check"}
-{"level":"info","ts":1745079998.6213596,"caller":"middleware/auth.go:29","msg":"Access Token:eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDUwODA4MTgsImlhdCI6MTc0NTA3OTkxOCwic3ViIjoxLCJ0eXBlIjoiYWNjZXNzIiwidXNlcm5hbWUiOiJzdHJpbmcifQ.M28bLXSEjJBsqW0zHiUSv1vPKK54sPDcgSm8Dv_zLVBx13KAPIV7HwC6l_VZ_pFL3S9tXD3UlIUPW0Jnw0djaet0fG_48Cvs90qPKc_oGM7VewrwNILjBZHcEY0mMIuwBtJnW2nL-u2aD_uqSfug-adVjn2FUCf23Fyy7RHjvxCVJE-2I7i7tbGeYUVaoMwVuzM_cBr-JbXxezOKMWhWj5yxJeHLnYBd3VCUX0CNsRgqwYiy6E4i0MUJ4iicOD0h_SzqCcWSeXXgwv0yQ_HmZxs11tqJT_kg0NRwd3G1CKHZvHZfHUmz7RSACyaB-Ywjay0KcKV6QWyP-KMHmhvJvA"}
-{"level":"info","ts":1745079998.6492329,"caller":"producers/producer.go:22","msg":"Producer created successfully"}
-{"level":"info","ts":1745079998.649631,"caller":"producers/producer.go:40","msg":"Message sent, waiting for delivery confirmation..."}
-{"level":"info","ts":1745079998.6573794,"caller":"producers/producer.go:50","msg":"Delivered message to jwtCheckRequest [1] at offset 223"}
-{"level":"info","ts":1745079998.759029,"caller":"consumers/consumer.go:26","msg":"Kafka connected successdully"}
-{"level":"info","ts":1745079999.264242,"caller":"consumers/consumer.go:36","msg":"Received message: {\"role\":\"admin\",\"id\":1,\"login\":\"string\",\"err\":\"\",\"new-access-token\":\"\"} from topic:jwtCheckAnswer[1]@222 with offset 222"}
-{"level":"info","ts":1745079999.264676,"caller":"pkg/kafka_utils.go:26","msg":"Request recieved: {admin 1 string  }\n"}
-{"level":"info","ts":1745079999.2765057,"caller":"middleware/auth.go:56","msg":"Player already in DB: {1 string {<nil> 0 false finite false} {<nil> 0 false finite false}}\n"}
-{"level":"info","ts":1745080021.8489215,"caller":"tasks/season_task.go:64","msg":"Serialize successfully"}
-{"level":"info","ts":1745080022.9139426,"caller":"elastic/elastic_seasons_repo.go:87","msg":"Indxed document [200 OK] {\"_index\":\"seasons\",\"_id\":\"37\",\"_version\":3,\"result\":\"updated\",\"forced_refresh\":true,\"_shards\":{\"total\":2,\"successful\":1,\"failed\":0},\"_seq_no\":16,\"_primary_term\":1} to index users"}
+{"level":"info","ts":1745232424.8335583,"caller":"elastic/elastic_connect.go:22","msg":"Elastic connected successfully"}
+{"level":"info","ts":1745232424.8342578,"caller":"consumer/asynq_consumer.go:39","msg":"Asynq consumer connected successfully"}
+{"level":"info","ts":1745232424.8402853,"caller":"consumers/season_consumer.go:33","msg":"RecieveSeasonInfo is working"}
+{"level":"info","ts":1745232424.8405151,"caller":"consumers/daily_task_consumer.go:31","msg":"RecieveSeasonInfo is working"}
+{"level":"info","ts":1745232424.9805624,"caller":"elastic/elastic_connect.go:37","msg":"Index User Index exitss"}
+{"level":"info","ts":1745232424.9823406,"caller":"elastic/elastic_connect.go:48","msg":"Index Season Index exitss"}
+{"level":"info","ts":1745232674.7017927,"caller":"consumers/season_consumer.go:46","msg":"Received message: {\"id\":38,\"start-date\":\"2025-04-21 13:53:00 +0000 UTC\",\"end-date\":\"2025-04-21 13:54:00 +0000 UTC\",\"fund\":10000} from topic:seasons[0]@57 with offset 57"}
+{"level":"info","ts":1745232674.7021594,"caller":"pkg/kafka_utils.go:37","msg":"Request recieved: {38 2025-04-21 13:53:00 +0000 UTC 2025-04-21 13:54:00 +0000 UTC 10000 }\n"}
+{"level":"info","ts":1745232674.7023184,"caller":"consumers/season_consumer.go:53","msg":"{38 2025-04-21 13:53:00 +0000 UTC 2025-04-21 13:54:00 +0000 UTC 10000 }"}
+{"level":"info","ts":1745232674.7108266,"caller":"consumers/season_consumer.go:60","msg":"Start date: 2025-04-21 13:53:00 +0000 UTC End date: 2025-04-21 13:54:00 +0000 UTC"}
+{"level":"info","ts":1745232674.711289,"caller":"producer/asynq_producer.go:21","msg":"Asynq Client  connected successfully"}
+{"level":"info","ts":1745232674.7243547,"caller":"producer/asynq_producer.go:42","msg":"Task will be start at: 2025-04-21 13:53:00 +0300 +03"}
+{"level":"info","ts":1745232674.726411,"caller":"producer/asynq_producer.go:65","msg":"Task will be end at: 2025-04-21 13:54:00 +0300 +03"}
+{"level":"info","ts":1745232674.9874156,"caller":"elastic/elastic_seasons_repo.go:49","msg":"Indxed document [201 Created] {\"_index\":\"seasons\",\"_id\":\"38\",\"_version\":1,\"result\":\"created\",\"forced_refresh\":true,\"_shards\":{\"total\":2,\"successful\":1,\"failed\":0},\"_seq_no\":17,\"_primary_term\":5} to index users"}
+{"level":"info","ts":1745232784.9753206,"caller":"tasks/season_task.go:64","msg":"Serialize successfully"}
+{"level":"info","ts":1745232785.040587,"caller":"elastic/elastic_seasons_repo.go:87","msg":"Indxed document [200 OK] {\"_index\":\"seasons\",\"_id\":\"38\",\"_version\":2,\"result\":\"updated\",\"forced_refresh\":true,\"_shards\":{\"total\":2,\"successful\":1,\"failed\":0},\"_seq_no\":18,\"_primary_term\":5} to index users"}
+{"level":"info","ts":1745232845.5467532,"caller":"tasks/season_task.go:64","msg":"Serialize successfully"}
+{"level":"info","ts":1745232846.6416876,"caller":"elastic/elastic_seasons_repo.go:87","msg":"Indxed document [200 OK] {\"_index\":\"seasons\",\"_id\":\"38\",\"_version\":3,\"result\":\"updated\",\"forced_refresh\":true,\"_shards\":{\"total\":2,\"successful\":1,\"failed\":0},\"_seq_no\":19,\"_primary_term\":5} to index users"}

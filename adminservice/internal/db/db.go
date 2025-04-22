@@ -24,7 +24,7 @@ func ConncetDB() {
 }
 
 func AutoMigrations(conncetion *gorm.DB) {
-	conncetion.Debug().AutoMigrate(
+	conncetion.AutoMigrate(
 		&entity.GameSettings{},
 		&entity.Season{},
 		&entity.DBDailyTasks{},

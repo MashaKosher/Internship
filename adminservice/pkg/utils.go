@@ -7,14 +7,28 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"net/http"
 	"time"
 )
 
+func CheckToken(r *http.Request) error {
+	answer, _ := r.Context().Value("val").(entity.AuthAnswer)
+
+	if err := ValidateAuthResponse(answer); err != nil {
+		// http.Error(w, err.Error(), http.StatusBadRequest)
+		return err
+	}
+
+	return nil
+}
+
 func ValidateAuthResponse(answer entity.AuthAnswer) error {
+	// if Token is not valid field Err will not be empty
 	if len(answer.Err) != 0 {
 		return errors.New(answer.Err)
 	}
 
+	// if user role is not admin
 	if answer.Role != "admin" {
 		return errors.New("user is not admin")
 	}
@@ -23,13 +37,6 @@ func ValidateAuthResponse(answer entity.AuthAnswer) error {
 }
 
 func ParseResponse(body io.ReadCloser, season *entity.SeasonJson) error {
-	if err := json.NewDecoder(body).Decode(season); err != nil {
-		return err
-	}
-	return nil
-}
-
-func ParseDetailResponse(body io.ReadCloser, season *entity.DetailSeasonJson) error {
 	if err := json.NewDecoder(body).Decode(season); err != nil {
 		return err
 	}
@@ -78,67 +85,30 @@ func parseTime(timeStr string) (time.Time, error) {
 	return time.Parse(layout, timeStr)
 }
 
-func StoreDeatailSeasonInDBEntity(seasonJSON *entity.DetailSeasonJson, seasonDB *entity.Season) error {
-
-	startDate, err := parseDate(seasonJSON.StartDate)
-	if err != nil {
-		return err
-	}
-
-	startTime, err := parseTime(seasonJSON.StartTime)
-	if err != nil {
-		return err
-	}
-
-	start := time.Date(
-		startDate.Year(),
-		startDate.Month(),
-		startDate.Day(),
-		startTime.Hour(),
-		startTime.Minute(),
-		startTime.Second(),
+func joinTime(joinDate time.Time, joinTime time.Time) time.Time {
+	return time.Date(
+		joinDate.Year(),
+		joinDate.Month(),
+		joinDate.Day(),
+		joinTime.Hour(),
+		joinTime.Minute(),
+		joinTime.Second(),
 		0,
 		time.UTC,
 	)
+}
 
-	// log.Println("Start date before now " + fmt.Sprint(startDate.Before(time.Now())))
-	// log.Println("Start date: " + fmt.Sprint(startDate))
-	// log.Println("Now: " + fmt.Sprint(time.Now()))
-
-	if start.Before(time.Now()) {
-		return errors.New("sesons cannot starting before Now")
-	}
-
-	endDate, err := parseDate(seasonJSON.StartDate)
+func getTimeFromString(stringDate, stringTime string) (time.Time, error) {
+	timeFormatDate, err := parseDate(stringDate)
 	if err != nil {
-		return err
+		return time.Time{}, err
 	}
 
-	endTime, err := parseTime(seasonJSON.EndTime)
+	timeFormatTime, err := parseTime(stringTime)
 	if err != nil {
-		return err
+		return time.Time{}, err
 	}
 
-	end := time.Date(
-		endDate.Year(),
-		endDate.Month(),
-		endDate.Day(),
-		endTime.Hour(),
-		endTime.Minute(),
-		endTime.Second(),
-		0,
-		time.UTC,
-	)
-
-	if start.After(end) {
-		return errors.New("end date can't be earlier then start date")
-	}
-
-	// log.Println("Dates: " + fmt.Sprintln(startDate.After(endDate)))
-
-	seasonDB.StartDate = start
-	seasonDB.EndDate = end
-	seasonDB.Fund = seasonJSON.Fund
-
-	return nil
+	mergedTime := joinTime(timeFormatDate, timeFormatTime)
+	return mergedTime, nil
 }

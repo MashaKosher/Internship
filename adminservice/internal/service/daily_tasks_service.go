@@ -6,7 +6,7 @@ import (
 	repo "adminservice/internal/repository"
 	"adminservice/pkg"
 	"encoding/json"
-	"fmt"
+	"log"
 	"net/http"
 	"time"
 )
@@ -20,34 +20,30 @@ import (
 // @Success 201 {object} entity.DailyTasks
 // @Router /daily-tasks [post]
 func CreateDailyTasks(w http.ResponseWriter, r *http.Request) {
-	answer, _ := r.Context().Value("val").(entity.AuthAnswer)
 
-	if err := pkg.ValidateAuthResponse(answer); err != nil {
+	// Checking Auth Responce
+	if err := pkg.CheckToken(r); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
+	// Adding task to DB
 	var DBDailyTasks entity.DBDailyTasks
-
-	if err := json.NewDecoder(r.Body).Decode(&DBDailyTasks); err != nil {
+	if err := pkg.ParseDailyTaskBody(r.Body, &DBDailyTasks); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-
 	DBDailyTasks.TaskDate = time.Now()
-
-	fmt.Println("Текущая дата (без времени):", time.Now().Truncate(24*time.Hour))
-
-	var DailyTasks entity.DailyTasks
-
-	DailyTasks.GamesAmount = DBDailyTasks.GamesAmount
-	DailyTasks.ReferalsAmount = DBDailyTasks.ReferalsAmount
-	DailyTasks.TaskDate = DBDailyTasks.TaskDate.Format("2006-01-02")
 
 	if err := repo.AddDailyTask(DBDailyTasks); err != nil {
 		http.Error(w, "Daily Task for today already exists", http.StatusBadRequest)
 		return
 	}
+
+	log.Println("Таска добавлена в БД успешно:")
+
+	// Sending task to Core Service
+	DailyTasks := pkg.ParseDailyTaskToKafkaJSON(DBDailyTasks)
 
 	go producers.SendDailyTask(DailyTasks)
 
@@ -62,9 +58,8 @@ func CreateDailyTasks(w http.ResponseWriter, r *http.Request) {
 // @Produce  json
 // @Router /daily-tasks [delete]
 func DeleteTodaysTask(w http.ResponseWriter, r *http.Request) {
-	answer, _ := r.Context().Value("val").(entity.AuthAnswer)
-
-	if err := pkg.ValidateAuthResponse(answer); err != nil {
+	// Checking Auth Responce
+	if err := pkg.CheckToken(r); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}

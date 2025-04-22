@@ -1,6 +1,9 @@
 package service
 
-import "net/http"
+import (
+	"adminservice/pkg"
+	"net/http"
+)
 
 // @Summary		Get season statistic
 // @Description	Get season statistic
@@ -10,7 +13,12 @@ import "net/http"
 // @Success		200
 // @Router			/statistic/players [get]
 func Players(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Players statistic"))
+	// Checking Auth Responce
+	if err := pkg.CheckToken(r); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	w.Write([]byte("There must be Players statistic"))
 }
 
 // @Summary		Get seasons statistic
@@ -21,5 +29,10 @@ func Players(w http.ResponseWriter, r *http.Request) {
 // @Success		200
 // @Router			/statistic/seasons [get]
 func Seasons(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Season statistic"))
+	// Checking Auth Responce
+	if err := pkg.CheckToken(r); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	w.Write([]byte("There must be Season statistic"))
 }

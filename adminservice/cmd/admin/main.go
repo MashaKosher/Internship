@@ -70,7 +70,6 @@ func service() http.Handler {
 	r := chi.NewRouter()
 
 	db.ConncetDB()
-	// middleware.Middlewares(r)
 	handler.Handlers(r)
 
 	return r

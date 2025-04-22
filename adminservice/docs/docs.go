@@ -97,40 +97,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/plan": {
-            "post": {
-                "description": "Обрабатывает запрос на планирование сезона и проверяет права пользователя",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Season Planing"
-                ],
-                "summary": "Планирование сезона",
-                "parameters": [
-                    {
-                        "description": "Информация о сезоне",
-                        "name": "season",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/entity.SeasonJson"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "User is admin",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/settings": {
             "post": {
                 "description": "Update game configuration settings for authenticated user",
@@ -248,17 +214,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "start-time": {
-                    "type": "string"
-                }
-            }
-        },
-        "entity.SeasonJson": {
-            "type": "object",
-            "properties": {
-                "end-date": {
-                    "type": "string"
-                },
-                "start-date": {
                     "type": "string"
                 }
             }

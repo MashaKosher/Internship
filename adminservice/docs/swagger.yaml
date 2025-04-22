@@ -29,13 +29,6 @@ definitions:
       start-time:
         type: string
     type: object
-  entity.SeasonJson:
-    properties:
-      end-date:
-        type: string
-      start-date:
-        type: string
-    type: object
   entity.SettingsJson:
     properties:
       lose-amount:
@@ -107,28 +100,6 @@ paths:
           schema:
             type: string
       summary: Детальное палнирование сезона
-      tags:
-      - Season Planing
-  /plan:
-    post:
-      consumes:
-      - application/json
-      description: Обрабатывает запрос на планирование сезона и проверяет права пользователя
-      parameters:
-      - description: Информация о сезоне
-        in: body
-        name: season
-        required: true
-        schema:
-          $ref: '#/definitions/entity.SeasonJson'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: User is admin
-          schema:
-            type: string
-      summary: Планирование сезона
       tags:
       - Season Planing
   /settings:

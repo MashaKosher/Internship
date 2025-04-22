@@ -23,14 +23,12 @@ func serializeAuthAnswer(answer entity.AuthAnswer) []byte {
 	value, err := json.Marshal(answer)
 	if err != nil {
 		logger.Logger.Fatal("Error marshaling answer: " + err.Error())
-		panic(err)
 	}
 
 	return value
 }
 
 func DeserializeAuthAnswer(value []byte, request entity.AuthRequest) (entity.AuthRequest, error) {
-
 	err := json.Unmarshal(value, &request)
 	logger.Logger.Info("Request recieved: " + fmt.Sprintln(request))
 	if err != nil {

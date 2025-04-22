@@ -1,8 +1,6 @@
 package config
 
 import (
-	"log"
-
 	"github.com/spf13/viper"
 )
 
@@ -47,26 +45,5 @@ func Load() {
 	}
 
 	viper.Unmarshal(&AppConfig)
-	log.Println(AppConfig.DB.Host)
-	log.Println(AppConfig.DB.Host)
-
-	// viper.SetConfigName("config")
-	// viper.SetConfigType("yaml")
-	// viper.AddConfigPath("./internal/config")
-
-	// err := viper.ReadInConfig() // Find and read the config file
-	// if err != nil {             // Handle errors reading the config file
-	// 	panic(fmt.Errorf("fatal error config file: %w", err))
-	// }
-
-	// Cfg.Server.Port = viper.GetString("server.port")
-	// Cfg.Server.Host = viper.GetString("server.host")
-
-	// Cfg.DB.User = viper.GetString("db.user")
-	// Cfg.DB.Password = viper.GetString("db.password")
-	// Cfg.DB.Name = viper.GetString("db.db")
-	// Cfg.DB.Host = viper.GetString("db.host")
-	// Cfg.DB.Port = viper.GetString("db.port")
-	// Cfg.DB.SSLMode = viper.GetString("ssl_mode")
 
 }

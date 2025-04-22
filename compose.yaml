@@ -136,18 +136,18 @@ services:
     stdin_open: true
 
 
-  # elasticsearch:
-  #   image: docker.elastic.co/elasticsearch/elasticsearch:8.16.6
-  #   container_name: elasticsearch
-  #   environment:
-  #     - discovery.type=single-node
-  #     - ES_JAVA_OPTS=-Xms1g -Xmx1g
-  #     - xpack.security.enabled=false # отключаем аутентификацию для разработки
-  #   volumes:
-  #     - es_data:/usr/share/elasticsearch/data
-  #   ports:
-  #     - "9200:9200"
-  #     - "9300:9300"
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.16.6
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - xpack.security.enabled=false # отключаем аутентификацию для разработки
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+      - "9300:9300"
 
 
   redis:
