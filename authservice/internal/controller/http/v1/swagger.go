@@ -5,6 +5,6 @@ import (
 	fiberSwagger "github.com/swaggo/fiber-swagger"
 )
 
-func SwaggerRoutes(app *fiber.App) {
+func InitSwaggerRoutes(app *fiber.App) {
 	app.Get("/swagger/*", fiberSwagger.WrapHandler)
 }

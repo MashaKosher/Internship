@@ -3,7 +3,7 @@ package brokercheck
 import (
 	// repo "authservice/internal/adapter/db/sql"
 
-	repo "authservice/internal/adapter/db/sql"
+	repo "authservice/internal/adapter/db/sql/auth"
 	"authservice/pkg/logger"
 	"authservice/pkg/tokens"
 	"fmt"

@@ -10,7 +10,7 @@ import (
 
 	// repo "authservice/internal/repository"
 
-	repo "authservice/internal/adapter/db/sql"
+	repo "authservice/internal/adapter/db/sql/auth"
 
 	"authservice/pkg/convert"
 	"authservice/pkg/passwords"
@@ -107,14 +107,6 @@ func AdminSignUp(c *fiber.Ctx) error {
 	return SignUp(entity.AdminRole, c)
 }
 
-// @Summary		User login
-// @Description	Returns a message indicating the login endpoint
-// @Tags			Login
-// @Accept			json
-// @Produce		json
-// @Param			entity.User	body		entity.User				true	"Login request body"
-// @Success		200			{object}	entity.UserResponse		"User successfully logged"
-// @Router			/auth/login [post]
 func Login(c *fiber.Ctx) error {
 	var user entity.User
 	c.BodyParser(&user)

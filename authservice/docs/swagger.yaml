@@ -1,5 +1,30 @@
 basePath: /
 definitions:
+  auth.LoginOutDTO:
+    properties:
+      access:
+        type: string
+      id:
+        type: integer
+      refresh:
+        type: string
+      role:
+        type: string
+      username:
+        type: string
+    type: object
+  auth.UserInDTO:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  entity.Error:
+    properties:
+      error:
+        type: string
+    type: object
   entity.Password:
     properties:
       new-password:
@@ -95,24 +120,41 @@ paths:
     post:
       consumes:
       - application/json
-      description: Returns a message indicating the login endpoint
+      description: Authenticates user and returns JWT tokens in cookies and response
+        body
       parameters:
       - description: Login request body
         in: body
-        name: entity.User
+        name: auth.UserInDTO
         required: true
         schema:
-          $ref: '#/definitions/entity.User'
+          $ref: '#/definitions/auth.UserInDTO'
       produces:
       - application/json
       responses:
         "200":
-          description: User successfully logged
+          description: Successfully logged in
+          headers:
+            Set-Cookie:
+              description: refresh_token=JWT_TOKEN; Path=/; HttpOnly
+              type: string
           schema:
-            $ref: '#/definitions/entity.UserResponse'
+            $ref: '#/definitions/auth.LoginOutDTO'
+        "400":
+          description: Invalid input data
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/entity.Error'
       summary: User login
       tags:
-      - Login
+      - Auth
   /auth/refresh:
     get:
       description: Verifying access, extract sub and returns Token status. Clears

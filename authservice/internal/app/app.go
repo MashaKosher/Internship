@@ -8,6 +8,9 @@ import (
 	"authservice/pkg/keys"
 	"authservice/pkg/logger"
 
+	authRepo "authservice/internal/adapter/db/sql/auth"
+	"authservice/internal/usecase/auth"
+
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -24,12 +27,18 @@ func Run() {
 		AppName: "Auth Service",
 	})
 
-	db.ConncetDB()
+	// Получаем сущность DB
+	db := db.ConncetDB()
+
+	// Создаем Use Case
+	authUseCase := auth.New(
+		authRepo.New(db), // создаем конкретный репозиторий и передаем в конретный Use Case
+	)
 
 	go consumers.ConsumerAnswerTokens()
 
 	// handler.Handlers(app)
-	v1.NewRouter(app)
+	v1.NewRouter(app, authUseCase)
 
 	app.Listen(":" + config.AppConfig.Server.Port)
 }

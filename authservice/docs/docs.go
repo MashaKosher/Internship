@@ -71,7 +71,7 @@ const docTemplate = `{
         },
         "/auth/login": {
             "post": {
-                "description": "Returns a message indicating the login endpoint",
+                "description": "Authenticates user and returns JWT tokens in cookies and response body",
                 "consumes": [
                     "application/json"
                 ],
@@ -79,25 +79,49 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Login"
+                    "Auth"
                 ],
                 "summary": "User login",
                 "parameters": [
                     {
                         "description": "Login request body",
-                        "name": "entity.User",
+                        "name": "auth.UserInDTO",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/entity.User"
+                            "$ref": "#/definitions/auth.UserInDTO"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "User successfully logged",
+                        "description": "Successfully logged in",
                         "schema": {
-                            "$ref": "#/definitions/entity.UserResponse"
+                            "$ref": "#/definitions/auth.LoginOutDTO"
+                        },
+                        "headers": {
+                            "Set-Cookie": {
+                                "type": "string",
+                                "description": "refresh_token=JWT_TOKEN; Path=/; HttpOnly"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input data",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
                         }
                     }
                 }
@@ -193,6 +217,45 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "auth.LoginOutDTO": {
+            "type": "object",
+            "properties": {
+                "access": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "refresh": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "auth.UserInDTO": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.Error": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
         "entity.Password": {
             "type": "object",
             "properties": {

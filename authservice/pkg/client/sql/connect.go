@@ -13,7 +13,7 @@ import (
 
 var DB *gorm.DB
 
-func ConncetDB() {
+func ConncetDB() *gorm.DB {
 
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s", config.AppConfig.DB.Host, config.AppConfig.DB.User, config.AppConfig.DB.Password, config.AppConfig.DB.Name, config.AppConfig.DB.Port, config.AppConfig.DB.SSLMode)
 
@@ -26,6 +26,8 @@ func ConncetDB() {
 	logger.Logger.Info("Successful connection to DB")
 	DB = db
 	AutoMigrations(DB)
+
+	return DB
 
 }
 
