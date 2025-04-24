@@ -77,5 +77,6 @@ func BrokerCheck(authRequest entity.AuthRequest, u usecase.Auth) {
 	Answer.ID = int32(user.UserID)
 	Answer.Login = string(user.UserName)
 	Answer.NewAccessToken = user.AccessToken
+
 	go producer.AnswerToken(Answer, authRequest.Partition)
 }
