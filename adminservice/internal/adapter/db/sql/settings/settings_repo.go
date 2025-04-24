@@ -1,4 +1,4 @@
-package repository
+package settings
 
 import (
 	"adminservice/internal/entity"

@@ -1,4 +1,4 @@
-package repository
+package dailytask
 
 import (
 	"adminservice/internal/entity"

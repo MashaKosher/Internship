@@ -3,7 +3,9 @@ package service
 import (
 	"adminservice/internal/adapter/kafka/producers"
 	"adminservice/internal/entity"
-	"adminservice/internal/repository"
+
+	// "adminservice/internal/repository"
+	repo "adminservice/internal/adapter/db/sql/plan"
 	"adminservice/pkg"
 	"encoding/json"
 	"log"
@@ -42,13 +44,13 @@ func PlanSeason(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Finding if seasons are crossing
-	if err := repository.FindSeasonCross(&dbSeason); err != nil {
+	if err := repo.FindSeasonCross(&dbSeason); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	// If season is not crossing with others we add it to DB
-	if err := repository.AddNewSeason(&dbSeason); err != nil {
+	if err := repo.AddNewSeason(&dbSeason); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}

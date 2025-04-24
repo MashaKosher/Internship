@@ -1,8 +1,8 @@
 package service
 
 import (
+	repo "adminservice/internal/adapter/db/sql/settings"
 	"adminservice/internal/entity"
-	repo "adminservice/internal/repository"
 	"adminservice/pkg"
 	"encoding/json"
 	"net/http"

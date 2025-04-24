@@ -3,7 +3,10 @@ package service
 import (
 	"adminservice/internal/adapter/kafka/producers"
 	"adminservice/internal/entity"
-	repo "adminservice/internal/repository"
+
+	// repo "adminservice/internal/adapter/db/"
+
+	repo "adminservice/internal/adapter/db/sql/daily_task"
 	"adminservice/pkg"
 	"encoding/json"
 	"log"
