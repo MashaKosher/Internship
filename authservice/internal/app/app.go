@@ -42,7 +42,7 @@ func Run() {
 		authRepo.New(db), // создаем конкретный репозиторий и передаем в конретный Use Case
 	)
 
-	go consumers.ConsumerAnswerTokens()
+	go consumers.ConsumerAnswerTokens(authUseCase)
 
 	v1.NewRouter(app, authUseCase)
 

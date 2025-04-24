@@ -192,7 +192,6 @@ func (r *authRoutes) adminSignUp(c *fiber.Ctx) error {
 		return err
 	}
 	return c.JSON(outUser)
-
 }
 
 // @Summary      Change user password
