@@ -2,8 +2,6 @@ package main
 
 import (
 	"adminservice/internal/config"
-	"adminservice/internal/db"
-	"adminservice/internal/handler"
 	"context"
 	"log"
 	"net/http"
@@ -12,9 +10,9 @@ import (
 	"syscall"
 	"time"
 
-	_ "adminservice/docs"
+	"adminservice/internal/app"
 
-	"github.com/go-chi/chi/v5"
+	_ "adminservice/docs"
 )
 
 // @title						Admin service
@@ -27,7 +25,7 @@ import (
 func main() {
 	config.Load()
 
-	server := &http.Server{Addr: config.AppConfig.Server.Host + ":" + config.AppConfig.Server.Port, Handler: service()}
+	server := &http.Server{Addr: config.AppConfig.Server.Host + ":" + config.AppConfig.Server.Port, Handler: app.Run()}
 
 	log.Println("Program started")
 	serverCtx, serverStopCtx := context.WithCancel(context.Background())
@@ -64,13 +62,4 @@ func main() {
 
 	// Wait for server context to be stopped
 	<-serverCtx.Done()
-}
-
-func service() http.Handler {
-	r := chi.NewRouter()
-
-	db.ConncetDB()
-	handler.Handlers(r)
-
-	return r
 }
