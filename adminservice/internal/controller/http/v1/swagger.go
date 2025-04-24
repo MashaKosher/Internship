@@ -3,11 +3,21 @@ package v1
 import (
 	"github.com/go-chi/chi/v5"
 
-	controllers "adminservice/internal/service"
+	"net/http"
+
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 func InitSwaggerRoutes(r *chi.Mux) {
 	r.Group(func(r chi.Router) {
-		r.Get("/swagger/*", controllers.Swagger())
+		r.Get("/swagger/*", swagger())
 	})
+}
+
+func swagger() http.HandlerFunc {
+
+	url := httpSwagger.URL("http://localhost:8004/swagger/doc.json")
+
+	return httpSwagger.Handler(url)
+
 }
