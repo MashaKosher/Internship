@@ -1,15 +1,18 @@
 package producers
 
 import (
+	"adminservice/internal/config"
 	"adminservice/internal/entity"
-	"encoding/json"
+	"adminservice/pkg"
 	"log"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
 func CheckToken(accessToken, refreshToken string) {
-	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": "localhost:9092"})
+	p, err := kafka.NewProducer(&kafka.ConfigMap{
+		"bootstrap.servers": config.AppConfig.Kafka.Host + ":" + config.AppConfig.Kafka.Port, // Используйте localhost
+	})
 	if err != nil {
 		log.Fatalf("Failed to create producer: %s", err)
 	}
@@ -17,28 +20,15 @@ func CheckToken(accessToken, refreshToken string) {
 
 	log.Println("Producer created successfully")
 
-	topic := "jwtCheckRequest"
-
 	var request entity.AuthRequest
-
-	request.Partition = 0
+	request.Partition = config.AppConfig.Kafka.Partition
 	request.AccessToken = accessToken
 	request.RefreshToken = refreshToken
-	value, err := json.Marshal(request)
-	if err != nil {
-		log.Fatal("Error marshaling answer: " + err.Error())
-		panic(err)
-	}
+
+	message := pkg.CreateMessage(request, config.AppConfig.Kafka.AuthTopicRecieve, config.AppConfig.Kafka.Partition)
 
 	// Канал для получения событий доставки
 	deliveryChan := make(chan kafka.Event)
-
-	// Создаем сообщение
-	message := kafka.Message{
-		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: 0},
-		Value:          value,
-		Key:            []byte("a"),
-	}
 
 	err = p.Produce(&message, deliveryChan)
 	if err != nil {

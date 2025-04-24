@@ -25,15 +25,14 @@ func SendSeasonInfo(season entity.SeasonOut) {
 		panic(err)
 	}
 
-	// Канал для получения событий доставки
-	deliveryChan := make(chan kafka.Event)
-
 	// Создаем сообщение
 	message := kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: 0},
 		Value:          value,
 		Key:            []byte("a"),
 	}
+	// Канал для получения событий доставки
+	deliveryChan := make(chan kafka.Event)
 
 	err = p.Produce(&message, deliveryChan)
 	if err != nil {
