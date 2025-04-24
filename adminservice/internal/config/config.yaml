@@ -20,6 +20,8 @@ kafka:
   partition: 0
   auth_topic_send: jwtCheckAnswer
   auth_topic_recieve: jwtCheckRequest
+  season_topic_send: seasons
+  dailyTasks_topic_send: dailyTasks
 
   
 

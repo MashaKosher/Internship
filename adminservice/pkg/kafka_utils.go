@@ -9,8 +9,7 @@ import (
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
-// ////////////////////////
-func CreateMessage(entity entity.AuthRequest, topic string, partition int32) kafka.Message {
+func CreateMessage(entity any, topic string, partition int32) kafka.Message {
 
 	value := serializeAuthRequest(entity)
 	return kafka.Message{
@@ -20,7 +19,7 @@ func CreateMessage(entity entity.AuthRequest, topic string, partition int32) kaf
 	}
 }
 
-func serializeAuthRequest(request entity.AuthRequest) []byte {
+func serializeAuthRequest(request any) []byte {
 
 	value, err := json.Marshal(request)
 	if err != nil {

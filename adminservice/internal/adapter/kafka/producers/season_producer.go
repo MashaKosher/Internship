@@ -1,8 +1,9 @@
 package producers
 
 import (
+	"adminservice/internal/config"
 	"adminservice/internal/entity"
-	"encoding/json"
+	"adminservice/pkg"
 	"log"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
@@ -15,23 +16,10 @@ func SendSeasonInfo(season entity.SeasonOut) {
 	}
 	defer p.Close()
 
-	log.Println("Producer created successfully")
+	log.Println("Season Producer created successfully")
 
-	topic := "seasons"
+	message := pkg.CreateMessage(season, config.AppConfig.Kafka.SeasonTopicSend, config.AppConfig.Kafka.Partition)
 
-	value, err := json.Marshal(season)
-	if err != nil {
-		log.Fatal("Error marshaling answer: " + err.Error())
-		panic(err)
-	}
-
-	// Создаем сообщение
-	message := kafka.Message{
-		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: 0},
-		Value:          value,
-		Key:            []byte("a"),
-	}
-	// Канал для получения событий доставки
 	deliveryChan := make(chan kafka.Event)
 
 	err = p.Produce(&message, deliveryChan)
@@ -42,7 +30,6 @@ func SendSeasonInfo(season entity.SeasonOut) {
 
 	log.Println("Message sent, waiting for delivery confirmation...")
 
-	// Ожидаем подтверждения доставки
 	go func() {
 		event := <-deliveryChan
 		switch e := event.(type) {

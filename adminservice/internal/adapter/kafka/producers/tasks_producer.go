@@ -1,8 +1,9 @@
 package producers
 
 import (
+	"adminservice/internal/config"
 	"adminservice/internal/entity"
-	"encoding/json"
+	"adminservice/pkg"
 	"log"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
@@ -17,19 +18,7 @@ func SendDailyTask(task entity.DailyTasks) {
 
 	log.Println("Task Producer created successfully")
 
-	topic := "dailyTasks"
-
-	value, err := json.Marshal(task)
-	if err != nil {
-		log.Fatal("Error marshaling answer: " + err.Error())
-		panic(err)
-	}
-	// Создаем сообщение
-	message := kafka.Message{
-		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: 0},
-		Value:          value,
-		Key:            []byte("a"),
-	}
+	message := pkg.CreateMessage(task, config.AppConfig.Kafka.DailyTaskTopicSend, config.AppConfig.Kafka.Partition)
 
 	// Канал для получения событий доставки
 	deliveryChan := make(chan kafka.Event)

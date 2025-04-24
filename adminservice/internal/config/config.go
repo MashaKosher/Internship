@@ -24,11 +24,13 @@ type config struct {
 	} `mapstructure:"logger"`
 
 	Kafka struct {
-		Host             string `mapstructure:"host"`
-		Port             string `mapstructure:"port"`
-		Partition        int32  `mapstructure:"partition"`
-		AuthTopicSend    string `mapstructure:"auth_topic_send"`
-		AuthTopicRecieve string `mapstructure:"auth_topic_recieve"`
+		Host               string `mapstructure:"host"`
+		Port               string `mapstructure:"port"`
+		Partition          int32  `mapstructure:"partition"`
+		AuthTopicSend      string `mapstructure:"auth_topic_send"`
+		AuthTopicRecieve   string `mapstructure:"auth_topic_recieve"`
+		SeasonTopicSend    string `mapstructure:"season_topic_send"`
+		DailyTaskTopicSend string `mapstructure:"dailyTasks_topic_send"`
 	} `mapstructure:"kafka"`
 }
 
