@@ -41,7 +41,6 @@ func InitAuthRoutes(app *fiber.App, authUsecase usecase.Auth) {
 
 		}
 		api.Post("/change-password", r.changePassword)
-		//////////////////////////////////
 	}
 }
 

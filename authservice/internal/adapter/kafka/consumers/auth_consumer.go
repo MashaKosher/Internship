@@ -13,7 +13,7 @@ import (
 	producer "authservice/internal/adapter/kafka/producers"
 )
 
-func ConsumerAnswerTokens(authUseCase usecase.Auth) {
+func ConsumerAnswerTokens(u usecase.Auth) {
 	c, err := kafka.NewConsumer(&kafka.ConfigMap{
 		"bootstrap.servers": config.AppConfig.Kafka.Host + ":" + config.AppConfig.Kafka.Port,
 		"group.id":          "authService",
@@ -46,7 +46,7 @@ func ConsumerAnswerTokens(authUseCase usecase.Auth) {
 			logger.Logger.Info("Received message: " + string(msg.Value) + " from topic:" + fmt.Sprintln(msg.TopicPartition))
 
 			// if we recieve Auth request
-			go BrokerCheck(authRequest, authUseCase)
+			go BrokerCheck(authRequest, u)
 		} else {
 			logger.Logger.Fatal("Error while consuming: " + err.Error())
 		}
