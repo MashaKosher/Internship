@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"adminservice/internal/db"
 	"adminservice/internal/entity"
+	db "adminservice/pkg/client/sql"
 	"time"
 )
 

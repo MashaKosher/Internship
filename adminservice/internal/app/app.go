@@ -1,8 +1,8 @@
 package app
 
 import (
-	"adminservice/internal/db"
 	"adminservice/internal/handler"
+	db "adminservice/pkg/client/sql"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -11,7 +11,7 @@ import (
 func Run() http.Handler {
 	r := chi.NewRouter()
 
-	db.ConncetDB()
+	_ = db.ConncetDB()
 	handler.Handlers(r)
 
 	return r
