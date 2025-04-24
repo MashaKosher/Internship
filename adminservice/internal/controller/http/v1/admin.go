@@ -1,14 +1,14 @@
-package internal
+package v1
 
 import (
 	"github.com/go-chi/chi/v5"
 
 	controllers "adminservice/internal/service"
 
-	"adminservice/internal/middleware"
+	middleware "adminservice/internal/controller/http/middlewares"
 )
 
-func AdminRoutes(r *chi.Mux) {
+func InitAdminRoutes(r *chi.Mux) {
 	r.Route("/", func(r chi.Router) {
 		r.Use(middleware.CheckToken)
 		r.Post("/deatil-plan", controllers.PlanSeason)

@@ -1,7 +1,7 @@
 package app
 
 import (
-	"adminservice/internal/handler"
+	v1 "adminservice/internal/controller/http"
 	db "adminservice/pkg/client/sql"
 	"net/http"
 
@@ -12,7 +12,7 @@ func Run() http.Handler {
 	r := chi.NewRouter()
 
 	_ = db.ConncetDB()
-	handler.Handlers(r)
+	v1.NewRouter(r)
 
 	return r
 }

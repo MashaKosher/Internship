@@ -1,4 +1,4 @@
-package internal
+package v1
 
 import (
 	"github.com/go-chi/chi/v5"
@@ -6,7 +6,7 @@ import (
 	controllers "adminservice/internal/service"
 )
 
-func SwaggerRoutes(r *chi.Mux) {
+func InitSwaggerRoutes(r *chi.Mux) {
 	r.Group(func(r chi.Router) {
 		r.Get("/swagger/*", controllers.Swagger())
 	})

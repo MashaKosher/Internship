@@ -1,21 +1,21 @@
-package handler
+package http
 
 import (
-	routes "adminservice/internal/handler/internal"
+	routes "adminservice/internal/controller/http/v1"
 
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
 )
 
-func Handlers(r *chi.Mux) {
+func NewRouter(r *chi.Mux) {
 	// Middlewares
 	middleWares(r)
 
 	// Swagger route initialize
-	routes.SwaggerRoutes(r)
+	routes.InitSwaggerRoutes(r)
 
 	// Auth routes initialize
-	routes.AdminRoutes(r)
+	routes.InitAdminRoutes(r)
 }
 
 func middleWares(r *chi.Mux) {
