@@ -160,6 +160,20 @@ services:
     restart: unless-stopped
 
 
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: game_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+
   # admin:
   #   build: ./adminservice
   #   volumes:
@@ -187,10 +201,11 @@ networks:
 
 
 volumes:
-  pgdata_auth:  # <- добавили
-  pgdata_admin: # <- добавили
-  pgdata_core:  # <- добавили
+  pgdata_auth:  
+  pgdata_admin: 
+  pgdata_core:  
   kafka:
   redis_data:
   es_data:
     driver: local
+  mongodb_data:

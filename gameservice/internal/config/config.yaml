@@ -1,0 +1,28 @@
+server:
+  host: localhost
+  port: 8005
+
+logger:
+  filename: app.log
+
+
+mongo:
+  host: localhost
+  port: 27017
+  name: game
+  user: root
+  password: example
+
+
+kafka:
+  host: localhost
+  port: 9092
+  partition: 2
+  auth_topic_send: jwtCheckAnswer
+  auth_topic_recieve: jwtCheckRequest
+
+  
+
+
+
+

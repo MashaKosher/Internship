@@ -27,7 +27,6 @@ func RecieveTokenInfo() (entity.AuthAnswer, error) {
 	err = consumer.Assign([]kafka.TopicPartition{{Topic: &config.AppConfig.Kafka.AuthTopicRecieve, Partition: config.AppConfig.Kafka.Partition, Offset: kafka.OffsetTail(1)}})
 	if err != nil {
 		logger.Logger.Fatal("Failed to assign partition:" + err.Error())
-		panic(err)
 	}
 
 	for {

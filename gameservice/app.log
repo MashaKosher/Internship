@@ -1,0 +1,4 @@
+{"level":"info","ts":1745780569.4057922,"caller":"mongo/connect.go:65","msg":"Successfully connected to MongoDB!"}
+{"level":"info","ts":1745780570.2025824,"caller":"app/app.go:66","msg":"Server gracefully stopped"}
+{"level":"info","ts":1745780570.203703,"caller":"app/app.go:34","msg":"Mongo Disconnected"}
+{"level":"info","ts":1745780570.2039335,"caller":"app/app.go:67","msg":"Program ended"}

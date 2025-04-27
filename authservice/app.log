@@ -1,179 +1,64 @@
-{"level":"info","ts":1745510697.4243026,"caller":"keys/keys.go:28","msg":"publicPath: /home/mashakosher/proga/InternShip/authservice/internal/config/keys/jwt-public.pem"}
-{"level":"info","ts":1745510697.4243593,"caller":"keys/keys.go:29","msg":"privatePath: /home/mashakosher/proga/InternShip/authservice/internal/config/keys/jwt-private.pem"}
-{"level":"info","ts":1745510697.4247239,"caller":"keys/keys.go:74","msg":"PUBLIC KEY readed succesfully"}
-{"level":"info","ts":1745510697.424861,"caller":"keys/keys.go:74","msg":"PRIVATE KEY readed succesfully"}
-{"level":"info","ts":1745510697.4383209,"caller":"sql/connect.go:26","msg":"Successful connection to DB"}
-{"level":"info","ts":1745510697.5053215,"caller":"consumers/auth_consumer.go:27","msg":"Kafka Answer Auth Tokens Consumer connected successfully"}
-{"level":"info","ts":1745510739.4924045,"caller":"pkg/kafka_uils.go:33","msg":"Request recieved: {eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU1MTE1NzksImlhdCI6MTc0NTUxMDY3OSwic3ViIjoxLCJ0eXBlIjoiYWNjZXNzIiwidXNlcm5hbWUiOiJzdHJpbmcifQ.f5AaMpMha8cRsLWTTMH_6q_VIr6TVQhoFkgp7qR1EvVEo1CDtEyZgaiQr2C_l3U6ui723ZjqIz7MbD3BAg1LFtwefwVscwOYDQYeEALLKLVVroob9zslyvm3UGBBH5jy4lwwsfy2nZ27VINGCmsh1QCLe2Wpq3aRm1A4dPwI3n2AZ2utsuSVoV11T7XB7X5VJ8yyzqZvGrS_IWw_40igb5f65qVj6UgqHlSIOHVu5bplk-t2yBW4K4voOm8M77-uZ35JWjhrhOr82FR1qx7il_HkQEfgUsWivBuImvXv2O99R2w4lvr_zXeC1sOTbzSYEIYbFNvAB2MjRBV5SODHyA eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU1OTY2NjMsImlhdCI6MTc0NTUxMDI2Mywic3ViIjoxLCJ0eXBlIjoicmVmcmVzaCJ9.SD-i0VyiGiBagtZWnW7Txh62Acvutd2kgjK5A3nQPSz0mJRvREmJ2q2t2ZTzLzCmirRVPPcoZyIKsc1yw2QmYjcenrA5LV-epUJs3qnZ4zAHTbHTiQHbL3kFCZlLHNCyBm1oD18hyb84R_8c9Eh9HVmX5uNftRHU7a2Y5sGYBdFkUoOo1CskCPI7MRYVaH8YYEqYNr4eguaeffxghRYPLNBhwRLERIyA4ZtTd_KyVHcBts3iphikDUoXZVX_4H5ME-IFSWUiWDZBziywsxFvH5Do3gFQ4-FGcZIQFwEEHtYTzszFtqHCj3Ntzj3gxPQroWddghJzOrlKFAnxM5luyQ 1}\n"}
-{"level":"info","ts":1745510739.492645,"caller":"consumers/auth_consumer.go:46","msg":"Received message: {\"access-token\":\"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU1MTE1NzksImlhdCI6MTc0NTUxMDY3OSwic3ViIjoxLCJ0eXBlIjoiYWNjZXNzIiwidXNlcm5hbWUiOiJzdHJpbmcifQ.f5AaMpMha8cRsLWTTMH_6q_VIr6TVQhoFkgp7qR1EvVEo1CDtEyZgaiQr2C_l3U6ui723ZjqIz7MbD3BAg1LFtwefwVscwOYDQYeEALLKLVVroob9zslyvm3UGBBH5jy4lwwsfy2nZ27VINGCmsh1QCLe2Wpq3aRm1A4dPwI3n2AZ2utsuSVoV11T7XB7X5VJ8yyzqZvGrS_IWw_40igb5f65qVj6UgqHlSIOHVu5bplk-t2yBW4K4voOm8M77-uZ35JWjhrhOr82FR1qx7il_HkQEfgUsWivBuImvXv2O99R2w4lvr_zXeC1sOTbzSYEIYbFNvAB2MjRBV5SODHyA\",\"refresh-token\":\"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU1OTY2NjMsImlhdCI6MTc0NTUxMDI2Mywic3ViIjoxLCJ0eXBlIjoicmVmcmVzaCJ9.SD-i0VyiGiBagtZWnW7Txh62Acvutd2kgjK5A3nQPSz0mJRvREmJ2q2t2ZTzLzCmirRVPPcoZyIKsc1yw2QmYjcenrA5LV-epUJs3qnZ4zAHTbHTiQHbL3kFCZlLHNCyBm1oD18hyb84R_8c9Eh9HVmX5uNftRHU7a2Y5sGYBdFkUoOo1CskCPI7MRYVaH8YYEqYNr4eguaeffxghRYPLNBhwRLERIyA4ZtTd_KyVHcBts3iphikDUoXZVX_4H5ME-IFSWUiWDZBziywsxFvH5Do3gFQ4-FGcZIQFwEEHtYTzszFtqHCj3Ntzj3gxPQroWddghJzOrlKFAnxM5luyQ\",\"partition\":1} from topic:jwtCheckRequest[1]@0\n"}
-{"level":"info","ts":1745510739.4937341,"caller":"tokens/verify_token.go:23","msg":"\nToken is valid need to check time\n"}
-{"level":"info","ts":1745510739.4943745,"caller":"tokens/verify_token.go:27","msg":"Now: 2025-04-24 19:05:39.494041932 +0300 +03 m=+42.088688951 Exp: 2025-04-24 19:19:39 +0300 +03"}
-{"level":"info","ts":1745510739.4945095,"caller":"auth/auth.go:70","msg":"access Token is valid"}
-{"level":"info","ts":1745510739.4945836,"caller":"auth/auth.go:84","msg":"Token type is correct"}
-{"level":"info","ts":1745510739.4946654,"caller":"auth/auth.go:92","msg":"User ID from access Token is: 1"}
-{"level":"info","ts":1745510739.49802,"caller":"auth/auth.go:100","msg":"User found successfully"}
-{"level":"info","ts":1745510739.498522,"caller":"tokens/verify_token.go:23","msg":"\nToken is valid need to check time\n"}
-{"level":"info","ts":1745510739.498625,"caller":"tokens/verify_token.go:27","msg":"Now: 2025-04-24 19:05:39.498599907 +0300 +03 m=+42.093246906 Exp: 2025-04-25 18:57:43 +0300 +03"}
-{"level":"info","ts":1745510739.4987442,"caller":"auth/auth.go:70","msg":"refresh Token is valid"}
-{"level":"info","ts":1745510739.498864,"caller":"auth/auth.go:84","msg":"Token type is correct"}
-{"level":"info","ts":1745510739.4989302,"caller":"auth/auth.go:92","msg":"User ID from refresh Token is: 1"}
-{"level":"info","ts":1745510739.499804,"caller":"auth/auth.go:100","msg":"User found successfully"}
-{"level":"info","ts":1745510739.49993,"caller":"tokens/create_token.go:19","msg":"Creating access token  for User with ID 1"}
-{"level":"info","ts":1745510739.5000246,"caller":"tokens/create_token.go:22","msg":"Signing Method: RS256with Private key "}
-{"level":"info","ts":1745510739.5066695,"caller":"auth/auth.go:125","msg":"Access JWT created successfully"}
-{"level":"info","ts":1745510739.5511715,"caller":"producers/auth_producer.go:20","msg":"Producer created successfully"}
-{"level":"error","ts":1745510739.5583913,"caller":"producers/auth_producer.go:38","msg":"Delivered message to jwtCheckAnswer [1] at offset 0","stacktrace":"authservice/internal/adapter/kafka/producers.AnswerToken.func1\n\t/home/mashakosher/proga/InternShip/authservice/internal/adapter/kafka/producers/auth_producer.go:38"}
-{"level":"info","ts":1745510807.529678,"caller":"v1/auth.go:63","msg":"User with UserName string1 is trying to log in"}
-{"level":"info","ts":1745510807.529765,"caller":"v1/auth.go:70","msg":"User credentials verified successfully"}
-{"level":"info","ts":1745510807.5307395,"caller":"auth/auth.go:31","msg":"User found, his ID: 2"}
-{"level":"info","ts":1745510807.608552,"caller":"auth/auth.go:38","msg":"User with ID 2 has correct password"}
-{"level":"info","ts":1745510807.6086187,"caller":"tokens/create_token.go:19","msg":"Creating access token  for User with ID 2"}
-{"level":"info","ts":1745510807.6086352,"caller":"tokens/create_token.go:22","msg":"Signing Method: RS256with Private key "}
-{"level":"info","ts":1745510807.6103961,"caller":"tokens/create_token.go:19","msg":"Creating refresh token  for User with ID 2"}
-{"level":"info","ts":1745510807.6104405,"caller":"tokens/create_token.go:22","msg":"Signing Method: RS256with Private key "}
-{"level":"info","ts":1745510807.6128905,"caller":"v1/auth.go:82","msg":"Access JWT created successfully"}
-{"level":"info","ts":1745510807.612941,"caller":"v1/auth.go:88","msg":"Refresh JWT created successfully"}
-{"level":"info","ts":1745510876.8647873,"caller":"v1/auth.go:63","msg":"User with UserName string is trying to log in"}
-{"level":"info","ts":1745510876.864875,"caller":"v1/auth.go:70","msg":"User credentials verified successfully"}
-{"level":"info","ts":1745510876.865733,"caller":"auth/auth.go:31","msg":"User found, his ID: 1"}
-{"level":"info","ts":1745510876.9417577,"caller":"auth/auth.go:38","msg":"User with ID 1 has correct password"}
-{"level":"info","ts":1745510876.9418042,"caller":"tokens/create_token.go:19","msg":"Creating access token  for User with ID 1"}
-{"level":"info","ts":1745510876.9418228,"caller":"tokens/create_token.go:22","msg":"Signing Method: RS256with Private key "}
-{"level":"info","ts":1745510876.943608,"caller":"tokens/create_token.go:19","msg":"Creating refresh token  for User with ID 1"}
-{"level":"info","ts":1745510876.9436278,"caller":"tokens/create_token.go:22","msg":"Signing Method: RS256with Private key "}
-{"level":"info","ts":1745510876.9452546,"caller":"v1/auth.go:82","msg":"Access JWT created successfully"}
-{"level":"info","ts":1745510876.9452775,"caller":"v1/auth.go:88","msg":"Refresh JWT created successfully"}
-{"level":"info","ts":1745510881.3106482,"caller":"pkg/kafka_uils.go:33","msg":"Request recieved: {eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU1MTE3NzYsImlhdCI6MTc0NTUxMDg3Niwic3ViIjoxLCJ0eXBlIjoiYWNjZXNzIiwidXNlcm5hbWUiOiJzdHJpbmcifQ.iU2XHewcVzYB35zIkxaVlRbZOKf_My9qS33F2bmXhm8jslj9PgHKKyuIgaVgXNHgb1gE2FGW4PRN00rLd4WiievzuqeXpXSTKPoNBVBBEP2iq9PCuT7udcEBJIrssP1O9sC3Cmmgst27ZTCvt1xVTi97Q7-u4DrROkjDp11z0Duk508SY70BPfT6_obOWesAPCqBGYvx3pkojMAqpSMin2Q8k_e6EK28_-DPBkR9K0KwDACxAPJrClKzMb0JmX6-iJWzP7_AkZ3u4f88iHopZHJdIFR-vlceZiWS_3WF6va1MGsdWdYcacMF7mPqr8_R5Octu3plFF2oAQnYsPaFgw eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU1OTcyNzYsImlhdCI6MTc0NTUxMDg3Niwic3ViIjoxLCJ0eXBlIjoicmVmcmVzaCJ9.gBKi8mZ1BIkXWTsfqbLsGzwpTUoNSrnUk1p2wE_kWYYHfmshFNIpTDmQ_Xv6O7qK77w9PNiLXpDy5juxjTVnyXvOOOivP_nVuyuIErlTx3dPGbwxARmtq_o-E4Xg2yGru03DDpkK3Tc4Zs0iraHa4HN4ztebsV--229zdRq8pd8qurpo-scCkO01juQn8R5hBuec8-H57pgMZFsh2fC_zAJYuCyzWdtnrSTeuH5bOIj74lIytaNzao0DDTBuAZjejBcbEna084hinsbsqiVvadjmncc5Ki6z-DhLLBD48OVm-rWzTvt8SeoQUVZ61hIScKlVkN63ZRRMtKu2ZlymZQ 1}\n"}
-{"level":"info","ts":1745510881.3107512,"caller":"consumers/auth_consumer.go:46","msg":"Received message: {\"access-token\":\"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU1MTE3NzYsImlhdCI6MTc0NTUxMDg3Niwic3ViIjoxLCJ0eXBlIjoiYWNjZXNzIiwidXNlcm5hbWUiOiJzdHJpbmcifQ.iU2XHewcVzYB35zIkxaVlRbZOKf_My9qS33F2bmXhm8jslj9PgHKKyuIgaVgXNHgb1gE2FGW4PRN00rLd4WiievzuqeXpXSTKPoNBVBBEP2iq9PCuT7udcEBJIrssP1O9sC3Cmmgst27ZTCvt1xVTi97Q7-u4DrROkjDp11z0Duk508SY70BPfT6_obOWesAPCqBGYvx3pkojMAqpSMin2Q8k_e6EK28_-DPBkR9K0KwDACxAPJrClKzMb0JmX6-iJWzP7_AkZ3u4f88iHopZHJdIFR-vlceZiWS_3WF6va1MGsdWdYcacMF7mPqr8_R5Octu3plFF2oAQnYsPaFgw\",\"refresh-token\":\"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU1OTcyNzYsImlhdCI6MTc0NTUxMDg3Niwic3ViIjoxLCJ0eXBlIjoicmVmcmVzaCJ9.gBKi8mZ1BIkXWTsfqbLsGzwpTUoNSrnUk1p2wE_kWYYHfmshFNIpTDmQ_Xv6O7qK77w9PNiLXpDy5juxjTVnyXvOOOivP_nVuyuIErlTx3dPGbwxARmtq_o-E4Xg2yGru03DDpkK3Tc4Zs0iraHa4HN4ztebsV--229zdRq8pd8qurpo-scCkO01juQn8R5hBuec8-H57pgMZFsh2fC_zAJYuCyzWdtnrSTeuH5bOIj74lIytaNzao0DDTBuAZjejBcbEna084hinsbsqiVvadjmncc5Ki6z-DhLLBD48OVm-rWzTvt8SeoQUVZ61hIScKlVkN63ZRRMtKu2ZlymZQ\",\"partition\":1} from topic:jwtCheckRequest[1]@1\n"}
-{"level":"info","ts":1745510881.311108,"caller":"tokens/verify_token.go:23","msg":"\nToken is valid need to check time\n"}
-{"level":"info","ts":1745510881.311181,"caller":"tokens/verify_token.go:27","msg":"Now: 2025-04-24 19:08:01.311167438 +0300 +03 m=+183.905814382 Exp: 2025-04-24 19:22:56 +0300 +03"}
-{"level":"info","ts":1745510881.311211,"caller":"auth/auth.go:70","msg":"access Token is valid"}
-{"level":"info","ts":1745510881.3112311,"caller":"auth/auth.go:84","msg":"Token type is correct"}
-{"level":"info","ts":1745510881.3112516,"caller":"auth/auth.go:92","msg":"User ID from access Token is: 1"}
-{"level":"info","ts":1745510881.3124146,"caller":"auth/auth.go:100","msg":"User found successfully"}
-{"level":"info","ts":1745510881.3127275,"caller":"tokens/verify_token.go:23","msg":"\nToken is valid need to check time\n"}
-{"level":"info","ts":1745510881.3127885,"caller":"tokens/verify_token.go:27","msg":"Now: 2025-04-24 19:08:01.31277506 +0300 +03 m=+183.907421999 Exp: 2025-04-25 19:07:56 +0300 +03"}
-{"level":"info","ts":1745510881.312856,"caller":"auth/auth.go:70","msg":"refresh Token is valid"}
-{"level":"info","ts":1745510881.3128855,"caller":"auth/auth.go:84","msg":"Token type is correct"}
-{"level":"info","ts":1745510881.3129098,"caller":"auth/auth.go:92","msg":"User ID from refresh Token is: 1"}
-{"level":"info","ts":1745510881.3135176,"caller":"auth/auth.go:100","msg":"User found successfully"}
-{"level":"info","ts":1745510881.313556,"caller":"tokens/create_token.go:19","msg":"Creating access token  for User with ID 1"}
-{"level":"info","ts":1745510881.3135786,"caller":"tokens/create_token.go:22","msg":"Signing Method: RS256with Private key "}
-{"level":"info","ts":1745510881.31713,"caller":"auth/auth.go:125","msg":"Access JWT created successfully"}
-{"level":"info","ts":1745510881.3205,"caller":"producers/auth_producer.go:20","msg":"Producer created successfully"}
-{"level":"error","ts":1745510881.3281097,"caller":"producers/auth_producer.go:38","msg":"Delivered message to jwtCheckAnswer [1] at offset 1","stacktrace":"authservice/internal/adapter/kafka/producers.AnswerToken.func1\n\t/home/mashakosher/proga/InternShip/authservice/internal/adapter/kafka/producers/auth_producer.go:38"}
-{"level":"info","ts":1745510938.2836826,"caller":"pkg/kafka_uils.go:33","msg":"Request recieved: {eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU1MTE3ODEsImlhdCI6MTc0NTUxMDg4MSwic3ViIjoxLCJ0eXBlIjoiYWNjZXNzIiwidXNlcm5hbWUiOiJzdHJpbmcifQ.Zt-4tJA1zYaBQ7uF4xxhQYkImBAAxFGJIMse3GOfOf9I980jXhj_TfZNfcjYVJP7AJztkEsf8MlcRuQ-wKuqzlZvW9C2uRe2rfJkMrK8D5JQ2YCe0C03lKoHWsnvP6ZPREF25OciSbX0f2CpZveQcjyT2HKwrHMa74KJ7bX9-797BrlpzDW7AOeX-wCwEaHZwzeb59dKx03KtEJyjmOQtDF42lXRanm1w3Ltm3qpN0npL1SQfa7Q6l9kJtJyoVJvSpms3nxp7sSV8d1KGqbxBHVSL68PVqSgAFmkVJAZjmcH4V6UIf1YDs4RZa2JJ2VuPNZE3K39jjCAHFlx2dairQ eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU1OTcyNzYsImlhdCI6MTc0NTUxMDg3Niwic3ViIjoxLCJ0eXBlIjoicmVmcmVzaCJ9.gBKi8mZ1BIkXWTsfqbLsGzwpTUoNSrnUk1p2wE_kWYYHfmshFNIpTDmQ_Xv6O7qK77w9PNiLXpDy5juxjTVnyXvOOOivP_nVuyuIErlTx3dPGbwxARmtq_o-E4Xg2yGru03DDpkK3Tc4Zs0iraHa4HN4ztebsV--229zdRq8pd8qurpo-scCkO01juQn8R5hBuec8-H57pgMZFsh2fC_zAJYuCyzWdtnrSTeuH5bOIj74lIytaNzao0DDTBuAZjejBcbEna084hinsbsqiVvadjmncc5Ki6z-DhLLBD48OVm-rWzTvt8SeoQUVZ61hIScKlVkN63ZRRMtKu2ZlymZQ 0}\n"}
-{"level":"info","ts":1745510938.2838004,"caller":"consumers/auth_consumer.go:46","msg":"Received message: {\"access-token\":\"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU1MTE3ODEsImlhdCI6MTc0NTUxMDg4MSwic3ViIjoxLCJ0eXBlIjoiYWNjZXNzIiwidXNlcm5hbWUiOiJzdHJpbmcifQ.Zt-4tJA1zYaBQ7uF4xxhQYkImBAAxFGJIMse3GOfOf9I980jXhj_TfZNfcjYVJP7AJztkEsf8MlcRuQ-wKuqzlZvW9C2uRe2rfJkMrK8D5JQ2YCe0C03lKoHWsnvP6ZPREF25OciSbX0f2CpZveQcjyT2HKwrHMa74KJ7bX9-797BrlpzDW7AOeX-wCwEaHZwzeb59dKx03KtEJyjmOQtDF42lXRanm1w3Ltm3qpN0npL1SQfa7Q6l9kJtJyoVJvSpms3nxp7sSV8d1KGqbxBHVSL68PVqSgAFmkVJAZjmcH4V6UIf1YDs4RZa2JJ2VuPNZE3K39jjCAHFlx2dairQ\",\"refresh-token\":\"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU1OTcyNzYsImlhdCI6MTc0NTUxMDg3Niwic3ViIjoxLCJ0eXBlIjoicmVmcmVzaCJ9.gBKi8mZ1BIkXWTsfqbLsGzwpTUoNSrnUk1p2wE_kWYYHfmshFNIpTDmQ_Xv6O7qK77w9PNiLXpDy5juxjTVnyXvOOOivP_nVuyuIErlTx3dPGbwxARmtq_o-E4Xg2yGru03DDpkK3Tc4Zs0iraHa4HN4ztebsV--229zdRq8pd8qurpo-scCkO01juQn8R5hBuec8-H57pgMZFsh2fC_zAJYuCyzWdtnrSTeuH5bOIj74lIytaNzao0DDTBuAZjejBcbEna084hinsbsqiVvadjmncc5Ki6z-DhLLBD48OVm-rWzTvt8SeoQUVZ61hIScKlVkN63ZRRMtKu2ZlymZQ\",\"partition\":0} from topic:jwtCheckRequest[0]@4\n"}
-{"level":"info","ts":1745510938.284062,"caller":"tokens/verify_token.go:23","msg":"\nToken is valid need to check time\n"}
-{"level":"info","ts":1745510938.2841349,"caller":"tokens/verify_token.go:27","msg":"Now: 2025-04-24 19:08:58.284120552 +0300 +03 m=+240.878767502 Exp: 2025-04-24 19:23:01 +0300 +03"}
-{"level":"info","ts":1745510938.2841609,"caller":"auth/auth.go:70","msg":"access Token is valid"}
-{"level":"info","ts":1745510938.2841852,"caller":"auth/auth.go:84","msg":"Token type is correct"}
-{"level":"info","ts":1745510938.284207,"caller":"auth/auth.go:92","msg":"User ID from access Token is: 1"}
-{"level":"info","ts":1745510938.2853925,"caller":"auth/auth.go:100","msg":"User found successfully"}
-{"level":"info","ts":1745510938.285564,"caller":"tokens/verify_token.go:23","msg":"\nToken is valid need to check time\n"}
-{"level":"info","ts":1745510938.2856152,"caller":"tokens/verify_token.go:27","msg":"Now: 2025-04-24 19:08:58.285602095 +0300 +03 m=+240.880249042 Exp: 2025-04-25 19:07:56 +0300 +03"}
-{"level":"info","ts":1745510938.2856393,"caller":"auth/auth.go:70","msg":"refresh Token is valid"}
-{"level":"info","ts":1745510938.2856655,"caller":"auth/auth.go:84","msg":"Token type is correct"}
-{"level":"info","ts":1745510938.285689,"caller":"auth/auth.go:92","msg":"User ID from refresh Token is: 1"}
-{"level":"info","ts":1745510938.2861598,"caller":"auth/auth.go:100","msg":"User found successfully"}
-{"level":"info","ts":1745510938.2861943,"caller":"tokens/create_token.go:19","msg":"Creating access token  for User with ID 1"}
-{"level":"info","ts":1745510938.2862117,"caller":"tokens/create_token.go:22","msg":"Signing Method: RS256with Private key "}
-{"level":"info","ts":1745510938.2889698,"caller":"auth/auth.go:125","msg":"Access JWT created successfully"}
-{"level":"info","ts":1745510938.3156185,"caller":"producers/auth_producer.go:20","msg":"Producer created successfully"}
-{"level":"error","ts":1745510938.3223543,"caller":"producers/auth_producer.go:38","msg":"Delivered message to jwtCheckAnswer [0] at offset 4","stacktrace":"authservice/internal/adapter/kafka/producers.AnswerToken.func1\n\t/home/mashakosher/proga/InternShip/authservice/internal/adapter/kafka/producers/auth_producer.go:38"}
-{"level":"info","ts":1745510964.4734046,"caller":"v1/auth.go:63","msg":"User with UserName string is trying to log in"}
-{"level":"info","ts":1745510964.473606,"caller":"v1/auth.go:70","msg":"User credentials verified successfully"}
-{"level":"info","ts":1745510964.475442,"caller":"auth/auth.go:31","msg":"User found, his ID: 1"}
-{"level":"info","ts":1745510964.5556688,"caller":"auth/auth.go:38","msg":"User with ID 1 has correct password"}
-{"level":"info","ts":1745510964.5557122,"caller":"tokens/create_token.go:19","msg":"Creating access token  for User with ID 1"}
-{"level":"info","ts":1745510964.5557268,"caller":"tokens/create_token.go:22","msg":"Signing Method: RS256with Private key "}
-{"level":"info","ts":1745510964.557217,"caller":"tokens/create_token.go:19","msg":"Creating refresh token  for User with ID 1"}
-{"level":"info","ts":1745510964.5572343,"caller":"tokens/create_token.go:22","msg":"Signing Method: RS256with Private key "}
-{"level":"info","ts":1745510964.5589035,"caller":"v1/auth.go:82","msg":"Access JWT created successfully"}
-{"level":"info","ts":1745510964.558927,"caller":"v1/auth.go:88","msg":"Refresh JWT created successfully"}
-{"level":"info","ts":1745510968.6187744,"caller":"pkg/kafka_uils.go:33","msg":"Request recieved: {eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU1MTE4NjQsImlhdCI6MTc0NTUxMDk2NCwic3ViIjoxLCJ0eXBlIjoiYWNjZXNzIiwidXNlcm5hbWUiOiJzdHJpbmcifQ.H46JMdHaj3vC6FWusmHCbgQ4OHnwRiZ3lZHKqDa1e8nqgofy4p3snL4ZDMGR4SRAHSPtYiDX4tN9VATK9INPfbgKuVUspdRwL8t_Gf8QdS_M_-OJ8pHHCGNICpn5BhMjbceNUs3rLkD8z4R8vDt8CZM-g2pDnrfF2Dwo9kEvFagPkeXSC7AX4k6B0x6MmNWwQUjBJbjfxmwVEx8RrXus2LyAZpMuR-2fH8Zb4wusNURiDxZLP5xoZYdU8uZgBAmDhtyYwYmV_LXMun-e8B--dGkySMlGFHy0q6XIhDf34KccKwVU45NPC6V_vdybU3sBcY_iL3_k8rJCC0dkECRTwQ eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU1OTczNjQsImlhdCI6MTc0NTUxMDk2NCwic3ViIjoxLCJ0eXBlIjoicmVmcmVzaCJ9.m_0H1Z40b-awrSX3TSvfPU0loKpngZcU4KclFuQyvMg4RWD902mvtQMUL98AdwmSKorqtTh9qRIvFDmcWEvm8kQRkl_gyVVEdQHDjKKdgTP0cmn8klA06e4QHCfX5D3BwnMKj3ZhvQEMUSPh7z2juAKIY_fp7DAJ9OIwOgoyRiAMMCrfUD9vxJYxVGOeKduDkKcyW1ldaOEqz3nLrTjwAabCOcvhHdVP5A9vzSjeR89JZtFwHhMDD_l6b26u005OCCUltfQkgx7SyxECbViP7y4CsguIPJW0K9kqGQVyjqmmT1X0JpKYnUdT_2mP6JjqjZw20pnDtFvtzbhXl3h0kA 1}\n"}
-{"level":"info","ts":1745510968.6188836,"caller":"consumers/auth_consumer.go:46","msg":"Received message: {\"access-token\":\"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU1MTE4NjQsImlhdCI6MTc0NTUxMDk2NCwic3ViIjoxLCJ0eXBlIjoiYWNjZXNzIiwidXNlcm5hbWUiOiJzdHJpbmcifQ.H46JMdHaj3vC6FWusmHCbgQ4OHnwRiZ3lZHKqDa1e8nqgofy4p3snL4ZDMGR4SRAHSPtYiDX4tN9VATK9INPfbgKuVUspdRwL8t_Gf8QdS_M_-OJ8pHHCGNICpn5BhMjbceNUs3rLkD8z4R8vDt8CZM-g2pDnrfF2Dwo9kEvFagPkeXSC7AX4k6B0x6MmNWwQUjBJbjfxmwVEx8RrXus2LyAZpMuR-2fH8Zb4wusNURiDxZLP5xoZYdU8uZgBAmDhtyYwYmV_LXMun-e8B--dGkySMlGFHy0q6XIhDf34KccKwVU45NPC6V_vdybU3sBcY_iL3_k8rJCC0dkECRTwQ\",\"refresh-token\":\"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU1OTczNjQsImlhdCI6MTc0NTUxMDk2NCwic3ViIjoxLCJ0eXBlIjoicmVmcmVzaCJ9.m_0H1Z40b-awrSX3TSvfPU0loKpngZcU4KclFuQyvMg4RWD902mvtQMUL98AdwmSKorqtTh9qRIvFDmcWEvm8kQRkl_gyVVEdQHDjKKdgTP0cmn8klA06e4QHCfX5D3BwnMKj3ZhvQEMUSPh7z2juAKIY_fp7DAJ9OIwOgoyRiAMMCrfUD9vxJYxVGOeKduDkKcyW1ldaOEqz3nLrTjwAabCOcvhHdVP5A9vzSjeR89JZtFwHhMDD_l6b26u005OCCUltfQkgx7SyxECbViP7y4CsguIPJW0K9kqGQVyjqmmT1X0JpKYnUdT_2mP6JjqjZw20pnDtFvtzbhXl3h0kA\",\"partition\":1} from topic:jwtCheckRequest[1]@2\n"}
-{"level":"info","ts":1745510968.6190803,"caller":"tokens/verify_token.go:23","msg":"\nToken is valid need to check time\n"}
-{"level":"info","ts":1745510968.619126,"caller":"tokens/verify_token.go:27","msg":"Now: 2025-04-24 19:09:28.619114778 +0300 +03 m=+271.213761724 Exp: 2025-04-24 19:24:24 +0300 +03"}
-{"level":"info","ts":1745510968.6191518,"caller":"auth/auth.go:70","msg":"access Token is valid"}
-{"level":"info","ts":1745510968.619169,"caller":"auth/auth.go:84","msg":"Token type is correct"}
-{"level":"info","ts":1745510968.6191988,"caller":"auth/auth.go:92","msg":"User ID from access Token is: 1"}
-{"level":"info","ts":1745510968.619914,"caller":"auth/auth.go:100","msg":"User found successfully"}
-{"level":"info","ts":1745510968.6201177,"caller":"tokens/verify_token.go:23","msg":"\nToken is valid need to check time\n"}
-{"level":"info","ts":1745510968.6201525,"caller":"tokens/verify_token.go:27","msg":"Now: 2025-04-24 19:09:28.620143228 +0300 +03 m=+271.214790175 Exp: 2025-04-25 19:09:24 +0300 +03"}
-{"level":"info","ts":1745510968.6201754,"caller":"auth/auth.go:70","msg":"refresh Token is valid"}
-{"level":"info","ts":1745510968.6202073,"caller":"auth/auth.go:84","msg":"Token type is correct"}
-{"level":"info","ts":1745510968.620235,"caller":"auth/auth.go:92","msg":"User ID from refresh Token is: 1"}
-{"level":"info","ts":1745510968.6205268,"caller":"auth/auth.go:100","msg":"User found successfully"}
-{"level":"info","ts":1745510968.6205585,"caller":"tokens/create_token.go:19","msg":"Creating access token  for User with ID 1"}
-{"level":"info","ts":1745510968.620579,"caller":"tokens/create_token.go:22","msg":"Signing Method: RS256with Private key "}
-{"level":"info","ts":1745510968.6227167,"caller":"auth/auth.go:125","msg":"Access JWT created successfully"}
-{"level":"info","ts":1745510968.6254776,"caller":"producers/auth_producer.go:20","msg":"Producer created successfully"}
-{"level":"error","ts":1745510968.6335745,"caller":"producers/auth_producer.go:38","msg":"Delivered message to jwtCheckAnswer [1] at offset 2","stacktrace":"authservice/internal/adapter/kafka/producers.AnswerToken.func1\n\t/home/mashakosher/proga/InternShip/authservice/internal/adapter/kafka/producers/auth_producer.go:38"}
-{"level":"info","ts":1745510974.66544,"caller":"pkg/kafka_uils.go:33","msg":"Request recieved: {eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU1MTE4NjgsImlhdCI6MTc0NTUxMDk2OCwic3ViIjoxLCJ0eXBlIjoiYWNjZXNzIiwidXNlcm5hbWUiOiJzdHJpbmcifQ.WXrvtP8CITQJJIzRfo4ijCQx7vpGQLn4nBcjdqgRursOaAUbK7L42LCtFXep7XPfsVp1Fmm3UkeDoxE4w14YVn78LpKW426cfyBnnL7xiSoKyICfE1NHmmBsy93s4VQNqj8O8QdgDDS-3DK_Xsis2GTZ1QQkqt8CxgMNlER0DbUiOjey3lOsAXtAA4jfL_baVftPFNuPNxBqvNDWfA2tBnYkvUY6v-ah1Uz7MMNUjPLPLGU_97xXNWCOhpUgmaz7IPQmVWvcx61jyifds5py-AN_hzkx5-uap8KbahwBApbut0IdAw8yVrNG5WVHXJQvxjCjOx4lqxj9w0MsoGWqOQ eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU1OTczNjQsImlhdCI6MTc0NTUxMDk2NCwic3ViIjoxLCJ0eXBlIjoicmVmcmVzaCJ9.m_0H1Z40b-awrSX3TSvfPU0loKpngZcU4KclFuQyvMg4RWD902mvtQMUL98AdwmSKorqtTh9qRIvFDmcWEvm8kQRkl_gyVVEdQHDjKKdgTP0cmn8klA06e4QHCfX5D3BwnMKj3ZhvQEMUSPh7z2juAKIY_fp7DAJ9OIwOgoyRiAMMCrfUD9vxJYxVGOeKduDkKcyW1ldaOEqz3nLrTjwAabCOcvhHdVP5A9vzSjeR89JZtFwHhMDD_l6b26u005OCCUltfQkgx7SyxECbViP7y4CsguIPJW0K9kqGQVyjqmmT1X0JpKYnUdT_2mP6JjqjZw20pnDtFvtzbhXl3h0kA 1}\n"}
-{"level":"info","ts":1745510974.6655176,"caller":"consumers/auth_consumer.go:46","msg":"Received message: {\"access-token\":\"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU1MTE4NjgsImlhdCI6MTc0NTUxMDk2OCwic3ViIjoxLCJ0eXBlIjoiYWNjZXNzIiwidXNlcm5hbWUiOiJzdHJpbmcifQ.WXrvtP8CITQJJIzRfo4ijCQx7vpGQLn4nBcjdqgRursOaAUbK7L42LCtFXep7XPfsVp1Fmm3UkeDoxE4w14YVn78LpKW426cfyBnnL7xiSoKyICfE1NHmmBsy93s4VQNqj8O8QdgDDS-3DK_Xsis2GTZ1QQkqt8CxgMNlER0DbUiOjey3lOsAXtAA4jfL_baVftPFNuPNxBqvNDWfA2tBnYkvUY6v-ah1Uz7MMNUjPLPLGU_97xXNWCOhpUgmaz7IPQmVWvcx61jyifds5py-AN_hzkx5-uap8KbahwBApbut0IdAw8yVrNG5WVHXJQvxjCjOx4lqxj9w0MsoGWqOQ\",\"refresh-token\":\"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU1OTczNjQsImlhdCI6MTc0NTUxMDk2NCwic3ViIjoxLCJ0eXBlIjoicmVmcmVzaCJ9.m_0H1Z40b-awrSX3TSvfPU0loKpngZcU4KclFuQyvMg4RWD902mvtQMUL98AdwmSKorqtTh9qRIvFDmcWEvm8kQRkl_gyVVEdQHDjKKdgTP0cmn8klA06e4QHCfX5D3BwnMKj3ZhvQEMUSPh7z2juAKIY_fp7DAJ9OIwOgoyRiAMMCrfUD9vxJYxVGOeKduDkKcyW1ldaOEqz3nLrTjwAabCOcvhHdVP5A9vzSjeR89JZtFwHhMDD_l6b26u005OCCUltfQkgx7SyxECbViP7y4CsguIPJW0K9kqGQVyjqmmT1X0JpKYnUdT_2mP6JjqjZw20pnDtFvtzbhXl3h0kA\",\"partition\":1} from topic:jwtCheckRequest[1]@3\n"}
-{"level":"info","ts":1745510974.665763,"caller":"tokens/verify_token.go:23","msg":"\nToken is valid need to check time\n"}
-{"level":"info","ts":1745510974.6658077,"caller":"tokens/verify_token.go:27","msg":"Now: 2025-04-24 19:09:34.665796248 +0300 +03 m=+277.260443187 Exp: 2025-04-24 19:24:28 +0300 +03"}
-{"level":"info","ts":1745510974.6658726,"caller":"auth/auth.go:70","msg":"access Token is valid"}
-{"level":"info","ts":1745510974.665899,"caller":"auth/auth.go:84","msg":"Token type is correct"}
-{"level":"info","ts":1745510974.6659155,"caller":"auth/auth.go:92","msg":"User ID from access Token is: 1"}
-{"level":"info","ts":1745510974.6663673,"caller":"auth/auth.go:100","msg":"User found successfully"}
-{"level":"info","ts":1745510974.666537,"caller":"tokens/verify_token.go:23","msg":"\nToken is valid need to check time\n"}
-{"level":"info","ts":1745510974.666576,"caller":"tokens/verify_token.go:27","msg":"Now: 2025-04-24 19:09:34.666563808 +0300 +03 m=+277.261210768 Exp: 2025-04-25 19:09:24 +0300 +03"}
-{"level":"info","ts":1745510974.6665964,"caller":"auth/auth.go:70","msg":"refresh Token is valid"}
-{"level":"info","ts":1745510974.666632,"caller":"auth/auth.go:84","msg":"Token type is correct"}
-{"level":"info","ts":1745510974.6666524,"caller":"auth/auth.go:92","msg":"User ID from refresh Token is: 1"}
-{"level":"info","ts":1745510974.666981,"caller":"auth/auth.go:100","msg":"User found successfully"}
-{"level":"info","ts":1745510974.6670358,"caller":"tokens/create_token.go:19","msg":"Creating access token  for User with ID 1"}
-{"level":"info","ts":1745510974.6670597,"caller":"tokens/create_token.go:22","msg":"Signing Method: RS256with Private key "}
-{"level":"info","ts":1745510974.6694934,"caller":"auth/auth.go:125","msg":"Access JWT created successfully"}
-{"level":"info","ts":1745510974.6862311,"caller":"producers/auth_producer.go:20","msg":"Producer created successfully"}
-{"level":"error","ts":1745510974.693202,"caller":"producers/auth_producer.go:38","msg":"Delivered message to jwtCheckAnswer [1] at offset 3","stacktrace":"authservice/internal/adapter/kafka/producers.AnswerToken.func1\n\t/home/mashakosher/proga/InternShip/authservice/internal/adapter/kafka/producers/auth_producer.go:38"}
-{"level":"info","ts":1745510987.2583983,"caller":"pkg/kafka_uils.go:33","msg":"Request recieved: {eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU1MTE4NzQsImlhdCI6MTc0NTUxMDk3NCwic3ViIjoxLCJ0eXBlIjoiYWNjZXNzIiwidXNlcm5hbWUiOiJzdHJpbmcifQ.qIuA1APJUKxzG5ednREU6MgiyYmc285SydoncyMXSx40_0C5D4zPdwcbAUVHB-CxnCv52yIeB9OLPGdM2u-hPjsI93TparLKSbUYgFEQdBbHqu5a4WjIjTwotZ2tV2rLq8DeXKdoUqdeuotoe6yf-pAE0u20ItwprFmYdm0fPIkdf4tEWKvmPDhlrvQwrQikzTGUQLaHOn52ufsIbBYJ2EzIk-5Mo78Frwr9Zi0WxgVfaT8F5lYrE9mJ9hFQREF0CQnJD9avyqNBb9Bd6FsMDSgQ9NyLt7srxFWr2Ye5Yen1rgyEHJWAxRqCFgj1D193tbSaaShq9opuqSY2bS0MUg eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU1OTczNjQsImlhdCI6MTc0NTUxMDk2NCwic3ViIjoxLCJ0eXBlIjoicmVmcmVzaCJ9.m_0H1Z40b-awrSX3TSvfPU0loKpngZcU4KclFuQyvMg4RWD902mvtQMUL98AdwmSKorqtTh9qRIvFDmcWEvm8kQRkl_gyVVEdQHDjKKdgTP0cmn8klA06e4QHCfX5D3BwnMKj3ZhvQEMUSPh7z2juAKIY_fp7DAJ9OIwOgoyRiAMMCrfUD9vxJYxVGOeKduDkKcyW1ldaOEqz3nLrTjwAabCOcvhHdVP5A9vzSjeR89JZtFwHhMDD_l6b26u005OCCUltfQkgx7SyxECbViP7y4CsguIPJW0K9kqGQVyjqmmT1X0JpKYnUdT_2mP6JjqjZw20pnDtFvtzbhXl3h0kA 0}\n"}
-{"level":"info","ts":1745510987.2585704,"caller":"consumers/auth_consumer.go:46","msg":"Received message: {\"access-token\":\"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU1MTE4NzQsImlhdCI6MTc0NTUxMDk3NCwic3ViIjoxLCJ0eXBlIjoiYWNjZXNzIiwidXNlcm5hbWUiOiJzdHJpbmcifQ.qIuA1APJUKxzG5ednREU6MgiyYmc285SydoncyMXSx40_0C5D4zPdwcbAUVHB-CxnCv52yIeB9OLPGdM2u-hPjsI93TparLKSbUYgFEQdBbHqu5a4WjIjTwotZ2tV2rLq8DeXKdoUqdeuotoe6yf-pAE0u20ItwprFmYdm0fPIkdf4tEWKvmPDhlrvQwrQikzTGUQLaHOn52ufsIbBYJ2EzIk-5Mo78Frwr9Zi0WxgVfaT8F5lYrE9mJ9hFQREF0CQnJD9avyqNBb9Bd6FsMDSgQ9NyLt7srxFWr2Ye5Yen1rgyEHJWAxRqCFgj1D193tbSaaShq9opuqSY2bS0MUg\",\"refresh-token\":\"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU1OTczNjQsImlhdCI6MTc0NTUxMDk2NCwic3ViIjoxLCJ0eXBlIjoicmVmcmVzaCJ9.m_0H1Z40b-awrSX3TSvfPU0loKpngZcU4KclFuQyvMg4RWD902mvtQMUL98AdwmSKorqtTh9qRIvFDmcWEvm8kQRkl_gyVVEdQHDjKKdgTP0cmn8klA06e4QHCfX5D3BwnMKj3ZhvQEMUSPh7z2juAKIY_fp7DAJ9OIwOgoyRiAMMCrfUD9vxJYxVGOeKduDkKcyW1ldaOEqz3nLrTjwAabCOcvhHdVP5A9vzSjeR89JZtFwHhMDD_l6b26u005OCCUltfQkgx7SyxECbViP7y4CsguIPJW0K9kqGQVyjqmmT1X0JpKYnUdT_2mP6JjqjZw20pnDtFvtzbhXl3h0kA\",\"partition\":0} from topic:jwtCheckRequest[0]@5\n"}
-{"level":"info","ts":1745510987.259252,"caller":"tokens/verify_token.go:23","msg":"\nToken is valid need to check time\n"}
-{"level":"info","ts":1745510987.2593443,"caller":"tokens/verify_token.go:27","msg":"Now: 2025-04-24 19:09:47.259329871 +0300 +03 m=+289.853976824 Exp: 2025-04-24 19:24:34 +0300 +03"}
-{"level":"info","ts":1745510987.2593677,"caller":"auth/auth.go:70","msg":"access Token is valid"}
-{"level":"info","ts":1745510987.2593846,"caller":"auth/auth.go:84","msg":"Token type is correct"}
-{"level":"info","ts":1745510987.2594023,"caller":"auth/auth.go:92","msg":"User ID from access Token is: 1"}
-{"level":"info","ts":1745510987.260555,"caller":"auth/auth.go:100","msg":"User found successfully"}
-{"level":"info","ts":1745510987.260962,"caller":"tokens/verify_token.go:23","msg":"\nToken is valid need to check time\n"}
-{"level":"info","ts":1745510987.2617953,"caller":"tokens/verify_token.go:27","msg":"Now: 2025-04-24 19:09:47.261785166 +0300 +03 m=+289.856432118 Exp: 2025-04-25 19:09:24 +0300 +03"}
-{"level":"info","ts":1745510987.2623289,"caller":"auth/auth.go:70","msg":"refresh Token is valid"}
-{"level":"info","ts":1745510987.262736,"caller":"auth/auth.go:84","msg":"Token type is correct"}
-{"level":"info","ts":1745510987.262961,"caller":"auth/auth.go:92","msg":"User ID from refresh Token is: 1"}
-{"level":"info","ts":1745510987.2641864,"caller":"auth/auth.go:100","msg":"User found successfully"}
-{"level":"info","ts":1745510987.2643747,"caller":"tokens/create_token.go:19","msg":"Creating access token  for User with ID 1"}
-{"level":"info","ts":1745510987.2647355,"caller":"tokens/create_token.go:22","msg":"Signing Method: RS256with Private key "}
-{"level":"info","ts":1745510987.271372,"caller":"auth/auth.go:125","msg":"Access JWT created successfully"}
-{"level":"info","ts":1745510987.275653,"caller":"producers/auth_producer.go:20","msg":"Producer created successfully"}
-{"level":"error","ts":1745510987.2829285,"caller":"producers/auth_producer.go:38","msg":"Delivered message to jwtCheckAnswer [0] at offset 5","stacktrace":"authservice/internal/adapter/kafka/producers.AnswerToken.func1\n\t/home/mashakosher/proga/InternShip/authservice/internal/adapter/kafka/producers/auth_producer.go:38"}
-{"level":"info","ts":1745510996.713492,"caller":"v1/auth.go:63","msg":"User with UserName string1 is trying to log in"}
-{"level":"info","ts":1745510996.7135649,"caller":"v1/auth.go:70","msg":"User credentials verified successfully"}
-{"level":"info","ts":1745510996.7143197,"caller":"auth/auth.go:31","msg":"User found, his ID: 2"}
-{"level":"info","ts":1745510996.799189,"caller":"auth/auth.go:38","msg":"User with ID 2 has correct password"}
-{"level":"info","ts":1745510996.7992334,"caller":"tokens/create_token.go:19","msg":"Creating access token  for User with ID 2"}
-{"level":"info","ts":1745510996.7992454,"caller":"tokens/create_token.go:22","msg":"Signing Method: RS256with Private key "}
-{"level":"info","ts":1745510996.8008351,"caller":"tokens/create_token.go:19","msg":"Creating refresh token  for User with ID 2"}
-{"level":"info","ts":1745510996.800858,"caller":"tokens/create_token.go:22","msg":"Signing Method: RS256with Private key "}
-{"level":"info","ts":1745510996.8026552,"caller":"v1/auth.go:82","msg":"Access JWT created successfully"}
-{"level":"info","ts":1745510996.8026774,"caller":"v1/auth.go:88","msg":"Refresh JWT created successfully"}
-{"level":"info","ts":1745511003.4218364,"caller":"pkg/kafka_uils.go:33","msg":"Request recieved: {eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU1MTE4OTYsImlhdCI6MTc0NTUxMDk5Niwic3ViIjoyLCJ0eXBlIjoiYWNjZXNzIiwidXNlcm5hbWUiOiJzdHJpbmcxIn0.NjD7TcBF9gfnGnnOUnnK_QjioHV7NXed7hj2TaGgmqMx2qx53nDoLaoE_AfyvaexfvGk3g1sH7yM-aC_ituzwWYTP9ByVMU_lcpTUE1pGPVBVtzP6D7lipJex-ArzPt0cRzI4V2bYPGg_JtB1xP0uMNM2L70jhvnPBnQlcJbUtzUvzbeOwxBuz8VlUL4L3LSy1jW21-lON-xNSwXsoKQpO-8qXZnS7T98Stri7mIIPDUxLltKjvLu67_nErb4uK4Y8pidKEabu_F3cXWqsUZFbW5I0xBl6OKzu46NlqwkL533pGIRAzorNJjzTSHpFF5UdgcM5nWrZqVJE4aNbO1MA eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU1OTczOTYsImlhdCI6MTc0NTUxMDk5Niwic3ViIjoyLCJ0eXBlIjoicmVmcmVzaCJ9.JaJFrN20aRhCTXMslkYwGt_2vaw_z5lr2xY1t0tl3r9iIxdpzJiX8DdqL_05aO6ezB9U9moWowXYvkISoYK3pYrPxv38vxfMHCcZAy8Ri8nw-soaprwS4Y7CE8l8qUCQG8NxFiCBeDnz5y7C8QIPi6ruRo7IwofRN6Rg7Q6ferLesTEQ0w3rDnBOi9R-VCJiOcegVXM52lpixoEtBpW27uZJZeNadZcxYpoURX_zgiIO1lZZmbq7v2UzgKVJNhLFM1gsZhoCRCTIV7x4Da_FuyIL5svBOwa7AdShaxQPDWr6CMWxNxQAvaXPxDNawgwfsBp3VqeFL4FIIxPPXDMUKA 0}\n"}
-{"level":"info","ts":1745511003.4219825,"caller":"consumers/auth_consumer.go:46","msg":"Received message: {\"access-token\":\"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU1MTE4OTYsImlhdCI6MTc0NTUxMDk5Niwic3ViIjoyLCJ0eXBlIjoiYWNjZXNzIiwidXNlcm5hbWUiOiJzdHJpbmcxIn0.NjD7TcBF9gfnGnnOUnnK_QjioHV7NXed7hj2TaGgmqMx2qx53nDoLaoE_AfyvaexfvGk3g1sH7yM-aC_ituzwWYTP9ByVMU_lcpTUE1pGPVBVtzP6D7lipJex-ArzPt0cRzI4V2bYPGg_JtB1xP0uMNM2L70jhvnPBnQlcJbUtzUvzbeOwxBuz8VlUL4L3LSy1jW21-lON-xNSwXsoKQpO-8qXZnS7T98Stri7mIIPDUxLltKjvLu67_nErb4uK4Y8pidKEabu_F3cXWqsUZFbW5I0xBl6OKzu46NlqwkL533pGIRAzorNJjzTSHpFF5UdgcM5nWrZqVJE4aNbO1MA\",\"refresh-token\":\"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU1OTczOTYsImlhdCI6MTc0NTUxMDk5Niwic3ViIjoyLCJ0eXBlIjoicmVmcmVzaCJ9.JaJFrN20aRhCTXMslkYwGt_2vaw_z5lr2xY1t0tl3r9iIxdpzJiX8DdqL_05aO6ezB9U9moWowXYvkISoYK3pYrPxv38vxfMHCcZAy8Ri8nw-soaprwS4Y7CE8l8qUCQG8NxFiCBeDnz5y7C8QIPi6ruRo7IwofRN6Rg7Q6ferLesTEQ0w3rDnBOi9R-VCJiOcegVXM52lpixoEtBpW27uZJZeNadZcxYpoURX_zgiIO1lZZmbq7v2UzgKVJNhLFM1gsZhoCRCTIV7x4Da_FuyIL5svBOwa7AdShaxQPDWr6CMWxNxQAvaXPxDNawgwfsBp3VqeFL4FIIxPPXDMUKA\",\"partition\":0} from topic:jwtCheckRequest[0]@6\n"}
-{"level":"info","ts":1745511003.422567,"caller":"tokens/verify_token.go:23","msg":"\nToken is valid need to check time\n"}
-{"level":"info","ts":1745511003.4226208,"caller":"tokens/verify_token.go:27","msg":"Now: 2025-04-24 19:10:03.422606926 +0300 +03 m=+306.017253866 Exp: 2025-04-24 19:24:56 +0300 +03"}
-{"level":"info","ts":1745511003.4229655,"caller":"auth/auth.go:70","msg":"access Token is valid"}
-{"level":"info","ts":1745511003.423021,"caller":"auth/auth.go:84","msg":"Token type is correct"}
-{"level":"info","ts":1745511003.4230423,"caller":"auth/auth.go:92","msg":"User ID from access Token is: 2"}
-{"level":"info","ts":1745511003.4238536,"caller":"auth/auth.go:100","msg":"User found successfully"}
-{"level":"info","ts":1745511003.4241545,"caller":"tokens/verify_token.go:23","msg":"\nToken is valid need to check time\n"}
-{"level":"info","ts":1745511003.4241986,"caller":"tokens/verify_token.go:27","msg":"Now: 2025-04-24 19:10:03.424185857 +0300 +03 m=+306.018832799 Exp: 2025-04-25 19:09:56 +0300 +03"}
-{"level":"info","ts":1745511003.4242222,"caller":"auth/auth.go:70","msg":"refresh Token is valid"}
-{"level":"info","ts":1745511003.4242413,"caller":"auth/auth.go:84","msg":"Token type is correct"}
-{"level":"info","ts":1745511003.4242644,"caller":"auth/auth.go:92","msg":"User ID from refresh Token is: 2"}
-{"level":"info","ts":1745511003.424649,"caller":"auth/auth.go:100","msg":"User found successfully"}
-{"level":"info","ts":1745511003.4246976,"caller":"tokens/create_token.go:19","msg":"Creating access token  for User with ID 2"}
-{"level":"info","ts":1745511003.4247203,"caller":"tokens/create_token.go:22","msg":"Signing Method: RS256with Private key "}
-{"level":"info","ts":1745511003.428471,"caller":"auth/auth.go:125","msg":"Access JWT created successfully"}
-{"level":"info","ts":1745511003.4318092,"caller":"producers/auth_producer.go:20","msg":"Producer created successfully"}
-{"level":"error","ts":1745511003.4390361,"caller":"producers/auth_producer.go:38","msg":"Delivered message to jwtCheckAnswer [0] at offset 6","stacktrace":"authservice/internal/adapter/kafka/producers.AnswerToken.func1\n\t/home/mashakosher/proga/InternShip/authservice/internal/adapter/kafka/producers/auth_producer.go:38"}
+{"level":"info","ts":1745767817.2440925,"caller":"keys/keys.go:28","msg":"publicPath: /home/mashakosher/proga/InternShip/authservice/internal/config/keys/jwt-public.pem"}
+{"level":"info","ts":1745767817.2441623,"caller":"keys/keys.go:29","msg":"privatePath: /home/mashakosher/proga/InternShip/authservice/internal/config/keys/jwt-private.pem"}
+{"level":"info","ts":1745767817.2443805,"caller":"keys/keys.go:74","msg":"PUBLIC KEY readed succesfully"}
+{"level":"info","ts":1745767817.2446935,"caller":"keys/keys.go:74","msg":"PRIVATE KEY readed succesfully"}
+{"level":"info","ts":1745767817.2591841,"caller":"sql/connect.go:26","msg":"Successful connection to DB"}
+{"level":"info","ts":1745767817.3570955,"caller":"consumers/auth_consumer.go:27","msg":"Kafka Answer Auth Tokens Consumer connected successfully"}
+{"level":"info","ts":1745771940.1491036,"caller":"v1/auth.go:63","msg":"User with UserName string is trying to log in"}
+{"level":"info","ts":1745771940.149222,"caller":"v1/auth.go:70","msg":"User credentials verified successfully"}
+{"level":"info","ts":1745771940.1508515,"caller":"auth/auth.go:31","msg":"User found, his ID: 1"}
+{"level":"info","ts":1745771940.233896,"caller":"auth/auth.go:38","msg":"User with ID 1 has correct password"}
+{"level":"info","ts":1745771940.233955,"caller":"tokens/create_token.go:19","msg":"Creating access token  for User with ID 1"}
+{"level":"info","ts":1745771940.2339802,"caller":"tokens/create_token.go:22","msg":"Signing Method: RS256with Private key "}
+{"level":"info","ts":1745771940.2358942,"caller":"tokens/create_token.go:19","msg":"Creating refresh token  for User with ID 1"}
+{"level":"info","ts":1745771940.2359195,"caller":"tokens/create_token.go:22","msg":"Signing Method: RS256with Private key "}
+{"level":"info","ts":1745771940.2380493,"caller":"v1/auth.go:82","msg":"Access JWT created successfully"}
+{"level":"info","ts":1745771940.238085,"caller":"v1/auth.go:88","msg":"Refresh JWT created successfully"}
+{"level":"info","ts":1745771943.0719116,"caller":"pkg/kafka_uils.go:33","msg":"Request recieved: {eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU3NzI4NDAsImlhdCI6MTc0NTc3MTk0MCwic3ViIjoxLCJ0eXBlIjoiYWNjZXNzIiwidXNlcm5hbWUiOiJzdHJpbmcifQ.PPnx0r3VWMtWmT3NUQcHldyVNlah3s932x4vObSnak0cBlXNcMG5ZYVqwzsLM-k2O5FOnAqmHzHvMYRwah7n8IS9bj8HkTGMlah7XybvsuagX2sBD2Fufl01QeJaKDm6oU7eHJnMkPO4jW3ceVGOYBl13HtnfmWbN2_QrBz0KlrfV06XX1HgJgPU8zfVatXSey8qsDT-_Uz1TDL0280nv4HqpxW5NZa7Hj3RcXjwOn-fN4t38EEa5EOoHAEbxDYX497xcDPVvuI0q4ItJRbBMm87c1JXWUPAXOCIMPegmsvJlHD71HkrEwW4FTOeaNk5RRhlutEDr3nsk_vNRQiX5Q eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU4NTgzNDAsImlhdCI6MTc0NTc3MTk0MCwic3ViIjoxLCJ0eXBlIjoicmVmcmVzaCJ9.gweKJldAyrKU-tkcwMEs_yBKloKx7caf5uXEHHSu7gHzEVrV0IFUYBWakSVWVlRFGcfhI2JfWD39tMkWBW3DoPLJ4XOUIiTKJhCHV0H_n3szHW2C1WBcI8JVJSm1Sru1KsSJiFrbVrxHlt_RKZs8R5ssSLIPE89-8sJG7tx_LWMzK8JxQLEJJSGAMnuqwIXfi2R0Vg5npMyFsJoMJaLTpaDCXz27-a59RlMl-xKSVUyyM7j_PohCOdR6F4LmboqHfMRvrZskRvZ6WOtqxo_Bk1tYD9A68JZcMSnZYnUpMpbAmo2zYUD-OmJsHigvZ_-yVOb_Yuczo1iD7nSdszaT7Q 2}\n"}
+{"level":"info","ts":1745771943.0739424,"caller":"consumers/auth_consumer.go:46","msg":"Received message: {\"access-token\":\"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU3NzI4NDAsImlhdCI6MTc0NTc3MTk0MCwic3ViIjoxLCJ0eXBlIjoiYWNjZXNzIiwidXNlcm5hbWUiOiJzdHJpbmcifQ.PPnx0r3VWMtWmT3NUQcHldyVNlah3s932x4vObSnak0cBlXNcMG5ZYVqwzsLM-k2O5FOnAqmHzHvMYRwah7n8IS9bj8HkTGMlah7XybvsuagX2sBD2Fufl01QeJaKDm6oU7eHJnMkPO4jW3ceVGOYBl13HtnfmWbN2_QrBz0KlrfV06XX1HgJgPU8zfVatXSey8qsDT-_Uz1TDL0280nv4HqpxW5NZa7Hj3RcXjwOn-fN4t38EEa5EOoHAEbxDYX497xcDPVvuI0q4ItJRbBMm87c1JXWUPAXOCIMPegmsvJlHD71HkrEwW4FTOeaNk5RRhlutEDr3nsk_vNRQiX5Q\",\"refresh-token\":\"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU4NTgzNDAsImlhdCI6MTc0NTc3MTk0MCwic3ViIjoxLCJ0eXBlIjoicmVmcmVzaCJ9.gweKJldAyrKU-tkcwMEs_yBKloKx7caf5uXEHHSu7gHzEVrV0IFUYBWakSVWVlRFGcfhI2JfWD39tMkWBW3DoPLJ4XOUIiTKJhCHV0H_n3szHW2C1WBcI8JVJSm1Sru1KsSJiFrbVrxHlt_RKZs8R5ssSLIPE89-8sJG7tx_LWMzK8JxQLEJJSGAMnuqwIXfi2R0Vg5npMyFsJoMJaLTpaDCXz27-a59RlMl-xKSVUyyM7j_PohCOdR6F4LmboqHfMRvrZskRvZ6WOtqxo_Bk1tYD9A68JZcMSnZYnUpMpbAmo2zYUD-OmJsHigvZ_-yVOb_Yuczo1iD7nSdszaT7Q\",\"partition\":2} from topic:jwtCheckRequest[2]@0\n"}
+{"level":"info","ts":1745771943.074331,"caller":"tokens/verify_token.go:23","msg":"\nToken is valid need to check time\n"}
+{"level":"info","ts":1745771943.0745478,"caller":"tokens/verify_token.go:27","msg":"Now: 2025-04-27 19:39:03.074405824 +0300 +03 m=+4125.400320625 Exp: 2025-04-27 19:54:00 +0300 +03"}
+{"level":"info","ts":1745771943.0745902,"caller":"auth/auth.go:70","msg":"access Token is valid"}
+{"level":"info","ts":1745771943.074616,"caller":"auth/auth.go:84","msg":"Token type is correct"}
+{"level":"info","ts":1745771943.0746381,"caller":"auth/auth.go:92","msg":"User ID from access Token is: 1"}
+{"level":"info","ts":1745771943.0764039,"caller":"auth/auth.go:100","msg":"User found successfully"}
+{"level":"info","ts":1745771943.0766463,"caller":"tokens/verify_token.go:23","msg":"\nToken is valid need to check time\n"}
+{"level":"info","ts":1745771943.076688,"caller":"tokens/verify_token.go:27","msg":"Now: 2025-04-27 19:39:03.076675011 +0300 +03 m=+4125.402589813 Exp: 2025-04-28 19:39:00 +0300 +03"}
+{"level":"info","ts":1745771943.076709,"caller":"auth/auth.go:70","msg":"refresh Token is valid"}
+{"level":"info","ts":1745771943.0767274,"caller":"auth/auth.go:84","msg":"Token type is correct"}
+{"level":"info","ts":1745771943.0767484,"caller":"auth/auth.go:92","msg":"User ID from refresh Token is: 1"}
+{"level":"info","ts":1745771943.0781724,"caller":"auth/auth.go:100","msg":"User found successfully"}
+{"level":"info","ts":1745771943.0782664,"caller":"tokens/create_token.go:19","msg":"Creating access token  for User with ID 1"}
+{"level":"info","ts":1745771943.0784507,"caller":"tokens/create_token.go:22","msg":"Signing Method: RS256with Private key "}
+{"level":"info","ts":1745771943.0827632,"caller":"auth/auth.go:125","msg":"Access JWT created successfully"}
+{"level":"info","ts":1745771943.1179194,"caller":"producers/auth_producer.go:20","msg":"Producer created successfully"}
+{"level":"error","ts":1745771943.1255631,"caller":"producers/auth_producer.go:38","msg":"Delivered message to jwtCheckAnswer [2] at offset 0","stacktrace":"authservice/internal/adapter/kafka/producers.AnswerToken.func1\n\t/home/mashakosher/proga/InternShip/authservice/internal/adapter/kafka/producers/auth_producer.go:38"}
+{"level":"info","ts":1745771956.9503918,"caller":"v1/auth.go:63","msg":"User with UserName string1 is trying to log in"}
+{"level":"info","ts":1745771956.950471,"caller":"v1/auth.go:70","msg":"User credentials verified successfully"}
+{"level":"info","ts":1745771956.951321,"caller":"auth/auth.go:31","msg":"User found, his ID: 2"}
+{"level":"info","ts":1745771957.0338628,"caller":"auth/auth.go:38","msg":"User with ID 2 has correct password"}
+{"level":"info","ts":1745771957.0339236,"caller":"tokens/create_token.go:19","msg":"Creating access token  for User with ID 2"}
+{"level":"info","ts":1745771957.0339403,"caller":"tokens/create_token.go:22","msg":"Signing Method: RS256with Private key "}
+{"level":"info","ts":1745771957.035981,"caller":"tokens/create_token.go:19","msg":"Creating refresh token  for User with ID 2"}
+{"level":"info","ts":1745771957.0360115,"caller":"tokens/create_token.go:22","msg":"Signing Method: RS256with Private key "}
+{"level":"info","ts":1745771957.0381167,"caller":"v1/auth.go:82","msg":"Access JWT created successfully"}
+{"level":"info","ts":1745771957.0381444,"caller":"v1/auth.go:88","msg":"Refresh JWT created successfully"}
+{"level":"info","ts":1745771961.198839,"caller":"pkg/kafka_uils.go:33","msg":"Request recieved: {eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU3NzI4NTcsImlhdCI6MTc0NTc3MTk1Nywic3ViIjoyLCJ0eXBlIjoiYWNjZXNzIiwidXNlcm5hbWUiOiJzdHJpbmcxIn0.DP8bIxXAffMabWnQwKbXdvj-2sfrlpZ_BREiUFjNapagHgq6b9WIKKWvMYcGahMtmZCh5U0nmEFM9a9qYqbW3nTh5fJaUB5cm0KF07666Z7SQbn17Dr3vhPMAAKM8MEt8rTczz_aX6V2XhQ4jwQ70X5uTSZRiReBZGHjNiJyF6MzkdEFZTBly4xfU_qwjCYdoBCOwXfe9pD6jZa37CfS__EDukPW1IMtfYxsbHkk-g_tPU_SRKHPO5mEW83DmBx1PG-w_eSTrxoEoM3twEcRzz0QloNZ-95Cy9WSt2Rn9S3SSh-ZBCcNtTTZDos0rSMGW09Regj-3NqIPnBawu-wmw eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU4NTgzNTcsImlhdCI6MTc0NTc3MTk1Nywic3ViIjoyLCJ0eXBlIjoicmVmcmVzaCJ9.FasEuwlVVrXOI0AlnQSVKK-4cBJ4kXk364dJtI9S7sCR7r4oBV58KX11ZUMZUpWy9WbBrhuqtwpwXjmRMvh-o1UplWvMAR2VSxrjXZbRR-zRdL6n4u7Rfj9F-Ai2bcgghn5oj3PSFwMhJTg4OVmmZgD01grRx4GajGzxGIiVvLVUdvmoxt1aYP4EezovmEv-hYyEwvKctLEwMskoAyxwmYpDo8VNlaTc_fnrqboCKx1s728fA929UYvlhxgvNbzSN_Ek7_WfjCa9owhbgVLqj9SToc4mfFRjf6tGc8QKZlBN1UgabjT3eYkN9irHkhWUWsEPJ0I1FQjC_iPKyXP8Ug 2}\n"}
+{"level":"info","ts":1745771961.199438,"caller":"consumers/auth_consumer.go:46","msg":"Received message: {\"access-token\":\"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU3NzI4NTcsImlhdCI6MTc0NTc3MTk1Nywic3ViIjoyLCJ0eXBlIjoiYWNjZXNzIiwidXNlcm5hbWUiOiJzdHJpbmcxIn0.DP8bIxXAffMabWnQwKbXdvj-2sfrlpZ_BREiUFjNapagHgq6b9WIKKWvMYcGahMtmZCh5U0nmEFM9a9qYqbW3nTh5fJaUB5cm0KF07666Z7SQbn17Dr3vhPMAAKM8MEt8rTczz_aX6V2XhQ4jwQ70X5uTSZRiReBZGHjNiJyF6MzkdEFZTBly4xfU_qwjCYdoBCOwXfe9pD6jZa37CfS__EDukPW1IMtfYxsbHkk-g_tPU_SRKHPO5mEW83DmBx1PG-w_eSTrxoEoM3twEcRzz0QloNZ-95Cy9WSt2Rn9S3SSh-ZBCcNtTTZDos0rSMGW09Regj-3NqIPnBawu-wmw\",\"refresh-token\":\"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU4NTgzNTcsImlhdCI6MTc0NTc3MTk1Nywic3ViIjoyLCJ0eXBlIjoicmVmcmVzaCJ9.FasEuwlVVrXOI0AlnQSVKK-4cBJ4kXk364dJtI9S7sCR7r4oBV58KX11ZUMZUpWy9WbBrhuqtwpwXjmRMvh-o1UplWvMAR2VSxrjXZbRR-zRdL6n4u7Rfj9F-Ai2bcgghn5oj3PSFwMhJTg4OVmmZgD01grRx4GajGzxGIiVvLVUdvmoxt1aYP4EezovmEv-hYyEwvKctLEwMskoAyxwmYpDo8VNlaTc_fnrqboCKx1s728fA929UYvlhxgvNbzSN_Ek7_WfjCa9owhbgVLqj9SToc4mfFRjf6tGc8QKZlBN1UgabjT3eYkN9irHkhWUWsEPJ0I1FQjC_iPKyXP8Ug\",\"partition\":2} from topic:jwtCheckRequest[2]@1\n"}
+{"level":"info","ts":1745771961.199739,"caller":"tokens/verify_token.go:23","msg":"\nToken is valid need to check time\n"}
+{"level":"info","ts":1745771961.200197,"caller":"tokens/verify_token.go:27","msg":"Now: 2025-04-27 19:39:21.200178777 +0300 +03 m=+4143.526093577 Exp: 2025-04-27 19:54:17 +0300 +03"}
+{"level":"info","ts":1745771961.2002687,"caller":"auth/auth.go:70","msg":"access Token is valid"}
+{"level":"info","ts":1745771961.2005594,"caller":"auth/auth.go:84","msg":"Token type is correct"}
+{"level":"info","ts":1745771961.2005937,"caller":"auth/auth.go:92","msg":"User ID from access Token is: 2"}
+{"level":"info","ts":1745771961.2017512,"caller":"auth/auth.go:100","msg":"User found successfully"}
+{"level":"info","ts":1745771961.2019835,"caller":"tokens/verify_token.go:23","msg":"\nToken is valid need to check time\n"}
+{"level":"info","ts":1745771961.2020376,"caller":"tokens/verify_token.go:27","msg":"Now: 2025-04-27 19:39:21.202022689 +0300 +03 m=+4143.527937474 Exp: 2025-04-28 19:39:17 +0300 +03"}
+{"level":"info","ts":1745771961.2020617,"caller":"auth/auth.go:70","msg":"refresh Token is valid"}
+{"level":"info","ts":1745771961.202087,"caller":"auth/auth.go:84","msg":"Token type is correct"}
+{"level":"info","ts":1745771961.2021143,"caller":"auth/auth.go:92","msg":"User ID from refresh Token is: 2"}
+{"level":"info","ts":1745771961.2073905,"caller":"auth/auth.go:100","msg":"User found successfully"}
+{"level":"info","ts":1745771961.2075768,"caller":"tokens/create_token.go:19","msg":"Creating access token  for User with ID 2"}
+{"level":"info","ts":1745771961.2077634,"caller":"tokens/create_token.go:22","msg":"Signing Method: RS256with Private key "}
+{"level":"info","ts":1745771961.214533,"caller":"auth/auth.go:125","msg":"Access JWT created successfully"}
+{"level":"info","ts":1745771961.249628,"caller":"producers/auth_producer.go:20","msg":"Producer created successfully"}
+{"level":"error","ts":1745771961.2600334,"caller":"producers/auth_producer.go:38","msg":"Delivered message to jwtCheckAnswer [2] at offset 1","stacktrace":"authservice/internal/adapter/kafka/producers.AnswerToken.func1\n\t/home/mashakosher/proga/InternShip/authservice/internal/adapter/kafka/producers/auth_producer.go:38"}

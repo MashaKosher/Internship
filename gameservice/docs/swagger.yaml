@@ -1,0 +1,55 @@
+basePath: /
+definitions:
+  entity.AuthAnswer:
+    properties:
+      err:
+        type: string
+      id:
+        type: integer
+      login:
+        type: string
+      new-access-token:
+        type: string
+      role:
+        type: string
+    type: object
+  entity.Error:
+    properties:
+      error:
+        type: string
+    type: object
+externalDocs:
+  description: OpenAPI
+  url: https://swagger.io/resources/open-api/
+host: localhost:8005
+info:
+  contact: {}
+  description: Auth server API
+  title: Game service
+  version: "1.0"
+paths:
+  /game/check-token:
+    get:
+      description: Verifies JWT token validity and returns user information
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Token validation response with user data
+          schema:
+            $ref: '#/definitions/entity.AuthAnswer'
+        "400":
+          description: Invalid token format
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "401":
+          description: Missing or invalid token
+          schema:
+            $ref: '#/definitions/entity.Error'
+      summary: Validate JWT token
+      tags:
+      - Authentication
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"
