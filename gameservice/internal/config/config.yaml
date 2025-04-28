@@ -1,0 +1,30 @@
+server:
+  host: localhost
+  port: 8005
+
+logger:
+  filename: app.log
+
+
+clickhouse:
+  host: localhost
+  port: 9000
+  name: game
+  user: my_user
+  password: my_password
+
+
+kafka:
+  host: localhost
+  port: 9092
+  partition: 2
+  auth_topic_send: jwtCheckAnswer
+  auth_topic_recieve: jwtCheckRequest
+  gameSettings_topic_recieve: gameSettings
+
+
+  
+
+
+
+

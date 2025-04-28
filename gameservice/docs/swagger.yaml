@@ -1,0 +1,108 @@
+basePath: /
+definitions:
+  entity.AuthAnswer:
+    properties:
+      err:
+        type: string
+      id:
+        type: integer
+      login:
+        type: string
+      new-access-token:
+        type: string
+      role:
+        type: string
+    type: object
+  entity.Error:
+    properties:
+      error:
+        type: string
+    type: object
+  entity.GameSettings:
+    properties:
+      lose-amount:
+        type: number
+      waiting-time:
+        type: integer
+      win-amount:
+        type: number
+    type: object
+externalDocs:
+  description: OpenAPI
+  url: https://swagger.io/resources/open-api/
+host: localhost:8005
+info:
+  contact: {}
+  description: Auth server API
+  title: Game service
+  version: "1.0"
+paths:
+  /game/check-token:
+    get:
+      description: Verifies JWT token validity and returns user information
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Token validation response with user data
+          schema:
+            $ref: '#/definitions/entity.AuthAnswer'
+        "400":
+          description: Invalid token format
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "401":
+          description: Missing or invalid token
+          schema:
+            $ref: '#/definitions/entity.Error'
+      summary: Validate JWT token
+      tags:
+      - Authentication
+  /game/play:
+    get:
+      consumes:
+      - application/json
+      description: Start a game and wait for a second player to join.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Start a new game
+      tags:
+      - Game
+  /game/settings:
+    get:
+      consumes:
+      - application/json
+      description: Returns current  Game Settings (Win amount, Lose amount and Waitng
+        Time)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.GameSettings'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.Error'
+      summary: Recieve Game Settings
+      tags:
+      - Game
+  /game/statistic:
+    get:
+      produces:
+      - application/json
+      responses: {}
+      tags:
+      - Game
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"

@@ -6,6 +6,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 
+	"adminservice/internal/adapter/kafka/producers"
 	"adminservice/internal/usecase"
 	"adminservice/internal/usecase/plan"
 	"adminservice/internal/usecase/settings"
@@ -98,6 +99,8 @@ func (gr *settingsRoutes) gameSettings(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+
+	go producers.SendGameSettings(settings)
 
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(settings)

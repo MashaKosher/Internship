@@ -10,28 +10,25 @@ type config struct {
 		Host string `mapstructure:"host"`
 	} `mapstructure:"server"`
 
-	DB struct {
+	Logger struct {
+		FileName string `mapstructure:"filename"`
+	} `mapstructure:"logger"`
+
+	Clickhouse struct {
 		Host     string `mapstructure:"host"`
 		Port     string `mapstructure:"port"`
 		Name     string `mapstructure:"name"`
 		User     string `mapstructure:"user"`
 		Password string `mapstructure:"password"`
-		SSLMode  string `mapstructure:"ssl_mode"`
-	} `mapstructure:"db"`
-
-	Logger struct {
-		FileName string `mapstructure:"filename"`
-	} `mapstructure:"logger"`
+	} `mapstructure:"clickhouse"`
 
 	Kafka struct {
-		Host                  string `mapstructure:"host"`
-		Port                  string `mapstructure:"port"`
-		Partition             int32  `mapstructure:"partition"`
-		AuthTopicSend         string `mapstructure:"auth_topic_send"`
-		AuthTopicRecieve      string `mapstructure:"auth_topic_recieve"`
-		SeasonTopicSend       string `mapstructure:"season_topic_send"`
-		DailyTaskTopicSend    string `mapstructure:"dailyTasks_topic_send"`
-		GameSettingsTopicSend string `mapstructure:"gameSettings_topic_send"`
+		Host                     string `mapstructure:"host"`
+		Port                     string `mapstructure:"port"`
+		Partition                int32  `mapstructure:"partition"`
+		AuthTopicSend            string `mapstructure:"auth_topic_send"`
+		AuthTopicRecieve         string `mapstructure:"auth_topic_recieve"`
+		GameSettingsTopicRecieve string `mapstructure:"gameSettings_topic_recieve"`
 	} `mapstructure:"kafka"`
 }
 

@@ -39,7 +39,6 @@ func CheckToken(accessToken, resfreshToken string) {
 
 	logger.Logger.Info("Message sent, waiting for delivery confirmation...")
 
-	// Ожидаем подтверждения доставки
 	go func() {
 		event := <-deliveryChan
 		switch e := event.(type) {
