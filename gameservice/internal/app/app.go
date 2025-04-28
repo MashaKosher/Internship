@@ -2,10 +2,13 @@ package app
 
 import (
 	"context"
-	gameRepo "gameservice/internal/adapter/db/mongo/game"
+	gameRepo "gameservice/internal/adapter/db/clickhouse/game"
+	"gameservice/internal/adapter/kafka/consumers"
+	redisRepo "gameservice/internal/adapter/redis/game_settings"
 	"gameservice/internal/config"
 	v1 "gameservice/internal/controller"
-	mongodb "gameservice/pkg/client/mongo"
+	"gameservice/pkg/client/clickhouse"
+	"gameservice/pkg/client/redis"
 	"gameservice/pkg/logger"
 	"net/http"
 	"os"
@@ -26,19 +29,26 @@ func Run() {
 	defer logger.L.Sync()
 	defer logger.L.Info("Program ended")
 
-	ctx, client, db := mongodb.MongoConnect()
+	redisDB, ctx := redis.InitRedis()
 
-	defer func() {
-		if err := client.Disconnect(ctx); err != nil {
-			logger.L.Fatal(err.Error())
-		}
+	// Здесь нужна БД
+	db := clickhouse.ConnectClickHouse()
 
-		logger.L.Info("Mongo Disconnected")
-	}()
+	gameRepository := gameRepo.New(db)
+	redisRepository := redisRepo.New(redisDB, ctx)
+
+	if err := gameRepository.CreateGameResultsTable(); err != nil {
+		logger.L.Fatal("Problems with creating tables")
+	}
+
+	logger.L.Info("ClickHouse table created successfully")
 
 	gameUseCase := game.New(
-		gameRepo.New(db),
+		gameRepository,
+		redisRepository,
 	)
+
+	go consumers.GameSettingsConsumer(redisRepository)
 
 	// Graceful Shutdown
 	e := echo.New()

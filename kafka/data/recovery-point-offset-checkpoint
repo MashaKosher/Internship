@@ -1,14 +1,15 @@
 0
-66
+70
 __consumer_offsets 13 0
 seasons 1 0
-jwtCheckRequest 2 2
+jwtCheckRequest 2 25
 __consumer_offsets 46 0
 __consumer_offsets 9 0
 __consumer_offsets 42 0
 __consumer_offsets 21 0
-jwtCheckAnswer 0 8
+jwtCheckAnswer 0 10
 __consumer_offsets 17 0
+gameSettings 3 0
 __consumer_offsets 30 0
 jwtCheckAnswer 1 4
 dailyTasks 2 0
@@ -27,6 +28,7 @@ __consumer_offsets 20 0
 __consumer_offsets 49 0
 __consumer_offsets 0 0
 __consumer_offsets 29 0
+gameSettings 0 2
 __consumer_offsets 25 0
 dailyTasks 1 0
 __consumer_offsets 8 0
@@ -34,8 +36,8 @@ __consumer_offsets 37 0
 __consumer_offsets 4 0
 seasons 2 0
 __consumer_offsets 33 0
-__consumer_offsets 15 1333
-jwtCheckRequest 0 7
+__consumer_offsets 15 1406
+jwtCheckRequest 0 9
 __consumer_offsets 48 0
 __consumer_offsets 11 0
 __consumer_offsets 44 0
@@ -45,6 +47,7 @@ __consumer_offsets 32 0
 dailyTasks 0 9
 __consumer_offsets 28 0
 jwtCheckAnswer 3 0
+gameSettings 1 0
 __consumer_offsets 7 0
 __consumer_offsets 40 0
 __consumer_offsets 3 0
@@ -61,8 +64,9 @@ __consumer_offsets 18 0
 __consumer_offsets 31 0
 dailyTasks 3 0
 __consumer_offsets 27 0
-jwtCheckAnswer 2 2
+jwtCheckAnswer 2 25
+gameSettings 2 0
 __consumer_offsets 39 0
 __consumer_offsets 6 0
 __consumer_offsets 35 0
-__consumer_offsets 2 385
+__consumer_offsets 2 410

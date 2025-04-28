@@ -1,4 +1,3 @@
-{"level":"info","ts":1745780569.4057922,"caller":"mongo/connect.go:65","msg":"Successfully connected to MongoDB!"}
-{"level":"info","ts":1745780570.2025824,"caller":"app/app.go:66","msg":"Server gracefully stopped"}
-{"level":"info","ts":1745780570.203703,"caller":"app/app.go:34","msg":"Mongo Disconnected"}
-{"level":"info","ts":1745780570.2039335,"caller":"app/app.go:67","msg":"Program ended"}
+{"level":"info","ts":1745865255.389448,"caller":"clickhouse/connect.go:36","msg":"Connected to ClickHouse!"}
+{"level":"info","ts":1745865255.3911521,"caller":"app/app.go:44","msg":"ClickHouse table created successfully"}
+{"level":"info","ts":1745865255.3954382,"caller":"consumers/game_settings_consumer.go:25","msg":"Kafka Game Settings Consumer connected successfully"}

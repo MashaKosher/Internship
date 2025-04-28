@@ -46,6 +46,72 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/game/play": {
+            "get": {
+                "description": "Start a game and wait for a second player to join.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Game"
+                ],
+                "summary": "Start a new game",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/game/settings": {
+            "get": {
+                "description": "Returns current  Game Settings (Win amount, Lose amount and Waitng Time)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Game"
+                ],
+                "summary": "Recieve Game Settings",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.GameSettings"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/game/statistic": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Game"
+                ],
+                "responses": {}
+            }
         }
     },
     "definitions": {
@@ -74,6 +140,20 @@ const docTemplate = `{
             "properties": {
                 "error": {
                     "type": "string"
+                }
+            }
+        },
+        "entity.GameSettings": {
+            "type": "object",
+            "properties": {
+                "lose-amount": {
+                    "type": "number"
+                },
+                "waiting-time": {
+                    "type": "integer"
+                },
+                "win-amount": {
+                    "type": "number"
                 }
             }
         }

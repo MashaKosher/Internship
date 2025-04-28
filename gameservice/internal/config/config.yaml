@@ -6,12 +6,12 @@ logger:
   filename: app.log
 
 
-mongo:
+clickhouse:
   host: localhost
-  port: 27017
+  port: 9000
   name: game
-  user: root
-  password: example
+  user: my_user
+  password: my_password
 
 
 kafka:
@@ -20,6 +20,8 @@ kafka:
   partition: 2
   auth_topic_send: jwtCheckAnswer
   auth_topic_recieve: jwtCheckRequest
+  gameSettings_topic_recieve: gameSettings
+
 
   
 

@@ -160,18 +160,18 @@ services:
     restart: unless-stopped
 
 
-  mongodb:
-    image: mongo:latest
-    container_name: mongodb
-    restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
-      MONGO_INITDB_DATABASE: game_db
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongodb_data:/data/db
+  # mongodb:
+  #   image: mongo:latest
+  #   container_name: mongodb
+  #   restart: always
+  #   environment:
+  #     MONGO_INITDB_ROOT_USERNAME: root
+  #     MONGO_INITDB_ROOT_PASSWORD: example
+  #     MONGO_INITDB_DATABASE: game_db
+  #   ports:
+  #     - "27017:27017"
+  #   volumes:
+  #     - mongodb_data:/data/db
 
 
   # admin:
@@ -195,6 +195,28 @@ services:
   #     - postgres
   #     - kafka
 
+
+  clickhouse-server:
+    image: clickhouse/clickhouse-server:latest
+    container_name: clickhouse
+    ports:
+      - "8123:8123"  # HTTP интерфейс
+      - "9000:9000"  # Native protocol
+      - "9009:9009"  # Interserver communication
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+      - clickhouse_log:/var/log/clickhouse-server
+      - ./clickhouse-config.xml:/etc/clickhouse-server/config.d/custom.xml
+    environment:
+      - TZ=UTC
+      - CLICKHOUSE_DB=game
+      - CLICKHOUSE_USER=my_user
+      - CLICKHOUSE_PASSWORD=my_password
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+
 networks:
   my_shared_network:
     external: true
@@ -208,4 +230,6 @@ volumes:
   redis_data:
   es_data:
     driver: local
-  mongodb_data:
+  # mongodb_data:
+  clickhouse_data:
+  clickhouse_log:

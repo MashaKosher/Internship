@@ -14,20 +14,21 @@ type config struct {
 		FileName string `mapstructure:"filename"`
 	} `mapstructure:"logger"`
 
-	MongoDB struct {
+	Clickhouse struct {
 		Host     string `mapstructure:"host"`
 		Port     string `mapstructure:"port"`
 		Name     string `mapstructure:"name"`
 		User     string `mapstructure:"user"`
 		Password string `mapstructure:"password"`
-	} `mapstructure:"mongo"`
+	} `mapstructure:"clickhouse"`
 
 	Kafka struct {
-		Host             string `mapstructure:"host"`
-		Port             string `mapstructure:"port"`
-		Partition        int32  `mapstructure:"partition"`
-		AuthTopicSend    string `mapstructure:"auth_topic_send"`
-		AuthTopicRecieve string `mapstructure:"auth_topic_recieve"`
+		Host                     string `mapstructure:"host"`
+		Port                     string `mapstructure:"port"`
+		Partition                int32  `mapstructure:"partition"`
+		AuthTopicSend            string `mapstructure:"auth_topic_send"`
+		AuthTopicRecieve         string `mapstructure:"auth_topic_recieve"`
+		GameSettingsTopicRecieve string `mapstructure:"gameSettings_topic_recieve"`
 	} `mapstructure:"kafka"`
 }
 

@@ -22,6 +22,7 @@ kafka:
   auth_topic_recieve: jwtCheckRequest
   season_topic_send: seasons
   dailyTasks_topic_send: dailyTasks
+  gameSettings_topic_send: gameSettings
 
   
 

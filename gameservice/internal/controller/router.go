@@ -11,6 +11,7 @@ func NewRouter(e *echo.Echo, gameUseCase usecase.Game) {
 
 	// Swagger route initialize
 	routes.InitSwaggerRoutes(e)
+	routes.InitWSRoutes(e, gameUseCase)
 	routes.InitGameRoutes(e, gameUseCase)
 
 }

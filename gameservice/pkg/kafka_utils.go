@@ -36,3 +36,15 @@ func DeserializeAuthAnswer(value []byte, answer entity.AuthAnswer) (entity.AuthA
 
 	return answer, err
 }
+
+func DeserializeGameSettings(value []byte) (entity.GameSettings, error) {
+
+	var gameSettings entity.GameSettings
+	err := json.Unmarshal(value, &gameSettings)
+	logger.L.Info("Game Settings recieved: " + fmt.Sprintln(gameSettings))
+	if err != nil {
+		logger.L.Fatal("Error while consuming: " + err.Error())
+	}
+
+	return gameSettings, err
+}
