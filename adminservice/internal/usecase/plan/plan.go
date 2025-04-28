@@ -19,6 +19,8 @@ func New(r repo.PlanRepo) *UseCase {
 	}
 }
 
+// Опять же, у тебя бизнес логика берет данные из параметров http хендлера, а что если поменяется веб-фрейм, 
+// и будут другие параметры, или вообще транспорт поменяется с http на grpc?
 func (uc *UseCase) PlanSeasons(w http.ResponseWriter, r *http.Request) (entity.Season, error) {
 	// Checking Auth Responce
 	if err := pkg.CheckToken(r); err != nil {
