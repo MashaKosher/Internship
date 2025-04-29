@@ -23,6 +23,13 @@ kafka:
   gameSettings_topic_recieve: gameSettings
 
 
+redis:
+  host: localhost
+  port: 6379
+  password: 
+  db: 0
+
+
   
 
 

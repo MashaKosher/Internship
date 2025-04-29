@@ -1,0 +1,30 @@
+package setup
+
+import (
+	"gameservice/internal/di"
+)
+
+func MustContainer(cfg di.ConfigType) di.Container {
+	logger := mustLogger(cfg)
+	loggerFile := mustLoggerFile(cfg)
+	db := mustDB(cfg, logger)
+	bus := mustBus(cfg, logger)
+	cache := mustCache(cfg, logger)
+	services := mustServices(db, cache, logger, bus)
+
+	return di.Container{
+		Config:     cfg,
+		Logger:     logger,
+		LoggerFile: loggerFile,
+		Services:   services,
+		DB:         db,
+		Bus:        bus,
+		Cache:      cache,
+	}
+}
+
+func DeferContainer(container di.Container) {
+	deferLoggerFile(container.LoggerFile)
+	deferLogger(container.Logger)
+	deferBus(container.Bus)
+}

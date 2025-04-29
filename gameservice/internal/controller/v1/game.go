@@ -7,23 +7,23 @@ import (
 	"strconv"
 
 	"gameservice/internal/controller/middlewares"
+	"gameservice/internal/di"
 	"gameservice/internal/entity"
-	"gameservice/internal/usecase"
-	"gameservice/pkg/logger"
 
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
 )
 
 type gameRoutes struct {
-	u usecase.Game
+	u di.GameService
+	l di.LoggerType
 }
 
-func InitGameRoutes(e *echo.Echo, gameUseCase usecase.Game) {
-	r := &gameRoutes{u: gameUseCase}
+func InitGameRoutes(e *echo.Echo, deps di.Container) {
+	r := &gameRoutes{u: deps.Services.Game, l: deps.Logger}
 
 	group := e.Group("/game")
-	group.Use(middlewares.CheckTokenMiddleWare())
+	group.Use(middlewares.CheckTokenMiddleWare(deps.Logger, deps.Config, deps.Bus))
 	group.GET("/settings", r.gameSettings)
 	group.GET("/check-token", r.checkToken)
 	group.GET("/play", r.playGame)
@@ -97,7 +97,7 @@ func (r *gameRoutes) playerStatistic(c echo.Context) error {
 // @Success 200 {object} map[string]string
 // @Router /game/play [get]
 func (r *gameRoutes) playGame(c echo.Context) error {
-	logger.L.Info("Starting Game")
+	r.l.Info("Starting Game")
 	data, exists := c.Get("data").(entity.AuthAnswer)
 	if !exists {
 		return c.JSON(http.StatusBadRequest, entity.Error{Error: "some error"})
@@ -107,12 +107,12 @@ func (r *gameRoutes) playGame(c echo.Context) error {
 
 	// Формируем URL для подключения к WebSocket
 	u := url.URL{Scheme: "ws", Host: "localhost:8005", Path: "/ws", RawQuery: "player_id=" + strconv.Itoa(int(playerID))}
-	logger.L.Info("Подключение к " + u.String())
+	r.l.Info("Подключение к " + u.String())
 
 	// Устанавливаем соединение
 	wsConn, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
 	if err != nil {
-		logger.L.Error("Ошибка при подключении к WebSocket:" + err.Error())
+		r.l.Error("Ошибка при подключении к WebSocket:" + err.Error())
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "не удалось подключиться к WebSocket"})
 	}
 	defer wsConn.Close()
@@ -120,14 +120,14 @@ func (r *gameRoutes) playGame(c echo.Context) error {
 	// Ожидаем сообщение от сервера
 	_, message, err := wsConn.ReadMessage()
 	if err != nil {
-		logger.L.Error("Ошибка при чтении сообщения: " + err.Error())
+		r.l.Error("Ошибка при чтении сообщения: " + err.Error())
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "ошибка при чтении сообщения"})
 	}
 
 	// Декодируем JSON-ответ
 	var result map[string]interface{}
 	if err := json.Unmarshal(message, &result); err != nil {
-		logger.L.Error("Ошибка при декодировании JSON:" + err.Error())
+		r.l.Error("Ошибка при декодировании JSON:" + err.Error())
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "не удалось декодировать ответ"})
 	}
 

@@ -5,42 +5,41 @@ import (
 
 	"github.com/labstack/echo/v4"
 
-	"gameservice/pkg/logger"
-
 	"gameservice/internal/adapter/kafka/consumers"
 	"gameservice/internal/adapter/kafka/producers"
+	"gameservice/internal/di"
 )
 
-func CheckTokenMiddleWare() echo.MiddlewareFunc {
+func CheckTokenMiddleWare(logger di.LoggerType, cfg di.ConfigType, bus di.Bus) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			logger.L.Info("Middleware for Token check")
+			logger.Info("Middleware for Token check")
 
 			// Получаем cookies
 			accessToken, err := c.Cookie("access")
 			if err != nil || accessToken.Value == "" {
-				logger.L.Error("No access token")
+				logger.Error("No access token")
 				return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": "No access token"})
 			}
-			logger.L.Info("Access Token:" + accessToken.Value)
+			logger.Info("Access Token:" + accessToken.Value)
 
 			refreshToken, _ := c.Cookie("refresh")
 
 			// Отправка токена в authserver через Kafka
-			producers.CheckToken(accessToken.Value, refreshToken.Value)
+			producers.CheckToken(accessToken.Value, refreshToken.Value, cfg, bus)
 
 			// Получение ответа от authserver
-			answer, _ := consumers.RecieveTokenInfo()
+			answer, _ := consumers.RecieveTokenInfo(cfg, bus)
 
 			// Проверка валидности токена
 			if answer.Err != "" {
-				logger.L.Error(answer.Err)
+				logger.Error(answer.Err)
 				return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": answer.Err})
 			}
 
 			// Обновление access токена если нужно
 			if answer.NewAccessToken != "" {
-				logger.L.Info("New access Token")
+				logger.Info("New access Token")
 				c.SetCookie(&http.Cookie{
 					Name:     "access",
 					Value:    answer.NewAccessToken,

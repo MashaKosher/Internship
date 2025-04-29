@@ -3,9 +3,8 @@ package v1
 import (
 	"encoding/json"
 	"fmt"
+	"gameservice/internal/di"
 	"gameservice/internal/entity"
-	"gameservice/internal/usecase"
-	"gameservice/pkg/logger"
 	"math/rand"
 	"net/http"
 	"strconv"
@@ -18,11 +17,12 @@ import (
 )
 
 type wsRoutes struct {
-	u usecase.Game
+	u di.GameService
+	l di.LoggerType
 }
 
-func InitWSRoutes(e *echo.Echo, gameUseCase usecase.Game) {
-	r := &gameRoutes{u: gameUseCase}
+func InitWSRoutes(e *echo.Echo, deps di.Container) {
+	r := &gameRoutes{u: deps.Services.Game, l: deps.Logger}
 	e.GET("/ws", r.handleWS)
 }
 
@@ -30,14 +30,14 @@ func (r *gameRoutes) handleWS(c echo.Context) error {
 	// Поднимаем WebSocket соединение.
 	conn, err := upgrader.Upgrade(c.Response(), c.Request(), nil)
 	if err != nil {
-		logger.L.Error("Error upgrading connection:" + err.Error())
+		r.l.Error("Error upgrading connection:" + err.Error())
 		return err
 	}
 
 	// Получаем player_id из query параметра
 	playerID := c.QueryParam("player_id")
 	if playerID == "" {
-		logger.L.Error("Player ID is required")
+		r.l.Error("Player ID is required")
 		return nil
 	}
 
@@ -51,17 +51,17 @@ func (r *gameRoutes) handleWS(c echo.Context) error {
 	// Находим или создаём комнату
 	room := roomManager.FindOrCreateRoom(player)
 
-	logger.L.Info("Room ID: " + room.id)
+	r.l.Info("Room ID: " + room.id)
 
 	// Запускаем горутины для чтения и записи
-	go player.writePump() // для отправки сообщений (writePump),
+	go player.writePump(r.l) // для отправки сообщений (writePump),
 	// go player.readPump()  // для чтения сообщений (readPump).
 
 	// Если комната полная, начинаем игру
 	if room.full {
 		r.startGame(room)
 	} else {
-		logger.L.Info("Player is waiting for an opponent...")
+		r.l.Info("Player is waiting for an opponent...")
 	}
 
 	return nil
@@ -146,7 +146,7 @@ func (r *gameRoutes) startGame(room *Room) {
 	p1 := room.players[0]
 	p2 := room.players[1]
 
-	logger.L.Info("Игра игроков " + fmt.Sprint(room.players[0]) + fmt.Sprint(room.players[1]) + " начнется после небольшого перерыва")
+	r.l.Info("Игра игроков " + fmt.Sprint(room.players[0]) + fmt.Sprint(room.players[1]) + " начнется после небольшого перерыва")
 
 	// Бросаем кубики (rand.Intn(7) генерирует 0–6).
 	flag := false
@@ -231,14 +231,14 @@ func (r *gameRoutes) startGame(room *Room) {
 }
 
 // Отправка сообщений игроку
-func (p *Player) writePump() {
+func (p *Player) writePump(logger di.LoggerType) {
 	// Ждём сообщения в канале send.
 	for msg := range p.send {
 		// При получении отправляем через WebSocket клиенту.
-		logger.L.Info("writePump send message to client ")
+		logger.Info("writePump send message to client ")
 		err := p.conn.WriteMessage(websocket.TextMessage, msg)
 		if err != nil {
-			logger.L.Error("Write error:" + err.Error())
+			logger.Error("Write error:" + err.Error())
 			break
 		}
 	}
