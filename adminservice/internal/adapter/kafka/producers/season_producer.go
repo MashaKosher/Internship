@@ -3,22 +3,16 @@ package producers
 import (
 	"adminservice/internal/di"
 	"adminservice/internal/entity"
-	"adminservice/pkg"
+	utils "adminservice/pkg/kafka_utils"
 	"log"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
 func SendSeasonInfo(season entity.SeasonOut, cfg di.ConfigType, bus di.Bus) {
-	// p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": "localhost:9092"})
-	// if err != nil {
-	// 	log.Fatalf("Failed to create producer: %s", err)
-	// }
-	// defer p.Close()
-
 	log.Println("Season Producer created successfully")
 
-	message := pkg.CreateMessage(season, cfg.Kafka.SeasonTopicSend, cfg.Kafka.Partition)
+	message := utils.CreateMessage(season, cfg.Kafka.SeasonTopicSend, cfg.Kafka.Partition)
 
 	deliveryChan := make(chan kafka.Event)
 

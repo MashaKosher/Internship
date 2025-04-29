@@ -14,3 +14,11 @@ type SettingsJson struct {
 	LoseAmount  float64 `json:"lose-amount" validate:"min=0"`
 	WaitingTime int     `json:"waiting-time" validate:"min=0"`
 }
+
+func (settings *SettingsJson) ToDB() GameSettings {
+	return GameSettings{
+		LoseAmount:  settings.LoseAmount,
+		WinAmount:   settings.WinAmount,
+		WaitingTime: time.Duration(settings.WaitingTime),
+	}
+}

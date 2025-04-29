@@ -5,7 +5,6 @@ import (
 	"adminservice/internal/adapter/kafka/producers"
 	"adminservice/internal/di"
 	"adminservice/internal/entity"
-	"adminservice/pkg"
 )
 
 type UseCase struct {
@@ -25,12 +24,8 @@ func New(r repo.SettingsRepo, logger di.LoggerType, cfg di.ConfigType, bus di.Bu
 }
 
 func (u *UseCase) UpdateSettings(settings entity.SettingsJson) error {
-	var dbSettiings entity.GameSettings
+	dbSettiings := settings.ToDB()
 
-	// Filing Game Settings DB struct
-	pkg.FillGameSettingsDBEntity(&settings, &dbSettiings)
-
-	// Updating dbSettings in DB
 	if err := u.repo.UpdateSettings(dbSettiings); err != nil {
 		return err
 	}

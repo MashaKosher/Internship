@@ -1,4 +1,4 @@
-package pkg
+package kafkautils
 
 import (
 	"adminservice/internal/entity"

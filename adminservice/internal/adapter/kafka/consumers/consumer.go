@@ -3,7 +3,7 @@ package consumers
 import (
 	"adminservice/internal/di"
 	"adminservice/internal/entity"
-	"adminservice/pkg"
+	utils "adminservice/pkg/kafka_utils"
 	"log"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
@@ -36,7 +36,7 @@ func AnswerTokens(cfg di.ConfigType, bus di.Bus) (entity.AuthAnswer, error) {
 		if err == nil {
 			log.Println("Received message: " + string(msg.Value) + " from topic:" + msg.TopicPartition.String() + " with offset " + msg.TopicPartition.Offset.String())
 
-			answer, err := pkg.DeserializeAuthAnswer(msg.Value, answer)
+			answer, err := utils.DeserializeAuthAnswer(msg.Value, answer)
 			if err != nil {
 				log.Printf("Error while consuming: %v", err)
 				return answer, err

@@ -1,12 +1,26 @@
 package entity
 
-import "time"
+import (
+	"adminservice/pkg"
+	"errors"
+	"fmt"
+	"time"
+)
 
 type Season struct {
 	ID        uint      `json:"-" gorm:"primaryKey"`
 	StartDate time.Time `json:"start-date"`
 	EndDate   time.Time `json:"end-date"`
 	Fund      uint      `json:"fund"`
+}
+
+func (s *Season) ToDTO() SeasonOut {
+	return SeasonOut{
+		ID:        s.ID,
+		StartDate: fmt.Sprint(s.StartDate),
+		EndDate:   fmt.Sprint(s.EndDate),
+		Fund:      s.Fund,
+	}
 }
 
 type SeasonJson struct {
@@ -19,6 +33,28 @@ type DetailSeasonJson struct {
 	StartTime string `json:"start-time" example:"09:00:00" format:"time" validate:"required,datetime=15:04:05"`
 	EndTime   string `json:"end-time" xample:"18:00:00" format:"time" validate:"required,datetime=15:04:05"`
 	Fund      uint   `json:"fund" xample:"5000" minimum:"0" validate:"gte=0"`
+}
+
+func (s *DetailSeasonJson) ToDB() (Season, error) {
+	startTime, err := pkg.GetTimeFromString(s.StartDate, s.StartTime)
+	if err != nil {
+		return Season{}, err
+	}
+
+	if startTime.Before(time.Now()) {
+		return Season{}, errors.New("season cannot starting before Now")
+	}
+
+	endTime, err := pkg.GetTimeFromString(s.EndDate, s.EndTime)
+	if err != nil {
+		return Season{}, err
+	}
+
+	if startTime.After(endTime) {
+		return Season{}, errors.New("end date can't be earlier then start date")
+	}
+
+	return Season{StartDate: startTime, EndDate: endTime, Fund: s.Fund}, nil
 }
 
 type SeasonOut struct {

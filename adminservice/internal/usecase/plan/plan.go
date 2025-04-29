@@ -5,7 +5,6 @@ import (
 	"adminservice/internal/adapter/kafka/producers"
 	"adminservice/internal/di"
 	"adminservice/internal/entity"
-	"adminservice/pkg"
 	"log"
 )
 
@@ -29,10 +28,15 @@ func New(r repo.PlanRepo, logger di.LoggerType, cfg di.ConfigType, bus di.Bus) *
 // и будут другие параметры, или вообще транспорт поменяется с http на grpc?
 func (uc *UseCase) PlanSeasons(season entity.DetailSeasonJson) error {
 
-	var dbSeason entity.Season
+	// var dbSeason entity.Season
 
 	// Serialize Season JSON entity in DB entity
-	if err := pkg.StoreDeatailSeasonInDBEntity(&season, &dbSeason); err != nil {
+	// if err := pkg.StoreDeatailSeasonInDBEntity(&season, &dbSeason); err != nil {
+	// 	return err
+	// }
+
+	dbSeason, err := season.ToDB()
+	if err != nil {
 		return err
 	}
 
@@ -49,7 +53,7 @@ func (uc *UseCase) PlanSeasons(season entity.DetailSeasonJson) error {
 	log.Println("Season IN DB: ", dbSeason)
 
 	// Produsing new season to Core service
-	go producers.SendSeasonInfo(pkg.ParseSeasonToKafkaJSON(dbSeason), uc.cfg, uc.bus)
+	go producers.SendSeasonInfo(dbSeason.ToDTO(), uc.cfg, uc.bus)
 
 	return nil
 }

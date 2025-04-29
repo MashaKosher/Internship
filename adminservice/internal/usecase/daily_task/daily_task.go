@@ -5,7 +5,6 @@ import (
 	"adminservice/internal/adapter/kafka/producers"
 	"adminservice/internal/di"
 	"adminservice/internal/entity"
-	"adminservice/pkg"
 	"fmt"
 )
 
@@ -35,8 +34,7 @@ func (uc *UseCase) CreateDailyTask(dailyTask entity.DBDailyTasks) (entity.DailyT
 
 	uc.logger.Info("Task added to DB successfully: " + fmt.Sprint(dailyTask))
 
-	// Sending task to Core Service
-	dailyTaskOut := pkg.ParseDailyTaskToKafkaJSON(dailyTask)
+	dailyTaskOut := dailyTask.ToDTO()
 
 	go producers.SendDailyTask(dailyTaskOut, uc.cfg, uc.bus)
 

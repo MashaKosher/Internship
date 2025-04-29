@@ -3,21 +3,13 @@ package producers
 import (
 	"adminservice/internal/di"
 	"adminservice/internal/entity"
-	"adminservice/pkg"
+	utils "adminservice/pkg/kafka_utils"
 	"log"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
 func CheckToken(accessToken, refreshToken string, cfg di.ConfigType, bus di.Bus) {
-	// p, err := kafka.NewProducer(&kafka.ConfigMap{
-	// 	"bootstrap.servers": config.AppConfig.Kafka.Host + ":" + config.AppConfig.Kafka.Port, // Используйте localhost
-	// })
-	// if err != nil {
-	// 	log.Fatalf("Failed to create producer: %s", err)
-	// }
-	// defer p.Close()
-
 	log.Println("Producer created successfully")
 
 	var request entity.AuthRequest
@@ -25,7 +17,7 @@ func CheckToken(accessToken, refreshToken string, cfg di.ConfigType, bus di.Bus)
 	request.AccessToken = accessToken
 	request.RefreshToken = refreshToken
 
-	message := pkg.CreateMessage(request, cfg.Kafka.AuthTopicRecieve, cfg.Kafka.Partition)
+	message := utils.CreateMessage(request, cfg.Kafka.AuthTopicRecieve, cfg.Kafka.Partition)
 
 	// Канал для получения событий доставки
 	deliveryChan := make(chan kafka.Event)
