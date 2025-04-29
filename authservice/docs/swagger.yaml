@@ -5,19 +5,6 @@ definitions:
       error:
         type: string
     type: object
-  entity.LoginOutDTO:
-    properties:
-      access:
-        type: string
-      id:
-        type: integer
-      refresh:
-        type: string
-      role:
-        type: string
-      username:
-        type: string
-    type: object
   entity.Password:
     properties:
       new-password:
@@ -38,6 +25,24 @@ definitions:
   entity.UserInDTO:
     properties:
       password:
+        minLength: 1
+        type: string
+      username:
+        minLength: 1
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  entity.UserOutDTO:
+    properties:
+      access:
+        type: string
+      id:
+        type: integer
+      refresh:
+        type: string
+      role:
         type: string
       username:
         type: string
@@ -168,7 +173,7 @@ paths:
               description: refresh_token=JWT_TOKEN; Path=/; HttpOnly
               type: string
           schema:
-            $ref: '#/definitions/entity.LoginOutDTO'
+            $ref: '#/definitions/entity.UserOutDTO'
         "400":
           description: Invalid input data
           schema:

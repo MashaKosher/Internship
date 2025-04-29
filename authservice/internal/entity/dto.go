@@ -5,7 +5,7 @@ type UserInDTO struct {
 	Password string `json:"password" validate:"required,min=1"`
 }
 
-type LoginOutDTO struct {
+type UserOutDTO struct {
 	UserID       int    `json:"id"`
 	UserName     string `json:"username"`
 	UserRole     string `json:"role"`

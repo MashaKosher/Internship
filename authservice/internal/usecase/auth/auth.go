@@ -26,19 +26,19 @@ func New(r repo.AuthRepo, logger di.LoggerType, RSAKeys di.RSAKeys) *UseCase {
 	}
 }
 
-func (uc *UseCase) Login(user entity.UserInDTO) (entity.LoginOutDTO, error) {
+func (uc *UseCase) Login(user entity.UserInDTO) (entity.UserOutDTO, error) {
 	// Search for this User in DB
 	DBUser, err := uc.repo.FindUserByName(user.Username)
 	if err != nil {
 		uc.logger.Error("No user with such Username: " + user.Username)
-		return entity.LoginOutDTO{}, fiber.NewError(fiber.StatusBadRequest, "Invalid Username")
+		return entity.UserOutDTO{}, fiber.NewError(fiber.StatusBadRequest, "Invalid Username")
 	}
 	uc.logger.Info("User found, his ID: " + fmt.Sprint(DBUser.ID))
 
 	// Comparing hashed password from DB to raw password from credentials
 	if err := passwords.ValidatePassword(DBUser.Password, user.Password); err != nil {
 		uc.logger.Error("Invalid password: " + user.Password)
-		return entity.LoginOutDTO{}, fiber.NewError(fiber.StatusBadRequest, "Invalid Password")
+		return entity.UserOutDTO{}, fiber.NewError(fiber.StatusBadRequest, "Invalid Password")
 	}
 	uc.logger.Info("User with ID " + fmt.Sprint(DBUser.ID) + " has correct password")
 
@@ -46,21 +46,21 @@ func (uc *UseCase) Login(user entity.UserInDTO) (entity.LoginOutDTO, error) {
 	accessToken, err := tokens.CreateToken(di.ACCESS_TOKEN, &DBUser, uc.logger, uc.RSAKeys)
 	if err != nil {
 		uc.logger.Error("Problem with creating Access JWT Token" + err.Error())
-		return entity.LoginOutDTO{}, fiber.NewError(fiber.StatusInternalServerError, "Problem with creating Access JWT Token")
+		return entity.UserOutDTO{}, fiber.NewError(fiber.StatusInternalServerError, "Problem with creating Access JWT Token")
 	}
 
 	refreshToken, err := tokens.CreateToken(di.REFRESH_TOKEN, &DBUser, uc.logger, uc.RSAKeys)
 	if err != nil {
 		uc.logger.Error("Problem with creating Refresh JWT Token" + err.Error())
-		return entity.LoginOutDTO{}, fiber.NewError(fiber.StatusInternalServerError, "Problem with creating Refresh JWT Token")
+		return entity.UserOutDTO{}, fiber.NewError(fiber.StatusInternalServerError, "Problem with creating Refresh JWT Token")
 	}
 
-	return convertUserToLoginOutDTO(DBUser, accessToken, refreshToken), nil
+	return convertUserToUserOutDTO(DBUser, accessToken, refreshToken), nil
 
 }
 
-func convertUserToLoginOutDTO(user entity.User, accessToken, refreshToken string) entity.LoginOutDTO {
-	return entity.LoginOutDTO{UserID: int(user.ID), UserName: user.Username, UserRole: string(user.Role), AccessToken: accessToken, RefreshToken: refreshToken}
+func convertUserToUserOutDTO(user entity.User, accessToken, refreshToken string) entity.UserOutDTO {
+	return entity.UserOutDTO{UserID: int(user.ID), UserName: user.Username, UserRole: string(user.Role), AccessToken: accessToken, RefreshToken: refreshToken}
 }
 
 func checkToken(token string, tokenTpe di.TokenType, r repo.AuthRepo, logger di.LoggerType, RSAKeys di.RSAKeys) (entity.User, error) {
@@ -107,54 +107,54 @@ func checkToken(token string, tokenTpe di.TokenType, r repo.AuthRepo, logger di.
 	return user, nil
 }
 
-func (uc *UseCase) CheckAccessToken(accessToken string) (entity.LoginOutDTO, error) {
+func (uc *UseCase) CheckAccessToken(accessToken string) (entity.UserOutDTO, error) {
 	user, err := checkToken(accessToken, di.ACCESS_TOKEN, uc.repo, uc.logger, uc.RSAKeys)
 	if err != nil {
-		return entity.LoginOutDTO{}, err
+		return entity.UserOutDTO{}, err
 	}
-	return convertUserToLoginOutDTO(user, accessToken, ""), nil
+	return convertUserToUserOutDTO(user, accessToken, ""), nil
 }
 
-func (uc *UseCase) CheckRefreshToken(refreshToken string) (entity.LoginOutDTO, error) {
+func (uc *UseCase) CheckRefreshToken(refreshToken string) (entity.UserOutDTO, error) {
 	user, err := checkToken(refreshToken, di.REFRESH_TOKEN, uc.repo, uc.logger, uc.RSAKeys)
 	if err != nil {
-		return entity.LoginOutDTO{}, err
+		return entity.UserOutDTO{}, err
 	}
 
 	// Creating Access Token
 	accessToken, err := tokens.CreateToken(di.ACCESS_TOKEN, &user, uc.logger, uc.RSAKeys)
 	if err != nil {
 		uc.logger.Error("Problem with creating Access JWT Token" + err.Error())
-		return entity.LoginOutDTO{}, fiber.NewError(fiber.StatusInternalServerError, "Problem with creating Access JWT Token")
+		return entity.UserOutDTO{}, fiber.NewError(fiber.StatusInternalServerError, "Problem with creating Access JWT Token")
 	}
 	uc.logger.Info("Access JWT created successfully")
-	return convertUserToLoginOutDTO(user, accessToken, refreshToken), nil
+	return convertUserToUserOutDTO(user, accessToken, refreshToken), nil
 }
 
-func (uc *UseCase) UserSignUp(user entity.User) (entity.LoginOutDTO, error) {
+func (uc *UseCase) UserSignUp(user entity.User) (entity.UserOutDTO, error) {
 	outUser, err := signUp(user, entity.UserRole, uc.repo, uc.logger, uc.RSAKeys)
 	if err != nil {
-		return entity.LoginOutDTO{}, err
+		return entity.UserOutDTO{}, err
 	}
 
 	return outUser, nil
 }
 
-func (uc *UseCase) AdminSignUp(user entity.User) (entity.LoginOutDTO, error) {
+func (uc *UseCase) AdminSignUp(user entity.User) (entity.UserOutDTO, error) {
 	outUser, err := signUp(user, entity.AdminRole, uc.repo, uc.logger, uc.RSAKeys)
 	if err != nil {
-		return entity.LoginOutDTO{}, err
+		return entity.UserOutDTO{}, err
 	}
 
 	return outUser, nil
 }
 
-func signUp(user entity.User, userRole entity.Role, repo repo.AuthRepo, logger di.LoggerType, RSAKeys di.RSAKeys) (entity.LoginOutDTO, error) {
+func signUp(user entity.User, userRole entity.Role, repo repo.AuthRepo, logger di.LoggerType, RSAKeys di.RSAKeys) (entity.UserOutDTO, error) {
 	// Hashing Password to store in DB
 	hashed, err := passwords.HashPassword(user.Password)
 	if err != nil {
 		logger.Error("Problems with hashing password: " + err.Error())
-		return entity.LoginOutDTO{}, fiber.NewError(fiber.StatusInternalServerError, "Problems with hashing password")
+		return entity.UserOutDTO{}, fiber.NewError(fiber.StatusInternalServerError, "Problems with hashing password")
 	}
 	user.Password = hashed
 	user.Role = userRole
@@ -162,13 +162,13 @@ func signUp(user entity.User, userRole entity.Role, repo repo.AuthRepo, logger d
 	// Figure out if user exists
 	if _, err := repo.FindUserByName(user.Username); err == nil {
 		logger.Error("User with such username already exists: " + user.Username)
-		return entity.LoginOutDTO{}, fiber.NewError(fiber.StatusBadRequest, "User with such username already exists")
+		return entity.UserOutDTO{}, fiber.NewError(fiber.StatusBadRequest, "User with such username already exists")
 	}
 
 	// Adding User to DB
 	if err := repo.CreateUser(&user); err != nil {
 		logger.Error("Problem with creating User with UserName: " + user.Username)
-		return entity.LoginOutDTO{}, fiber.NewError(fiber.StatusInternalServerError, "Problem with adding user to DB")
+		return entity.UserOutDTO{}, fiber.NewError(fiber.StatusInternalServerError, "Problem with adding user to DB")
 	}
 	logger.Info("User created with ID: " + fmt.Sprint(user.ID))
 
@@ -176,7 +176,7 @@ func signUp(user entity.User, userRole entity.Role, repo repo.AuthRepo, logger d
 	accessToken, err := tokens.CreateToken(di.ACCESS_TOKEN, &user, logger, RSAKeys)
 	if err != nil {
 		logger.Error("Problem with creating Access JWT Token" + err.Error())
-		return entity.LoginOutDTO{}, fiber.NewError(fiber.StatusInternalServerError, "Problem with creating Access JWT Token")
+		return entity.UserOutDTO{}, fiber.NewError(fiber.StatusInternalServerError, "Problem with creating Access JWT Token")
 	}
 	logger.Info("Access JWT created successfully")
 
@@ -184,30 +184,30 @@ func signUp(user entity.User, userRole entity.Role, repo repo.AuthRepo, logger d
 	refreshToken, err := tokens.CreateToken(di.REFRESH_TOKEN, &user, logger, RSAKeys)
 	if err != nil {
 		logger.Error("Problem with creating Refresh JWT Token" + err.Error())
-		return entity.LoginOutDTO{}, fiber.NewError(fiber.StatusInternalServerError, "Problem with creating Refresh JWT Token")
+		return entity.UserOutDTO{}, fiber.NewError(fiber.StatusInternalServerError, "Problem with creating Refresh JWT Token")
 	}
 	logger.Info("Refresh JWT created successfully")
 
-	return convertUserToLoginOutDTO(user, accessToken, refreshToken), nil
+	return convertUserToUserOutDTO(user, accessToken, refreshToken), nil
 }
 
-func (uc *UseCase) ChangePassword(newPassword entity.Password, accessToken string) (entity.LoginOutDTO, error) {
+func (uc *UseCase) ChangePassword(newPassword entity.Password, accessToken string) (entity.UserOutDTO, error) {
 
 	user, err := checkToken(accessToken, di.ACCESS_TOKEN, uc.repo, uc.logger, uc.RSAKeys)
 	if err != nil {
-		return entity.LoginOutDTO{}, err
+		return entity.UserOutDTO{}, err
 	}
 
 	newHashedPassword, err := passwords.HashPassword(newPassword.NewPassword)
 	if err != nil {
 		uc.logger.Error("Problems with hashing password: " + err.Error())
-		return entity.LoginOutDTO{}, fiber.NewError(fiber.StatusInternalServerError, "Problems with hashing password")
+		return entity.UserOutDTO{}, fiber.NewError(fiber.StatusInternalServerError, "Problems with hashing password")
 	}
 
 	if err = uc.repo.ChangeUserPassword(int(user.ID), newHashedPassword); err != nil {
 		uc.logger.Error("Problems with updating password: " + err.Error())
-		return entity.LoginOutDTO{}, fiber.NewError(fiber.StatusInternalServerError, "Problems with updating password")
+		return entity.UserOutDTO{}, fiber.NewError(fiber.StatusInternalServerError, "Problems with updating password")
 	}
 
-	return convertUserToLoginOutDTO(user, accessToken, ""), nil
+	return convertUserToUserOutDTO(user, accessToken, ""), nil
 }

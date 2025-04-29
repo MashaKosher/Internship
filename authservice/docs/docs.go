@@ -182,7 +182,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Successfully logged in",
                         "schema": {
-                            "$ref": "#/definitions/entity.LoginOutDTO"
+                            "$ref": "#/definitions/entity.UserOutDTO"
                         },
                         "headers": {
                             "Set-Cookie": {
@@ -338,26 +338,6 @@ const docTemplate = `{
                 }
             }
         },
-        "entity.LoginOutDTO": {
-            "type": "object",
-            "properties": {
-                "access": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "refresh": {
-                    "type": "string"
-                },
-                "role": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
         "entity.Password": {
             "type": "object",
             "properties": {
@@ -385,8 +365,34 @@ const docTemplate = `{
         },
         "entity.UserInDTO": {
             "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
             "properties": {
                 "password": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "username": {
+                    "type": "string",
+                    "minLength": 1
+                }
+            }
+        },
+        "entity.UserOutDTO": {
+            "type": "object",
+            "properties": {
+                "access": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "refresh": {
+                    "type": "string"
+                },
+                "role": {
                     "type": "string"
                 },
                 "username": {

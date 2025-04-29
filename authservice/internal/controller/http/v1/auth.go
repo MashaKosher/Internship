@@ -49,7 +49,7 @@ func InitAuthRoutes(app *fiber.App, deps di.Container) {
 // @Accept       json
 // @Produce      json
 // @Param		 entity.UserInDTO	body  entity.UserInDTO	true	"Login request body"
-// @Success      200 {object} entity.LoginOutDTO "Successfully logged in"
+// @Success      200 {object} entity.UserOutDTO "Successfully logged in"
 // @Header       200 {string} Set-Cookie "access_token=JWT_TOKEN; Path=/; HttpOnly"
 // @Header       200 {string} Set-Cookie "refresh_token=JWT_TOKEN; Path=/; HttpOnly"
 // @Failure      400 {object} entity.Error "Invalid input data"
@@ -133,7 +133,7 @@ func (r *authRoutes) checkRefreshToken(c *fiber.Ctx) error {
 // @Tags         Sign Up
 // @Accept       json
 // @Produce      json
-// @Param        request body entity.UserInDTO true "User registration data"
+// @Param        request body entity.User true "User registration data"
 // @Success      201 {object} entity.UserInDTO "Successfully registered"
 // @Failure      400 {object} entity.Error "Invalid input data"
 // @Failure      409 {object} entity.Error "Conflict - Username already exists"
