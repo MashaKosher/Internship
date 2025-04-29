@@ -2,7 +2,7 @@ package config
 
 import "github.com/spf13/viper"
 
-type config struct {
+type Config struct {
 	Server struct {
 		Port string `mapstructure:"port"`
 		Host string `mapstructure:"host"`
@@ -37,9 +37,9 @@ type config struct {
 	} `mapstructure:"redis"`
 }
 
-var AppConfig config
+var AppConfig Config
 
-func Load() {
+func Load() Config {
 	viper.AddConfigPath("./internal/config")
 	viper.SetConfigType("yaml")
 	viper.SetConfigName("config")
@@ -50,4 +50,6 @@ func Load() {
 	}
 
 	viper.Unmarshal(&AppConfig)
+
+	return AppConfig
 }
