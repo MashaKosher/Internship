@@ -27,12 +27,12 @@ type Container struct {
 	Validator  ValidatorType
 }
 
-// //////////////////////////////////
+// ///////////////////////////////////
 type (
 	ConfigType     = config.Config
 	LoggerType     = *zap.Logger
-	DBType         = *gorm.DB
 	LoggerFileType = *os.File
+	DBType         = *gorm.DB
 	ValidatorType  = *validator.Validate
 )
 

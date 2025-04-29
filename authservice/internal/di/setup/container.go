@@ -1,11 +1,10 @@
 package setup
 
 import (
-	"authservice/internal/config"
 	"authservice/internal/di"
 )
 
-func MustContainer(cfg config.Config) di.Container {
+func MustContainer(cfg di.ConfigType) di.Container {
 	logger := mustLogger(cfg)
 	loggerFile := mustLoggerFile(cfg)
 	RSAKeys := mustRSAKeys(cfg, logger)

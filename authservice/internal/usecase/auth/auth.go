@@ -55,12 +55,9 @@ func (uc *UseCase) Login(user entity.UserInDTO) (entity.UserOutDTO, error) {
 		return entity.UserOutDTO{}, fiber.NewError(fiber.StatusInternalServerError, "Problem with creating Refresh JWT Token")
 	}
 
-	return convertUserToUserOutDTO(DBUser, accessToken, refreshToken), nil
+	// return convertUserToUserOutDTO(DBUser, accessToken, refreshToken), nil
+	return DBUser.ToDTO(accessToken, refreshToken), nil
 
-}
-
-func convertUserToUserOutDTO(user entity.User, accessToken, refreshToken string) entity.UserOutDTO {
-	return entity.UserOutDTO{UserID: int(user.ID), UserName: user.Username, UserRole: string(user.Role), AccessToken: accessToken, RefreshToken: refreshToken}
 }
 
 func checkToken(token string, tokenTpe di.TokenType, r repo.AuthRepo, logger di.LoggerType, RSAKeys di.RSAKeys) (entity.User, error) {
@@ -112,7 +109,8 @@ func (uc *UseCase) CheckAccessToken(accessToken string) (entity.UserOutDTO, erro
 	if err != nil {
 		return entity.UserOutDTO{}, err
 	}
-	return convertUserToUserOutDTO(user, accessToken, ""), nil
+	// return convertUserToUserOutDTO(user, accessToken, ""), nil
+	return user.ToDTO(accessToken, ""), nil
 }
 
 func (uc *UseCase) CheckRefreshToken(refreshToken string) (entity.UserOutDTO, error) {
@@ -128,7 +126,8 @@ func (uc *UseCase) CheckRefreshToken(refreshToken string) (entity.UserOutDTO, er
 		return entity.UserOutDTO{}, fiber.NewError(fiber.StatusInternalServerError, "Problem with creating Access JWT Token")
 	}
 	uc.logger.Info("Access JWT created successfully")
-	return convertUserToUserOutDTO(user, accessToken, refreshToken), nil
+	// return convertUserToUserOutDTO(user, accessToken, refreshToken), nil
+	return user.ToDTO(accessToken, refreshToken), nil
 }
 
 func (uc *UseCase) UserSignUp(user entity.User) (entity.UserOutDTO, error) {
@@ -188,7 +187,7 @@ func signUp(user entity.User, userRole entity.Role, repo repo.AuthRepo, logger d
 	}
 	logger.Info("Refresh JWT created successfully")
 
-	return convertUserToUserOutDTO(user, accessToken, refreshToken), nil
+	return user.ToDTO(accessToken, refreshToken), nil
 }
 
 func (uc *UseCase) ChangePassword(newPassword entity.Password, accessToken string) (entity.UserOutDTO, error) {
@@ -209,5 +208,5 @@ func (uc *UseCase) ChangePassword(newPassword entity.Password, accessToken strin
 		return entity.UserOutDTO{}, fiber.NewError(fiber.StatusInternalServerError, "Problems with updating password")
 	}
 
-	return convertUserToUserOutDTO(user, accessToken, ""), nil
+	return user.ToDTO(accessToken, ""), nil
 }
