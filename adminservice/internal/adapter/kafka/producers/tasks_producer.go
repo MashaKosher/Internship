@@ -1,7 +1,7 @@
 package producers
 
 import (
-	"adminservice/internal/config"
+	"adminservice/internal/di"
 	"adminservice/internal/entity"
 	"adminservice/pkg"
 	"log"
@@ -9,21 +9,21 @@ import (
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
-func SendDailyTask(task entity.DailyTasks) {
-	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": "localhost:9092"})
-	if err != nil {
-		log.Fatalf("Failed to create producer: %s", err)
-	}
-	defer p.Close()
+func SendDailyTask(task entity.DailyTasks, cfg di.ConfigType, bus di.Bus) {
+	// p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": "localhost:9092"})
+	// if err != nil {
+	// 	log.Fatalf("Failed to create producer: %s", err)
+	// }
+	// defer p.Close()
 
 	log.Println("Task Producer created successfully")
 
-	message := pkg.CreateMessage(task, config.AppConfig.Kafka.DailyTaskTopicSend, config.AppConfig.Kafka.Partition)
+	message := pkg.CreateMessage(task, cfg.Kafka.DailyTaskTopicSend, cfg.Kafka.Partition)
 
 	// Канал для получения событий доставки
 	deliveryChan := make(chan kafka.Event)
 
-	err = p.Produce(&message, deliveryChan)
+	err := bus.TaskProducer.Produce(&message, deliveryChan)
 	if err != nil {
 		log.Printf("Failed to produce message: %s", err)
 		return
@@ -47,5 +47,5 @@ func SendDailyTask(task entity.DailyTasks) {
 		}
 	}()
 
-	p.Flush(1000)
+	bus.TaskProducer.Flush(1000)
 }

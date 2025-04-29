@@ -2,20 +2,11 @@ package pkg
 
 import (
 	"adminservice/internal/entity"
-	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"log"
 	"time"
 )
-
-func ParseSeasonBody(body io.ReadCloser, season *entity.DetailSeasonJson) error {
-	if err := json.NewDecoder(body).Decode(season); err != nil {
-		return err
-	}
-	return nil
-}
 
 func StoreDeatailSeasonInDBEntity(seasonJSON *entity.DetailSeasonJson, seasonDB *entity.Season) error {
 

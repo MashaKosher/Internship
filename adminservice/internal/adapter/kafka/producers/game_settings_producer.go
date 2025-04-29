@@ -1,7 +1,7 @@
 package producers
 
 import (
-	"adminservice/internal/config"
+	"adminservice/internal/di"
 	"adminservice/internal/entity"
 	"adminservice/pkg"
 	"log"
@@ -9,20 +9,20 @@ import (
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
-func SendGameSettings(season entity.SettingsJson) {
-	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": "localhost:9092"})
-	if err != nil {
-		log.Fatalf("Failed to create producer: %s", err)
-	}
-	defer p.Close()
+func SendGameSettings(season entity.SettingsJson, cfg di.ConfigType, bus di.Bus) {
+	// p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": "localhost:9092"})
+	// if err != nil {
+	// 	log.Fatalf("Failed to create producer: %s", err)
+	// }
+	// defer p.Close()
 
 	log.Println("Season Producer created successfully")
 
-	message := pkg.CreateMessage(season, config.AppConfig.Kafka.GameSettingsTopicSend, -1)
+	message := pkg.CreateMessage(season, cfg.Kafka.GameSettingsTopicSend, -1)
 
 	deliveryChan := make(chan kafka.Event)
 
-	err = p.Produce(&message, deliveryChan)
+	err := bus.GameProducer.Produce(&message, deliveryChan)
 	if err != nil {
 		log.Printf("Failed to produce message: %s", err)
 		return
@@ -45,7 +45,7 @@ func SendGameSettings(season entity.SettingsJson) {
 		}
 	}()
 
-	p.Flush(1000)
+	bus.GameProducer.Flush(1000)
 }
 
 // func SendGameSettings(season entity.SettingsJson) {

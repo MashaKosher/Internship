@@ -2,6 +2,7 @@ package main
 
 import (
 	"adminservice/internal/config"
+	"adminservice/internal/di/setup"
 	"context"
 	"log"
 	"net/http"
@@ -23,9 +24,12 @@ import (
 // @externalDocs.description	OpenAPI
 // @externalDocs.url			https://swagger.io/resources/open-api/
 func main() {
-	config.Load()
+	cfg := config.MustParseConfig()
 
-	server := &http.Server{Addr: config.AppConfig.Server.Host + ":" + config.AppConfig.Server.Port, Handler: app.Run()}
+	deps := setup.MustContainer(cfg)
+	defer setup.DeferContainer(deps)
+
+	server := &http.Server{Addr: cfg.Server.Host + ":" + cfg.Server.Port, Handler: app.Run(deps)}
 
 	log.Println("Program started")
 	serverCtx, serverStopCtx := context.WithCancel(context.Background())

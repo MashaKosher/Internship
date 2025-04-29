@@ -1,7 +1,7 @@
 package consumers
 
 import (
-	"adminservice/internal/config"
+	"adminservice/internal/di"
 	"adminservice/internal/entity"
 	"adminservice/pkg"
 	"log"
@@ -9,29 +9,30 @@ import (
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
-func AnswerTokens() (entity.AuthAnswer, error) {
+func AnswerTokens(cfg di.ConfigType, bus di.Bus) (entity.AuthAnswer, error) {
 
 	var err error
 	var answer entity.AuthAnswer
 
-	consumer, err := kafka.NewConsumer(&kafka.ConfigMap{
-		"bootstrap.servers": config.AppConfig.Kafka.Host + ":" + config.AppConfig.Kafka.Port, // Используйте localhost
-		"group.id":          "adminServiceBecomingAnswer",
-		"auto.offset.reset": "latest",
-	})
-	if err != nil {
-		log.Fatalf("Failed to create consumer: %s", err)
-	}
-	defer consumer.Close()
+	// consumer, err := kafka.NewConsumer(&kafka.ConfigMap{
+	// 	"bootstrap.servers": config.AppConfig.Kafka.Host + ":" + config.AppConfig.Kafka.Port, // Используйте localhost
+	// 	"group.id":          "adminServiceBecomingAnswer",
+	// 	"auto.offset.reset": "latest",
+	// })
+	// if err != nil {
+	// 	log.Fatalf("Failed to create consumer: %s", err)
+	// }
+	// defer consumer.Close()
+
 	log.Println("Kafka connected successfully")
 
-	err = consumer.Assign([]kafka.TopicPartition{{Topic: &config.AppConfig.Kafka.AuthTopicSend, Partition: config.AppConfig.Kafka.Partition, Offset: kafka.OffsetTail(1)}})
+	err = bus.Consumer.Assign([]kafka.TopicPartition{{Topic: &cfg.Kafka.AuthTopicSend, Partition: cfg.Kafka.Partition, Offset: kafka.OffsetTail(1)}})
 	if err != nil {
 		log.Fatal("Failed to assign partition:", err)
 	}
 
 	for {
-		msg, err := consumer.ReadMessage(-1)
+		msg, err := bus.Consumer.ReadMessage(-1)
 		if err == nil {
 			log.Println("Received message: " + string(msg.Value) + " from topic:" + msg.TopicPartition.String() + " with offset " + msg.TopicPartition.Offset.String())
 

@@ -3,57 +3,53 @@ package plan
 import (
 	repo "adminservice/internal/adapter/db/sql"
 	"adminservice/internal/adapter/kafka/producers"
+	"adminservice/internal/di"
 	"adminservice/internal/entity"
 	"adminservice/pkg"
 	"log"
-	"net/http"
 )
 
 type UseCase struct {
-	repo repo.PlanRepo
+	repo   repo.PlanRepo
+	logger di.LoggerType
+	cfg    di.ConfigType
+	bus    di.Bus
 }
 
-func New(r repo.PlanRepo) *UseCase {
+func New(r repo.PlanRepo, logger di.LoggerType, cfg di.ConfigType, bus di.Bus) *UseCase {
 	return &UseCase{
-		repo: r,
+		repo:   r,
+		logger: logger,
+		cfg:    cfg,
+		bus:    bus,
 	}
 }
 
-// Опять же, у тебя бизнес логика берет данные из параметров http хендлера, а что если поменяется веб-фрейм, 
+// Опять же, у тебя бизнес логика берет данные из параметров http хендлера, а что если поменяется веб-фрейм,
 // и будут другие параметры, или вообще транспорт поменяется с http на grpc?
-func (uc *UseCase) PlanSeasons(w http.ResponseWriter, r *http.Request) (entity.Season, error) {
-	// Checking Auth Responce
-	if err := pkg.CheckToken(r); err != nil {
-		return entity.Season{}, err
-	}
+func (uc *UseCase) PlanSeasons(season entity.DetailSeasonJson) error {
 
-	var season entity.DetailSeasonJson
 	var dbSeason entity.Season
-
-	// parsing season body
-	if err := pkg.ParseSeasonBody(r.Body, &season); err != nil {
-		return entity.Season{}, err
-	}
 
 	// Serialize Season JSON entity in DB entity
 	if err := pkg.StoreDeatailSeasonInDBEntity(&season, &dbSeason); err != nil {
-		return entity.Season{}, err
+		return err
 	}
 
 	// Finding if seasons are crossing
 	if err := uc.repo.FindSeasonCross(&dbSeason); err != nil {
-		return entity.Season{}, err
+		return err
 	}
 
 	// If season is not crossing with others we add it to DB
 	if err := uc.repo.AddNewSeason(&dbSeason); err != nil {
-		return entity.Season{}, err
+		return err
 	}
 
 	log.Println("Season IN DB: ", dbSeason)
 
 	// Produsing new season to Core service
-	go producers.SendSeasonInfo(pkg.ParseSeasonToKafkaJSON(dbSeason))
+	go producers.SendSeasonInfo(pkg.ParseSeasonToKafkaJSON(dbSeason), uc.cfg, uc.bus)
 
-	return dbSeason, nil
+	return nil
 }

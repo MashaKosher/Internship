@@ -2,10 +2,7 @@ package http
 
 import (
 	routes "adminservice/internal/controller/http/v1"
-	dailytask "adminservice/internal/usecase/daily_task"
-	"adminservice/internal/usecase/plan"
-	"adminservice/internal/usecase/settings"
-	"adminservice/internal/usecase/statistic"
+	"adminservice/internal/di"
 
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
@@ -28,7 +25,7 @@ import (
 // ```
 // Плюс общая рекомендация: чтобы избегать циклов зависимостей, лучше использовать интерфейсы, а не конкретные реализации.
 // И потом передавать этот контейнер куда нужно.
-func NewRouter(r *chi.Mux, planUseCase *plan.UseCase, settingsUseCase *settings.UseCase, dailyTaskUseCase *dailytask.UseCase, statisticUseCase *statistic.UseCase) {
+func NewRouter(r *chi.Mux, deps di.Container) {
 	// Middlewares
 	middleWares(r)
 
@@ -36,7 +33,7 @@ func NewRouter(r *chi.Mux, planUseCase *plan.UseCase, settingsUseCase *settings.
 	routes.InitSwaggerRoutes(r)
 
 	// Auth routes initialize
-	routes.InitAdminRoutes(r, planUseCase, settingsUseCase, dailyTaskUseCase, statisticUseCase)
+	routes.InitAdminRoutes(r, deps)
 }
 
 func middleWares(r *chi.Mux) {

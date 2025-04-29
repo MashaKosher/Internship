@@ -1,7 +1,7 @@
 package producers
 
 import (
-	"adminservice/internal/config"
+	"adminservice/internal/di"
 	"adminservice/internal/entity"
 	"adminservice/pkg"
 	"log"
@@ -9,20 +9,20 @@ import (
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
-func SendSeasonInfo(season entity.SeasonOut) {
-	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": "localhost:9092"})
-	if err != nil {
-		log.Fatalf("Failed to create producer: %s", err)
-	}
-	defer p.Close()
+func SendSeasonInfo(season entity.SeasonOut, cfg di.ConfigType, bus di.Bus) {
+	// p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": "localhost:9092"})
+	// if err != nil {
+	// 	log.Fatalf("Failed to create producer: %s", err)
+	// }
+	// defer p.Close()
 
 	log.Println("Season Producer created successfully")
 
-	message := pkg.CreateMessage(season, config.AppConfig.Kafka.SeasonTopicSend, config.AppConfig.Kafka.Partition)
+	message := pkg.CreateMessage(season, cfg.Kafka.SeasonTopicSend, cfg.Kafka.Partition)
 
 	deliveryChan := make(chan kafka.Event)
 
-	err = p.Produce(&message, deliveryChan)
+	err := bus.SeasonProducer.Produce(&message, deliveryChan)
 	if err != nil {
 		log.Printf("Failed to produce message: %s", err)
 		return
@@ -45,5 +45,5 @@ func SendSeasonInfo(season entity.SeasonOut) {
 		}
 	}()
 
-	p.Flush(1000)
+	bus.SeasonProducer.Flush(1000)
 }

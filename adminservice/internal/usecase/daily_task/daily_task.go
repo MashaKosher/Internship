@@ -3,63 +3,49 @@ package dailytask
 import (
 	repo "adminservice/internal/adapter/db/sql"
 	"adminservice/internal/adapter/kafka/producers"
+	"adminservice/internal/di"
 	"adminservice/internal/entity"
 	"adminservice/pkg"
-	"log"
-	"net/http"
-	"time"
+	"fmt"
 )
 
 type UseCase struct {
 	// Пиши интерфейсы по месту использования, а не реализации.
 	// Интерфейсы - контракт, заключаемый между вызывающим и вызываемым кодом.
-	repo repo.DailyTaskRepo
+	repo   repo.DailyTaskRepo
+	logger di.LoggerType
+	cfg    di.ConfigType
+	bus    di.Bus
 }
 
-func New(r repo.DailyTaskRepo) *UseCase {
+func New(r repo.DailyTaskRepo, logger di.LoggerType, cfg di.ConfigType, bus di.Bus) *UseCase {
 	return &UseCase{
-		repo: r,
+		repo:   r,
+		logger: logger,
+		cfg:    cfg,
+		bus:    bus,
 	}
 }
 
-func (uc *UseCase) CreateDailyTask(w http.ResponseWriter, r *http.Request) (entity.DailyTasks, error) {
-	// Checking Auth Responce
-	if err := pkg.CheckToken(r); err != nil {
+func (uc *UseCase) CreateDailyTask(dailyTask entity.DBDailyTasks) (entity.DailyTasks, error) {
+
+	if err := uc.repo.AddDailyTask(dailyTask); err != nil {
 		return entity.DailyTasks{}, err
 	}
 
-	// Adding task to DB
-	var DBDailyTasks entity.DBDailyTasks
-	if err := pkg.ParseDailyTaskBody(r.Body, &DBDailyTasks); err != nil {
-		return entity.DailyTasks{}, err
-	}
-	DBDailyTasks.TaskDate = time.Now()
-
-	if err := uc.repo.AddDailyTask(DBDailyTasks); err != nil {
-		return entity.DailyTasks{}, err
-	}
-
-	log.Println("Таска добавлена в БД успешно:")
+	uc.logger.Info("Task added to DB successfully: " + fmt.Sprint(dailyTask))
 
 	// Sending task to Core Service
-	DailyTasks := pkg.ParseDailyTaskToKafkaJSON(DBDailyTasks)
+	dailyTaskOut := pkg.ParseDailyTaskToKafkaJSON(dailyTask)
 
-	go producers.SendDailyTask(DailyTasks)
+	go producers.SendDailyTask(dailyTaskOut, uc.cfg, uc.bus)
 
-	return DailyTasks, nil
+	return dailyTaskOut, nil
 }
 
-func (uc *UseCase) DeleteDailyTask(w http.ResponseWriter, r *http.Request) error {
-	// Checking Auth Responce
-	if err := pkg.CheckToken(r); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return err
-	}
-
+func (uc *UseCase) DeleteDailyTask() error {
 	if err := uc.repo.DeleteTodaysTask(); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
 		return err
 	}
-
 	return nil
 }

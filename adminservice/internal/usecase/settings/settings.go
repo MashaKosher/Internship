@@ -2,44 +2,40 @@ package settings
 
 import (
 	repo "adminservice/internal/adapter/db/sql"
+	"adminservice/internal/adapter/kafka/producers"
+	"adminservice/internal/di"
 	"adminservice/internal/entity"
 	"adminservice/pkg"
-	"net/http"
 )
 
 type UseCase struct {
-	repo repo.SettingsRepo
+	repo   repo.SettingsRepo
+	logger di.LoggerType
+	cfg    di.ConfigType
+	bus    di.Bus
 }
 
-func New(r repo.SettingsRepo) *UseCase {
+func New(r repo.SettingsRepo, logger di.LoggerType, cfg di.ConfigType, bus di.Bus) *UseCase {
 	return &UseCase{
-		repo: r,
+		repo:   r,
+		logger: logger,
+		cfg:    cfg,
+		bus:    bus,
 	}
 }
 
-func (u *UseCase) UpdateSettings(w http.ResponseWriter, r *http.Request) (entity.SettingsJson, error) {
-	if err := pkg.CheckToken(r); err != nil {
-		// http.Error(w, err.Error(), http.StatusBadRequest)
-		return entity.SettingsJson{}, err
-	}
-
-	var settings entity.SettingsJson
+func (u *UseCase) UpdateSettings(settings entity.SettingsJson) error {
 	var dbSettiings entity.GameSettings
-
-	// Parsing Game Settings body
-	if err := pkg.ParseGameSettingsBody(r.Body, &settings); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return entity.SettingsJson{}, err
-	}
 
 	// Filing Game Settings DB struct
 	pkg.FillGameSettingsDBEntity(&settings, &dbSettiings)
 
 	// Updating dbSettings in DB
 	if err := u.repo.UpdateSettings(dbSettiings); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return entity.SettingsJson{}, err
+		return err
 	}
 
-	return settings, nil
+	go producers.SendGameSettings(settings, u.cfg, u.bus)
+
+	return nil
 }

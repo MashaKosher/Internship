@@ -2,7 +2,6 @@ package settings
 
 import (
 	"adminservice/internal/entity"
-	db "adminservice/pkg/client/sql"
 	"log"
 
 	"gorm.io/gorm"
@@ -19,7 +18,7 @@ func New(db *gorm.DB) *SettingsRepo {
 func (r *SettingsRepo) UpdateSettings(newSettings entity.GameSettings) error {
 
 	var counter int64
-	err := db.DB.Model(&entity.GameSettings{}).Count(&counter).Error
+	err := r.DB.Model(&entity.GameSettings{}).Count(&counter).Error
 	if err != nil {
 		return err
 	}
@@ -27,35 +26,13 @@ func (r *SettingsRepo) UpdateSettings(newSettings entity.GameSettings) error {
 	log.Println("Records amount: ", counter)
 
 	if counter == 0 {
-		if err := db.DB.Save(&newSettings).Error; err != nil {
+		if err := r.DB.Save(&newSettings).Error; err != nil {
 			return err
 		}
 	} else {
-		if err := db.DB.Model(&entity.GameSettings{}).Where("id = 1").Updates(&newSettings).Error; err != nil {
+		if err := r.DB.Model(&entity.GameSettings{}).Where("id = 1").Updates(&newSettings).Error; err != nil {
 			return err
 		}
 	}
 	return err
 }
-
-// func UpdateSettings(newSettings entity.GameSettings) error {
-
-// 	var counter int64
-// 	err := db.DB.Model(&entity.GameSettings{}).Count(&counter).Error
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	log.Println("Records amount: ", counter)
-
-// 	if counter == 0 {
-// 		if err := db.DB.Save(&newSettings).Error; err != nil {
-// 			return err
-// 		}
-// 	} else {
-// 		if err := db.DB.Model(&entity.GameSettings{}).Where("id = 1").Updates(&newSettings).Error; err != nil {
-// 			return err
-// 		}
-// 	}
-// 	return err
-// }

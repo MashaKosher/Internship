@@ -3,39 +3,72 @@ definitions:
   entity.DBDailyTasks:
     properties:
       games-amount:
+        example: 5
+        minimum: 0
         type: integer
       referals-amount:
+        example: 10
+        minimum: 0
         type: integer
     type: object
   entity.DailyTasks:
     properties:
       games-amount:
+        example: 5
         type: integer
       referals-amount:
+        example: 10
         type: integer
       task-date:
+        example: "2023-05-15T00:00:00Z"
         type: string
     type: object
   entity.DetailSeasonJson:
     properties:
       end-date:
+        example: "2024-08-31"
+        format: date
         type: string
       end-time:
+        format: time
         type: string
       fund:
+        minimum: 0
         type: integer
       start-date:
+        example: "2024-06-01"
+        format: date
         type: string
       start-time:
+        example: "09:00:00"
+        format: time
+        type: string
+    required:
+    - end-date
+    - end-time
+    - start-date
+    - start-time
+    type: object
+  entity.ErrorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  entity.Response:
+    properties:
+      message:
         type: string
     type: object
   entity.SettingsJson:
     properties:
       lose-amount:
+        minimum: 0
         type: number
       waiting-time:
+        minimum: 0
         type: integer
       win-amount:
+        minimum: 0
         type: number
     type: object
 externalDocs:
@@ -52,19 +85,31 @@ paths:
     delete:
       consumes:
       - application/json
-      description: Deelete todays task
+      description: Delete daily tasks for the current date
       produces:
       - application/json
-      responses: {}
-      summary: Delete daily tasks
+      responses:
+        "200":
+          description: Successfully deleted today's tasks
+          schema:
+            $ref: '#/definitions/entity.Response'
+        "400":
+          description: No tasks found for today or deletion error
+          schema:
+            $ref: '#/definitions/entity.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/entity.Response'
+      summary: Delete today's daily tasks
       tags:
       - DailyTasks
     post:
       consumes:
       - application/json
-      description: Create a new set of daily tasks
+      description: Create a new set of daily tasks for the current date
       parameters:
-      - description: Daily tasks object
+      - description: Daily tasks data
         in: body
         name: tasks
         required: true
@@ -74,19 +119,27 @@ paths:
       - application/json
       responses:
         "201":
-          description: Created
+          description: Successfully created daily tasks
           schema:
             $ref: '#/definitions/entity.DailyTasks'
+        "400":
+          description: Invalid request format or validation error
+          schema:
+            $ref: '#/definitions/entity.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/entity.Response'
       summary: Create daily tasks
       tags:
       - DailyTasks
-  /deatil-plan:
+  /detail-plan:
     post:
       consumes:
       - application/json
-      description: Обрабатывает запрос на планирование сезона и проверяет права пользователя
+      description: Handles season planning request and verifies user admin rights
       parameters:
-      - description: Информация о сезоне
+      - description: Season information
         in: body
         name: season
         required: true
@@ -95,13 +148,29 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: User is admin
+        "201":
+          description: Successfully created season plan
           schema:
-            type: string
-      summary: Детальное палнирование сезона
+            $ref: '#/definitions/entity.DetailSeasonJson'
+        "400":
+          description: Invalid request format or validation error
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "401":
+          description: Unauthorized (invalid or missing token)
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "403":
+          description: Forbidden (user is not admin)
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+      summary: Season detailed planning
       tags:
-      - Season Planing
+      - Season Planning
   /settings:
     post:
       consumes:

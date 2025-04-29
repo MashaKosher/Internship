@@ -15,8 +15,7 @@ func CreateMessage(entity any, topic string, partition int32) kafka.Message {
 	return kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: partition},
 		Value:          value,
-		// Key:            []byte("a"),
-		Key: nil,
+		Key:            nil,
 	}
 }
 

@@ -1,7 +1,7 @@
 package producers
 
 import (
-	"adminservice/internal/config"
+	"adminservice/internal/di"
 	"adminservice/internal/entity"
 	"adminservice/pkg"
 	"log"
@@ -9,28 +9,28 @@ import (
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
-func CheckToken(accessToken, refreshToken string) {
-	p, err := kafka.NewProducer(&kafka.ConfigMap{
-		"bootstrap.servers": config.AppConfig.Kafka.Host + ":" + config.AppConfig.Kafka.Port, // Используйте localhost
-	})
-	if err != nil {
-		log.Fatalf("Failed to create producer: %s", err)
-	}
-	defer p.Close()
+func CheckToken(accessToken, refreshToken string, cfg di.ConfigType, bus di.Bus) {
+	// p, err := kafka.NewProducer(&kafka.ConfigMap{
+	// 	"bootstrap.servers": config.AppConfig.Kafka.Host + ":" + config.AppConfig.Kafka.Port, // Используйте localhost
+	// })
+	// if err != nil {
+	// 	log.Fatalf("Failed to create producer: %s", err)
+	// }
+	// defer p.Close()
 
 	log.Println("Producer created successfully")
 
 	var request entity.AuthRequest
-	request.Partition = config.AppConfig.Kafka.Partition
+	request.Partition = cfg.Kafka.Partition
 	request.AccessToken = accessToken
 	request.RefreshToken = refreshToken
 
-	message := pkg.CreateMessage(request, config.AppConfig.Kafka.AuthTopicRecieve, config.AppConfig.Kafka.Partition)
+	message := pkg.CreateMessage(request, cfg.Kafka.AuthTopicRecieve, cfg.Kafka.Partition)
 
 	// Канал для получения событий доставки
 	deliveryChan := make(chan kafka.Event)
 
-	err = p.Produce(&message, deliveryChan)
+	err := bus.AuthProducer.Produce(&message, deliveryChan)
 	if err != nil {
 		log.Printf("Failed to produce message: %s", err)
 		return
@@ -54,5 +54,5 @@ func CheckToken(accessToken, refreshToken string) {
 		}
 	}()
 
-	p.Flush(1000)
+	bus.AuthProducer.Flush(1000)
 }

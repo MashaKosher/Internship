@@ -7,35 +7,8 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"net/http"
 	"time"
 )
-
-func CheckToken(r *http.Request) error {
-	// Лучше не игнорировать второе значение, вдруг там окажется не тот тип, который ты ожидаешь.
-	answer, _ := r.Context().Value("val").(entity.AuthAnswer)
-
-	if err := ValidateAuthResponse(answer); err != nil {
-		// http.Error(w, err.Error(), http.StatusBadRequest)
-		return err
-	}
-
-	return nil
-}
-
-func ValidateAuthResponse(answer entity.AuthAnswer) error {
-	// if Token is not valid field Err will not be empty
-	if len(answer.Err) != 0 {
-		return errors.New(answer.Err)
-	}
-
-	// if user role is not admin
-	if answer.Role != "admin" {
-		return errors.New("user is not admin")
-	}
-
-	return nil
-}
 
 func ParseResponse(body io.ReadCloser, season *entity.SeasonJson) error {
 	if err := json.NewDecoder(body).Decode(season); err != nil {

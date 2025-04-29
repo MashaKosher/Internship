@@ -12,7 +12,8 @@ db:
   ssl_mode: disable
 
 
-
+logger:
+  filename: app.log
 
 kafka:
   host: localhost

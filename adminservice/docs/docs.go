@@ -17,7 +17,7 @@ const docTemplate = `{
     "paths": {
         "/daily-tasks": {
             "post": {
-                "description": "Create a new set of daily tasks",
+                "description": "Create a new set of daily tasks for the current date",
                 "consumes": [
                     "application/json"
                 ],
@@ -30,7 +30,7 @@ const docTemplate = `{
                 "summary": "Create daily tasks",
                 "parameters": [
                     {
-                        "description": "Daily tasks object",
+                        "description": "Daily tasks data",
                         "name": "tasks",
                         "in": "body",
                         "required": true,
@@ -41,15 +41,27 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "201": {
-                        "description": "Created",
+                        "description": "Successfully created daily tasks",
                         "schema": {
                             "$ref": "#/definitions/entity.DailyTasks"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request format or validation error",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Response"
                         }
                     }
                 }
             },
             "delete": {
-                "description": "Deelete todays task",
+                "description": "Delete daily tasks for the current date",
                 "consumes": [
                     "application/json"
                 ],
@@ -59,13 +71,32 @@ const docTemplate = `{
                 "tags": [
                     "DailyTasks"
                 ],
-                "summary": "Delete daily tasks",
-                "responses": {}
+                "summary": "Delete today's daily tasks",
+                "responses": {
+                    "200": {
+                        "description": "Successfully deleted today's tasks",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "No tasks found for today or deletion error",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Response"
+                        }
+                    }
+                }
             }
         },
-        "/deatil-plan": {
+        "/detail-plan": {
             "post": {
-                "description": "Обрабатывает запрос на планирование сезона и проверяет права пользователя",
+                "description": "Handles season planning request and verifies user admin rights",
                 "consumes": [
                     "application/json"
                 ],
@@ -73,12 +104,12 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Season Planing"
+                    "Season Planning"
                 ],
-                "summary": "Детальное палнирование сезона",
+                "summary": "Season detailed planning",
                 "parameters": [
                     {
-                        "description": "Информация о сезоне",
+                        "description": "Season information",
                         "name": "season",
                         "in": "body",
                         "required": true,
@@ -88,10 +119,34 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "User is admin",
+                    "201": {
+                        "description": "Successfully created season plan",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/entity.DetailSeasonJson"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request format or validation error",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized (invalid or missing token)",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden (user is not admin)",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
                         }
                     }
                 }
@@ -177,10 +232,14 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "games-amount": {
-                    "type": "integer"
+                    "type": "integer",
+                    "minimum": 0,
+                    "example": 5
                 },
                 "referals-amount": {
-                    "type": "integer"
+                    "type": "integer",
+                    "minimum": 0,
+                    "example": 10
                 }
             }
         },
@@ -188,32 +247,65 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "games-amount": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 5
                 },
                 "referals-amount": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 10
                 },
                 "task-date": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2023-05-15T00:00:00Z"
                 }
             }
         },
         "entity.DetailSeasonJson": {
             "type": "object",
+            "required": [
+                "end-date",
+                "end-time",
+                "start-date",
+                "start-time"
+            ],
             "properties": {
                 "end-date": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "date",
+                    "example": "2024-08-31"
                 },
                 "end-time": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "time"
                 },
                 "fund": {
-                    "type": "integer"
+                    "type": "integer",
+                    "minimum": 0
                 },
                 "start-date": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "date",
+                    "example": "2024-06-01"
                 },
                 "start-time": {
+                    "type": "string",
+                    "format": "time",
+                    "example": "09:00:00"
+                }
+            }
+        },
+        "entity.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.Response": {
+            "type": "object",
+            "properties": {
+                "message": {
                     "type": "string"
                 }
             }
@@ -222,13 +314,16 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "lose-amount": {
-                    "type": "number"
+                    "type": "number",
+                    "minimum": 0
                 },
                 "waiting-time": {
-                    "type": "integer"
+                    "type": "integer",
+                    "minimum": 0
                 },
                 "win-amount": {
-                    "type": "number"
+                    "type": "number",
+                    "minimum": 0
                 }
             }
         }
