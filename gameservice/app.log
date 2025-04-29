@@ -1,3 +1,0 @@
-{"level":"info","ts":1745865255.389448,"caller":"clickhouse/connect.go:36","msg":"Connected to ClickHouse!"}
-{"level":"info","ts":1745865255.3911521,"caller":"app/app.go:44","msg":"ClickHouse table created successfully"}
-{"level":"info","ts":1745865255.3954382,"caller":"consumers/game_settings_consumer.go:25","msg":"Kafka Game Settings Consumer connected successfully"}

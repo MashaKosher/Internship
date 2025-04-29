@@ -5,6 +5,7 @@ import (
 	"net/http"
 )
 
+// Почему в бизнес-логике лежат параметры http хендлера?
 type (
 	Plan interface {
 		PlanSeasons(w http.ResponseWriter, r *http.Request) (entity.Season, error)

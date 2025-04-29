@@ -12,6 +12,7 @@ import (
 )
 
 func CheckToken(r *http.Request) error {
+	// Лучше не игнорировать второе значение, вдруг там окажется не тот тип, который ты ожидаешь.
 	answer, _ := r.Context().Value("val").(entity.AuthAnswer)
 
 	if err := ValidateAuthResponse(answer); err != nil {
