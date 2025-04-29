@@ -1,6 +1,11 @@
 basePath: /
 definitions:
-  auth.LoginOutDTO:
+  entity.Error:
+    properties:
+      error:
+        type: string
+    type: object
+  entity.LoginOutDTO:
     properties:
       access:
         type: string
@@ -11,18 +16,6 @@ definitions:
       role:
         type: string
       username:
-        type: string
-    type: object
-  auth.UserInDTO:
-    properties:
-      password:
-        type: string
-      username:
-        type: string
-    type: object
-  entity.Error:
-    properties:
-      error:
         type: string
     type: object
   entity.Password:
@@ -41,6 +34,13 @@ definitions:
     required:
     - password
     - username
+    type: object
+  entity.UserInDTO:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
     type: object
 externalDocs:
   description: OpenAPI
@@ -71,7 +71,7 @@ paths:
         "200":
           description: Password successfully changed
           schema:
-            $ref: '#/definitions/auth.UserInDTO'
+            $ref: '#/definitions/entity.UserInDTO'
         "400":
           description: Invalid input data
           schema:
@@ -103,7 +103,7 @@ paths:
         "200":
           description: Refresh token is valid
           schema:
-            $ref: '#/definitions/auth.UserInDTO'
+            $ref: '#/definitions/entity.UserInDTO'
         "401":
           description: Unauthorized - Invalid or expired token
           schema:
@@ -129,7 +129,7 @@ paths:
         "200":
           description: Refresh token is valid
           schema:
-            $ref: '#/definitions/auth.UserInDTO'
+            $ref: '#/definitions/entity.UserInDTO'
         "401":
           description: Unauthorized - Invalid or expired token
           schema:
@@ -154,10 +154,10 @@ paths:
       parameters:
       - description: Login request body
         in: body
-        name: auth.UserInDTO
+        name: entity.UserInDTO
         required: true
         schema:
-          $ref: '#/definitions/auth.UserInDTO'
+          $ref: '#/definitions/entity.UserInDTO'
       produces:
       - application/json
       responses:
@@ -168,7 +168,7 @@ paths:
               description: refresh_token=JWT_TOKEN; Path=/; HttpOnly
               type: string
           schema:
-            $ref: '#/definitions/auth.LoginOutDTO'
+            $ref: '#/definitions/entity.LoginOutDTO'
         "400":
           description: Invalid input data
           schema:
@@ -203,7 +203,7 @@ paths:
         "201":
           description: Admin successfully registered
           schema:
-            $ref: '#/definitions/auth.UserInDTO'
+            $ref: '#/definitions/entity.UserInDTO'
         "400":
           description: Invalid input data
           schema:
@@ -245,7 +245,7 @@ paths:
         "201":
           description: Successfully registered
           schema:
-            $ref: '#/definitions/auth.UserInDTO'
+            $ref: '#/definitions/entity.UserInDTO'
         "400":
           description: Invalid input data
           schema:

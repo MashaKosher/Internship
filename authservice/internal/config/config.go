@@ -2,7 +2,7 @@ package config
 
 import "github.com/spf13/viper"
 
-type config struct {
+type Config struct {
 	Server struct {
 		Port string `mapstructure:"port"`
 		Host string `mapstructure:"host"`
@@ -34,9 +34,10 @@ type config struct {
 	} `mapstructure:"kafka"`
 }
 
-var AppConfig config
+func MustParseConfig() Config {
 
-func Load() {
+	var Cfg Config
+
 	viper.AddConfigPath("./internal/config")
 	viper.SetConfigType("yaml")
 	viper.SetConfigName("config")
@@ -46,5 +47,7 @@ func Load() {
 		panic(err)
 	}
 
-	viper.Unmarshal(&AppConfig)
+	viper.Unmarshal(&Cfg)
+
+	return Cfg
 }

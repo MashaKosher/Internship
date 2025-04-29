@@ -1,8 +1,7 @@
 package keys
 
 import (
-	"authservice/internal/config"
-	"authservice/pkg/logger"
+	"authservice/internal/di"
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
@@ -15,61 +14,54 @@ import (
 const PUBLIC_KEY = "PUBLIC KEY"
 const PRIVATE_KEY = "PRIVATE KEY"
 
-type Keys struct {
-	PublicKey  *rsa.PublicKey
-	PrivateKey *rsa.PrivateKey
-}
+func ReadRSAKeys(cfg di.ConfigType, logger di.LoggerType, RSAKeys *di.RSAKeys) {
+	publicPath, privatePath := composePathes(cfg)
 
-var RSAkeys Keys
-
-func ReadRSAKeys() {
-	publicPath, privatePath := composePathes()
-
-	logger.Logger.Info("publicPath: " + fmt.Sprint(publicPath))
-	logger.Logger.Info("privatePath: " + fmt.Sprint(privatePath))
+	logger.Info("publicPath: " + fmt.Sprint(publicPath))
+	logger.Info("privatePath: " + fmt.Sprint(privatePath))
 
 	var wg sync.WaitGroup
 	wg.Add(2)
-	go readPath(PUBLIC_KEY, publicPath, &wg)
-	go readPath(PRIVATE_KEY, privatePath, &wg)
+	go readPath(PUBLIC_KEY, publicPath, &wg, logger, RSAKeys)
+	go readPath(PRIVATE_KEY, privatePath, &wg, logger, RSAKeys)
 	wg.Wait()
 }
 
-func composePathes() (string, string) {
+func composePathes(cfg di.ConfigType) (string, string) {
 	currentDir, err := os.Getwd()
 	if err != nil {
 		panic(err)
 	}
-	publicPath := filepath.Join(currentDir, config.AppConfig.RSAKeys.PublicKeyFile)
-	privatePath := filepath.Join(currentDir, config.AppConfig.RSAKeys.PrivateKeyFile)
+	publicPath := filepath.Join(currentDir, cfg.RSAKeys.PublicKeyFile)
+	privatePath := filepath.Join(currentDir, cfg.RSAKeys.PrivateKeyFile)
 	return publicPath, privatePath
 }
 
-func readPath(keyType, filePath string, wg *sync.WaitGroup) {
+func readPath(keyType, filePath string, wg *sync.WaitGroup, logger di.LoggerType, RSAKeys *di.RSAKeys) {
 	defer wg.Done()
 	keyData, err := os.ReadFile(filePath)
 	if err != nil {
-		logger.Logger.Fatal("Error while reading " + keyType + " file")
+		logger.Fatal("Error while reading " + keyType + " file")
 	}
 
 	block, _ := pem.Decode(keyData)
 	if block == nil || (block.Type != PUBLIC_KEY && block.Type != PRIVATE_KEY) {
-		logger.Logger.Fatal("Invalid Key format")
+		logger.Fatal("Invalid Key format")
 	}
 
 	if keyType == PUBLIC_KEY {
 		publicKey, err := x509.ParsePKIXPublicKey(block.Bytes)
 		if err != nil {
-			logger.Logger.Fatal("Error while parsing " + keyType + " file")
+			logger.Fatal("Error while parsing " + keyType + " file")
 		}
-		RSAkeys.PublicKey = publicKey.(*rsa.PublicKey)
+		RSAKeys.PublicKey = publicKey.(*rsa.PublicKey)
 	} else {
 		privateKey, err := x509.ParsePKCS8PrivateKey(block.Bytes)
 		if err != nil {
-			logger.Logger.Fatal("Error while parsing " + keyType + " file")
+			logger.Fatal("Error while parsing " + keyType + " file")
 		}
-		RSAkeys.PrivateKey = privateKey.(*rsa.PrivateKey)
+		RSAKeys.PrivateKey = privateKey.(*rsa.PrivateKey)
 	}
 
-	logger.Logger.Info(keyType + " readed succesfully")
+	logger.Info(keyType + " readed succesfully")
 }

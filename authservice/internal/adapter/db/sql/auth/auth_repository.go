@@ -3,8 +3,6 @@ package auth
 import (
 	"authservice/internal/entity"
 
-	db "authservice/pkg/client/sql"
-
 	"gorm.io/gorm"
 )
 
@@ -19,13 +17,13 @@ func New(db *gorm.DB) *AuthRepo {
 //
 
 func (r *AuthRepo) CreateUser(user *entity.User) error {
-	err := db.DB.Save(user).Error
+	err := r.DB.Save(user).Error
 	return err
 }
 
 func (r *AuthRepo) FindUserByName(username string) (entity.User, error) {
 	var DBUser entity.User
-	err := db.DB.Where("username = ?", username).First(&DBUser).Error
+	err := r.DB.Where("username = ?", username).First(&DBUser).Error
 	if err != nil {
 		return DBUser, err
 	}
@@ -34,13 +32,13 @@ func (r *AuthRepo) FindUserByName(username string) (entity.User, error) {
 
 func (r *AuthRepo) FindUserById(userId int) (entity.User, error) {
 	var DBUser entity.User
-	if err := db.DB.Model(&DBUser).Where("id = ?", userId).First(&DBUser).Error; err != nil {
+	if err := r.DB.Model(&DBUser).Where("id = ?", userId).First(&DBUser).Error; err != nil {
 		return DBUser, err
 	}
 	return DBUser, nil
 }
 
 func (r *AuthRepo) ChangeUserPassword(userID int, newPassword string) error {
-	result := db.DB.Model(&entity.User{}).Where("id = ?", userID).Update("password", newPassword)
+	result := r.DB.Model(&entity.User{}).Where("id = ?", userID).Update("password", newPassword)
 	return result.Error
 }

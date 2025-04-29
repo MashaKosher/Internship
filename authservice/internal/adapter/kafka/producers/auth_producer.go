@@ -1,31 +1,24 @@
 package producers
 
 import (
-	"authservice/internal/config"
+	"authservice/internal/di"
 	"authservice/internal/entity"
 	"authservice/pkg"
-	"authservice/pkg/logger"
 	"fmt"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
-func AnswerToken(answer entity.AuthAnswer, partition int32) {
-	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": config.AppConfig.Kafka.Host + ":" + config.AppConfig.Kafka.Port})
-	if err != nil {
-		logger.Logger.Error("Failed to create producer:" + err.Error())
-	}
-	defer p.Close()
+func AnswerToken(answer entity.AuthAnswer, partition int32, logger di.LoggerType, cfg di.ConfigType, bus di.Bus) {
+	logger.Info("Producer created successfully")
 
-	logger.Logger.Info("Producer created successfully")
-
-	message := pkg.CreateMessage(answer, config.AppConfig.Kafka.TopicSend, partition)
+	message := pkg.CreateMessage(answer, cfg.Kafka.TopicSend, partition, logger)
 
 	deliveryChan := make(chan kafka.Event)
 
-	err = p.Produce(&message, deliveryChan)
+	err := bus.Producer.Produce(&message, deliveryChan)
 	if err != nil {
-		logger.Logger.Fatal("Failed to produce message: " + err.Error())
+		logger.Fatal("Failed to produce message: " + err.Error())
 	}
 
 	go func() {
@@ -33,15 +26,15 @@ func AnswerToken(answer entity.AuthAnswer, partition int32) {
 		switch e := event.(type) {
 		case *kafka.Message:
 			if e.TopicPartition.Error != nil {
-				logger.Logger.Error(fmt.Sprintf("Delivery failed: %v", e.TopicPartition.Error))
+				logger.Error(fmt.Sprintf("Delivery failed: %v", e.TopicPartition.Error))
 			} else {
-				logger.Logger.Error(fmt.Sprintf("Delivered message to %v [%d] at offset %v",
+				logger.Error(fmt.Sprintf("Delivered message to %v [%d] at offset %v",
 					*e.TopicPartition.Topic, e.TopicPartition.Partition, e.TopicPartition.Offset))
 			}
 		default:
-			logger.Logger.Error(fmt.Sprintf("Ignored event: %s", e))
+			logger.Error(fmt.Sprintf("Ignored event: %s", e))
 		}
 	}()
 
-	p.Flush(1000)
+	bus.Producer.Flush(1000)
 }

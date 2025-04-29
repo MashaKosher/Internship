@@ -1,27 +1,26 @@
 package internal
 
 import (
+	"authservice/internal/di"
 	"authservice/internal/entity"
-	"authservice/pkg/logger"
-	"authservice/pkg/tokens"
 	"fmt"
 
-	"authservice/internal/usecase"
-
-	dto "authservice/internal/usecase/auth"
-
-	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 )
 
 type authRoutes struct {
-	u usecase.Auth
-	v *validator.Validate
+	u di.AuthService
+	v di.ValidatorType
+	l di.LoggerType
 }
 
-func InitAuthRoutes(app *fiber.App, authUsecase usecase.Auth) {
+func InitAuthRoutes(app *fiber.App, deps di.Container) {
 
-	r := &authRoutes{u: authUsecase, v: validator.New(validator.WithRequiredStructEnabled())}
+	r := &authRoutes{
+		u: deps.Services.Auth,
+		v: deps.Validator,
+		l: deps.Logger,
+	}
 
 	api := app.Group("/auth")
 	{
@@ -49,8 +48,8 @@ func InitAuthRoutes(app *fiber.App, authUsecase usecase.Auth) {
 // @Tags         Login
 // @Accept       json
 // @Produce      json
-// @Param		 auth.UserInDTO	body  auth.UserInDTO	true	"Login request body"
-// @Success      200 {object} auth.LoginOutDTO "Successfully logged in"
+// @Param		 entity.UserInDTO	body  entity.UserInDTO	true	"Login request body"
+// @Success      200 {object} entity.LoginOutDTO "Successfully logged in"
 // @Header       200 {string} Set-Cookie "access_token=JWT_TOKEN; Path=/; HttpOnly"
 // @Header       200 {string} Set-Cookie "refresh_token=JWT_TOKEN; Path=/; HttpOnly"
 // @Failure      400 {object} entity.Error "Invalid input data"
@@ -58,16 +57,16 @@ func InitAuthRoutes(app *fiber.App, authUsecase usecase.Auth) {
 // @Failure      500 {object} entity.Error "Internal server error"
 // @Router       /auth/login [post]
 func (r *authRoutes) login(c *fiber.Ctx) error {
-	var user dto.UserInDTO
+	var user entity.UserInDTO
 	c.BodyParser(&user)
-	logger.Logger.Info(fmt.Sprintf("User with UserName %s is trying to log in", user.Username))
+	r.l.Info(fmt.Sprintf("User with UserName %s is trying to log in", user.Username))
 
 	// Veryfing income credentials
 	if err := r.v.Struct(user); err != nil {
-		logger.Logger.Error("Body validation error: " + err.Error())
+		r.l.Error("Body validation error: " + err.Error())
 		return fiber.NewError(fiber.StatusBadRequest, "Invalid data")
 	}
-	logger.Logger.Info("User credentials verified successfully")
+	r.l.Info("User credentials verified successfully")
 
 	outUser, err := r.u.Login(user)
 	if err != nil {
@@ -76,16 +75,16 @@ func (r *authRoutes) login(c *fiber.Ctx) error {
 	}
 
 	c.Cookie(&fiber.Cookie{
-		Name:  string(tokens.ACCESS_TOKEN),
+		Name:  string(di.ACCESS_TOKEN),
 		Value: outUser.AccessToken,
 	})
-	logger.Logger.Info("Access JWT created successfully")
+	r.l.Info("Access JWT created successfully")
 
 	c.Cookie(&fiber.Cookie{
-		Name:  string(tokens.REFRESH_TOKEN),
+		Name:  string(di.REFRESH_TOKEN),
 		Value: outUser.RefreshToken,
 	})
-	logger.Logger.Info("Refresh JWT created successfully")
+	r.l.Info("Refresh JWT created successfully")
 
 	return c.JSON(outUser)
 }
@@ -94,13 +93,13 @@ func (r *authRoutes) login(c *fiber.Ctx) error {
 // @Description  Verifies JWT refresh token from cookies and returns user data if valid. Clears cookies on any error.
 // @Tags         Check Token
 // @Produce      json
-// @Success      200 {object} auth.UserInDTO "Refresh token is valid"
+// @Success      200 {object} entity.UserInDTO "Refresh token is valid"
 // @Failure      401 {object} entity.Error "Unauthorized - Invalid or expired token"
 // @Failure      403 {object} entity.Error "Forbidden - Token validation failed"
 // @Failure      500 {object} entity.Error "Internal server error"
 // @Router       /auth/check/access [get]
 func (r *authRoutes) checkAccessToken(c *fiber.Ctx) error {
-	var accessToken string = c.Cookies(string(tokens.ACCESS_TOKEN))
+	var accessToken string = c.Cookies(string(di.ACCESS_TOKEN))
 	outUser, err := r.u.CheckAccessToken(accessToken)
 	if err != nil {
 		c.ClearCookie()
@@ -113,13 +112,13 @@ func (r *authRoutes) checkAccessToken(c *fiber.Ctx) error {
 // @Description  Verifies JWT refresh token from cookies and returns user data if valid. Clears cookies on any error.
 // @Tags         Check Token
 // @Produce      json
-// @Success      200 {object} auth.UserInDTO "Refresh token is valid"
+// @Success      200 {object} entity.UserInDTO "Refresh token is valid"
 // @Failure      401 {object} entity.Error "Unauthorized - Invalid or expired token"
 // @Failure      403 {object} entity.Error "Forbidden - Token validation failed"
 // @Failure      500 {object} entity.Error "Internal server error"
 // @Router       /auth/check/refresh [get]
 func (r *authRoutes) checkRefreshToken(c *fiber.Ctx) error {
-	var refreshToken string = c.Cookies(string(tokens.REFRESH_TOKEN))
+	var refreshToken string = c.Cookies(string(di.REFRESH_TOKEN))
 	outUser, err := r.u.CheckRefreshToken(refreshToken)
 	if err != nil {
 		c.ClearCookie()
@@ -134,8 +133,8 @@ func (r *authRoutes) checkRefreshToken(c *fiber.Ctx) error {
 // @Tags         Sign Up
 // @Accept       json
 // @Produce      json
-// @Param        request body entity.User true "User registration data"
-// @Success      201 {object} auth.UserInDTO "Successfully registered"
+// @Param        request body entity.UserInDTO true "User registration data"
+// @Success      201 {object} entity.UserInDTO "Successfully registered"
 // @Failure      400 {object} entity.Error "Invalid input data"
 // @Failure      409 {object} entity.Error "Conflict - Username already exists"
 // @Failure      500 {object} entity.Error "Internal server error"
@@ -143,14 +142,14 @@ func (r *authRoutes) checkRefreshToken(c *fiber.Ctx) error {
 func (r *authRoutes) userSignUp(c *fiber.Ctx) error {
 	var user entity.User
 	c.BodyParser(&user)
-	logger.Logger.Info(fmt.Sprintf("User with UserName %s is trying to log in", user.Username))
+	r.l.Info(fmt.Sprintf("User with UserName %s is trying to log in", user.Username))
 
 	// Veryfing income credentials
 	if err := r.v.Struct(user); err != nil {
-		logger.Logger.Error("Body validation error: " + err.Error())
+		r.l.Error("Body validation error: " + err.Error())
 		return fiber.NewError(fiber.StatusBadRequest, "Invalid data")
 	}
-	logger.Logger.Info("User credentials verified successfully")
+	r.l.Info("User credentials verified successfully")
 
 	outUser, err := r.u.UserSignUp(user)
 	if err != nil {
@@ -166,7 +165,7 @@ func (r *authRoutes) userSignUp(c *fiber.Ctx) error {
 // @Accept       json
 // @Produce      json
 // @Param        request body entity.User true "Admin registration data"
-// @Success      201 {object} auth.UserInDTO  "Admin successfully registered"
+// @Success      201 {object} entity.UserInDTO  "Admin successfully registered"
 // @Failure      400 {object} entity.Error "Invalid input data"
 // @Failure      401 {object} entity.Error "Unauthorized - Only existing admins can create new admins"
 // @Failure      403 {object} entity.Error "Forbidden - Insufficient permissions"
@@ -176,14 +175,14 @@ func (r *authRoutes) userSignUp(c *fiber.Ctx) error {
 func (r *authRoutes) adminSignUp(c *fiber.Ctx) error {
 	var user entity.User
 	c.BodyParser(&user)
-	logger.Logger.Info(fmt.Sprintf("User with UserName %s is trying to log in", user.Username))
+	r.l.Info(fmt.Sprintf("User with UserName %s is trying to log in", user.Username))
 
 	// Veryfing income credentials
 	if err := r.v.Struct(user); err != nil {
-		logger.Logger.Error("Body validation error: " + err.Error())
+		r.l.Error("Body validation error: " + err.Error())
 		return fiber.NewError(fiber.StatusBadRequest, "Invalid data")
 	}
-	logger.Logger.Info("User credentials verified successfully")
+	r.l.Info("User credentials verified successfully")
 
 	outUser, err := r.u.AdminSignUp(user)
 	if err != nil {
@@ -199,7 +198,7 @@ func (r *authRoutes) adminSignUp(c *fiber.Ctx) error {
 // @Accept       json
 // @Produce      json
 // @Param        request body entity.Password true "New password data"
-// @Success      200 {object} auth.UserInDTO "Password successfully changed"
+// @Success      200 {object} entity.UserInDTO "Password successfully changed"
 // @Failure      400 {object} entity.Error "Invalid input data"
 // @Failure      401 {object} entity.Error "Unauthorized - Invalid or expired token"
 // @Failure      403 {object} entity.Error "Forbidden - Password doesn't meet requirements"
@@ -212,11 +211,11 @@ func (r *authRoutes) changePassword(c *fiber.Ctx) error {
 
 	// Veryfing income credentials
 	if err := r.v.Struct(newPassword); err != nil {
-		logger.Logger.Error("Body validation error: " + err.Error())
+		r.l.Error("Body validation error: " + err.Error())
 		return fiber.NewError(fiber.StatusBadRequest, "Invalid data")
 	}
 
-	var accessToken string = c.Cookies(string(tokens.ACCESS_TOKEN))
+	var accessToken string = c.Cookies(string(di.ACCESS_TOKEN))
 
 	outUser, err := r.u.ChangePassword(newPassword, accessToken)
 	if err != nil {

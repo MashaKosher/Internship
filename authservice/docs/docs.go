@@ -48,7 +48,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Password successfully changed",
                         "schema": {
-                            "$ref": "#/definitions/auth.UserInDTO"
+                            "$ref": "#/definitions/entity.UserInDTO"
                         }
                     },
                     "400": {
@@ -92,7 +92,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Refresh token is valid",
                         "schema": {
-                            "$ref": "#/definitions/auth.UserInDTO"
+                            "$ref": "#/definitions/entity.UserInDTO"
                         }
                     },
                     "401": {
@@ -130,7 +130,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Refresh token is valid",
                         "schema": {
-                            "$ref": "#/definitions/auth.UserInDTO"
+                            "$ref": "#/definitions/entity.UserInDTO"
                         }
                     },
                     "401": {
@@ -170,11 +170,11 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "Login request body",
-                        "name": "auth.UserInDTO",
+                        "name": "entity.UserInDTO",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/auth.UserInDTO"
+                            "$ref": "#/definitions/entity.UserInDTO"
                         }
                     }
                 ],
@@ -182,7 +182,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Successfully logged in",
                         "schema": {
-                            "$ref": "#/definitions/auth.LoginOutDTO"
+                            "$ref": "#/definitions/entity.LoginOutDTO"
                         },
                         "headers": {
                             "Set-Cookie": {
@@ -240,7 +240,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Admin successfully registered",
                         "schema": {
-                            "$ref": "#/definitions/auth.UserInDTO"
+                            "$ref": "#/definitions/entity.UserInDTO"
                         }
                     },
                     "400": {
@@ -304,7 +304,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Successfully registered",
                         "schema": {
-                            "$ref": "#/definitions/auth.UserInDTO"
+                            "$ref": "#/definitions/entity.UserInDTO"
                         }
                     },
                     "400": {
@@ -330,7 +330,15 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "auth.LoginOutDTO": {
+        "entity.Error": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.LoginOutDTO": {
             "type": "object",
             "properties": {
                 "access": {
@@ -346,25 +354,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "username": {
-                    "type": "string"
-                }
-            }
-        },
-        "auth.UserInDTO": {
-            "type": "object",
-            "properties": {
-                "password": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
-        "entity.Error": {
-            "type": "object",
-            "properties": {
-                "error": {
                     "type": "string"
                 }
             }
@@ -391,6 +380,17 @@ const docTemplate = `{
                 "username": {
                     "type": "string",
                     "minLength": 1
+                }
+            }
+        },
+        "entity.UserInDTO": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
                 }
             }
         }
