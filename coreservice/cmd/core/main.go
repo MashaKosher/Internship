@@ -5,7 +5,8 @@ import (
 	"coreservice/internal/adapter/elastic"
 	"coreservice/internal/adapter/kafka/consumers"
 	"coreservice/internal/config"
-	"coreservice/internal/handler"
+	v1 "coreservice/internal/controller/http"
+	"coreservice/internal/di/setup"
 	"coreservice/internal/logger"
 	"coreservice/internal/repository/sqlc"
 
@@ -20,7 +21,8 @@ import (
 // @host localhost:8006
 // @BasePath /
 func main() {
-	config.Load()
+	cfg := config.MustParseConfig()
+	deps := setup.MustContainer(cfg)
 
 	logFile := logger.CreateLogger()
 	defer logFile.Close()
@@ -41,7 +43,7 @@ func main() {
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
 
-	handler.Handlers(router)
+	v1.NewRouter(router, deps)
 
 	router.Run(config.AppConfig.Server.Host + ":" + config.AppConfig.Server.Port)
 }

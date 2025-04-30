@@ -6,12 +6,14 @@ type User struct {
 	WinRate float64 `json:"win-rate"`
 }
 
-type Response struct {
-	Message string `json:"message"`
+type Balance struct {
+	Balance float64 `json:"balance" example:"10.20" validate:"gte=0"`
 }
 
-type BalanceBody struct {
-	Balance float64 `json:"balance"`
+///////////////////////////////
+
+type Response struct {
+	Message string `json:"message"`
 }
 
 type TypeResponse struct {

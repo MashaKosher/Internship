@@ -3,8 +3,8 @@ package season
 import (
 	"context"
 	"coreservice/internal/entity"
-	"coreservice/internal/logger"
 	db "coreservice/internal/repository/sqlc/generated"
+	"errors"
 	"time"
 
 	"github.com/jackc/pgx/v5/pgtype"
@@ -29,14 +29,12 @@ func (r *SeasonRepo) AddSeason(season entity.Season) error {
 
 	startTime, err := time.Parse(layout, season.StartDate)
 	if err != nil {
-		logger.Logger.Error("Ошибка парсинга:" + err.Error())
-		return err
+		return errors.New("ошибка парсинга даты начала сезона")
 	}
 
 	endTime, err := time.Parse(layout, season.EndDate)
 	if err != nil {
-		logger.Logger.Error("Ошибка парсинга:" + err.Error())
-		return err
+		return errors.New("ошибка парсинга даты конца сезона")
 	}
 
 	start := pgtype.Timestamptz{
@@ -56,7 +54,7 @@ func (r *SeasonRepo) AddSeason(season entity.Season) error {
 
 	err = r.Query.CreateSeason(context.Background(), db.CreateSeasonParams{ID: int64(season.ID), SeasonStart: start, SeasonEnd: end, SeasonFund: fund})
 	if err != nil {
-		logger.Logger.Error("Error while adding season to DB" + err.Error())
+		return errors.New("error while adding season to DB" + err.Error())
 	}
 
 	return nil

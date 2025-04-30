@@ -14,8 +14,8 @@ func GetUserInfo(user *db.User) entity.User {
 	var jsonUser entity.User
 
 	jsonUser.Login = user.Login
-	jsonUser.Balance = validateNumeric(user.Balance)
-	jsonUser.WinRate = validateNumeric(user.WinRate)
+	jsonUser.Balance = ValidateNumeric(user.Balance)
+	jsonUser.WinRate = ValidateNumeric(user.WinRate)
 
 	return jsonUser
 
@@ -29,7 +29,7 @@ func ConvertDBUserSliceToUser(users []db.User) []entity.User {
 	return result
 }
 
-func validateNumeric(entity pgtype.Numeric) float64 {
+func ValidateNumeric(entity pgtype.Numeric) float64 {
 	var res float64
 	if !entity.Valid { // if field is NULL in DB
 		return res

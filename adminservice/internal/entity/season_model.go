@@ -31,8 +31,8 @@ type SeasonJson struct {
 type DetailSeasonJson struct {
 	SeasonJson
 	StartTime string `json:"start-time" example:"09:00:00" format:"time" validate:"required,datetime=15:04:05"`
-	EndTime   string `json:"end-time" xample:"18:00:00" format:"time" validate:"required,datetime=15:04:05"`
-	Fund      uint   `json:"fund" xample:"5000" minimum:"0" validate:"gte=0"`
+	EndTime   string `json:"end-time" example:"18:00:00" format:"time" validate:"required,datetime=15:04:05"`
+	Fund      uint   `json:"fund" example:"5000" minimum:"0" validate:"gte=0"`
 }
 
 func (s *DetailSeasonJson) ToDB() (Season, error) {

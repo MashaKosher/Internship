@@ -7,10 +7,10 @@ __consumer_offsets 46 0
 __consumer_offsets 9 0
 __consumer_offsets 42 0
 __consumer_offsets 21 0
-jwtCheckAnswer 0 0
+jwtCheckAnswer 0 5
 __consumer_offsets 17 0
-__consumer_offsets 30 0
-jwtCheckAnswer 1 0
+__consumer_offsets 30 7
+jwtCheckAnswer 1 1
 __consumer_offsets 26 0
 __consumer_offsets 5 0
 __consumer_offsets 38 0
@@ -33,8 +33,8 @@ __consumer_offsets 8 0
 __consumer_offsets 37 0
 __consumer_offsets 4 0
 __consumer_offsets 33 0
-__consumer_offsets 15 0
-jwtCheckRequest 0 0
+__consumer_offsets 15 21
+jwtCheckRequest 0 5
 __consumer_offsets 48 0
 __consumer_offsets 11 0
 __consumer_offsets 44 0
@@ -49,7 +49,7 @@ __consumer_offsets 7 0
 __consumer_offsets 40 0
 __consumer_offsets 3 0
 __consumer_offsets 36 0
-jwtCheckRequest 1 0
+jwtCheckRequest 1 1
 __consumer_offsets 47 0
 __consumer_offsets 14 0
 seasons 0 0

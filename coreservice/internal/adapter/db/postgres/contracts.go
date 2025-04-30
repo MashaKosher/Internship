@@ -11,7 +11,7 @@ type (
 		AddDailyTask(dailyTask entity.DailyTask) error
 	}
 
-	PlayerRepo interface {
+	UserRepo interface {
 		GetPlayerById(id int32) (db.User, bool)
 		AddPlayer(player entity.AuthAnswer) (db.User, error)
 		UpdateBalance(playerID int32, newBalance float64) (db.User, error)

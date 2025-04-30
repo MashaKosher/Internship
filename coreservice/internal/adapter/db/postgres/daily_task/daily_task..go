@@ -3,7 +3,6 @@ package dailytask
 import (
 	"context"
 	"coreservice/internal/entity"
-	"coreservice/internal/logger"
 	db "coreservice/internal/repository/sqlc/generated"
 	"database/sql"
 	"errors"
@@ -50,8 +49,7 @@ func (r *DailyTaskRepo) AddDailyTask(dailyTask entity.DailyTask) error {
 	}
 
 	if err := r.Query.AddDailyTask(context.Background(), db.AddDailyTaskParams{TaskDate: date, ReferalsAmount: ref, WinsAmount: win}); err != nil {
-		logger.Logger.Error("Error while adding user to DB")
-		return err
+		return errors.New("error while adding season to DB" + err.Error())
 	}
 	return nil
 }
