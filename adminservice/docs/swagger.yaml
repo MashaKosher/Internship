@@ -26,28 +26,24 @@ definitions:
   entity.DetailSeasonJson:
     properties:
       end-date:
-        example: "2024-08-31"
+        example: 31-08-3034
         format: date
         type: string
       end-time:
-        format: time
         type: string
       fund:
+        example: 5000
         minimum: 0
         type: integer
       start-date:
-        example: "2024-06-01"
+        example: 01-06-2024
         format: date
         type: string
       start-time:
-        example: "09:00:00"
-        format: time
         type: string
     required:
     - end-date
-    - end-time
     - start-date
-    - start-time
     type: object
   entity.ErrorResponse:
     properties:
@@ -133,7 +129,7 @@ paths:
       summary: Create daily tasks
       tags:
       - DailyTasks
-  /detail-plan:
+  /deatil-plan:
     post:
       consumes:
       - application/json

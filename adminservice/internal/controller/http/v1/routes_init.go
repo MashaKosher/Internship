@@ -14,6 +14,7 @@ func InitAdminRoutes(r *chi.Mux, deps di.Container) {
 	settings := initSettingsRoutes(deps)
 	dailyTask := initDailyTaskRoutes(deps)
 	statistic := initStatisticRoutes(deps)
+
 	r.Route("/", func(r chi.Router) {
 		r.Use(middleware.CheckToken(deps.Config, deps.Bus))
 

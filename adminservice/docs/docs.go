@@ -94,7 +94,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/detail-plan": {
+        "/deatil-plan": {
             "post": {
                 "description": "Handles season planning request and verifies user admin rights",
                 "consumes": [
@@ -264,33 +264,29 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "end-date",
-                "end-time",
-                "start-date",
-                "start-time"
+                "start-date"
             ],
             "properties": {
                 "end-date": {
                     "type": "string",
                     "format": "date",
-                    "example": "2024-08-31"
+                    "example": "31-08-3034"
                 },
                 "end-time": {
-                    "type": "string",
-                    "format": "time"
+                    "type": "string"
                 },
                 "fund": {
                     "type": "integer",
-                    "minimum": 0
+                    "minimum": 0,
+                    "example": 5000
                 },
                 "start-date": {
                     "type": "string",
                     "format": "date",
-                    "example": "2024-06-01"
+                    "example": "01-06-2024"
                 },
                 "start-time": {
-                    "type": "string",
-                    "format": "time",
-                    "example": "09:00:00"
+                    "type": "string"
                 }
             }
         },

@@ -4,13 +4,15 @@ import (
 	"adminservice/internal/di"
 	"adminservice/internal/entity"
 	utils "adminservice/pkg/kafka_utils"
-	"log"
+	"fmt"
+
+	// "log"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
 func CheckToken(accessToken, refreshToken string, cfg di.ConfigType, bus di.Bus) {
-	log.Println("Producer created successfully")
+	bus.Logger.Info("Producer created successfully")
 
 	var request entity.AuthRequest
 	request.Partition = cfg.Kafka.Partition
@@ -24,11 +26,11 @@ func CheckToken(accessToken, refreshToken string, cfg di.ConfigType, bus di.Bus)
 
 	err := bus.AuthProducer.Produce(&message, deliveryChan)
 	if err != nil {
-		log.Printf("Failed to produce message: %s", err)
+		bus.Logger.Error("Failed to produce message: " + err.Error())
 		return
 	}
 
-	log.Println("Message sent, waiting for delivery confirmation...")
+	bus.Logger.Info("Message sent, waiting for delivery confirmation...")
 
 	// Ожидаем подтверждения доставки
 	go func() {
@@ -36,13 +38,13 @@ func CheckToken(accessToken, refreshToken string, cfg di.ConfigType, bus di.Bus)
 		switch e := event.(type) {
 		case *kafka.Message:
 			if e.TopicPartition.Error != nil {
-				log.Printf("Delivery failed: %v", e.TopicPartition.Error)
+				bus.Logger.Error("Delivery failed: " + e.TopicPartition.Error.Error())
 			} else {
-				log.Printf("Delivered message to %v [%d] at offset %v",
-					*e.TopicPartition.Topic, e.TopicPartition.Partition, e.TopicPartition.Offset)
+				bus.Logger.Info(fmt.Sprintf("Delivered message to %v [%d] at offset %v",
+					*e.TopicPartition.Topic, e.TopicPartition.Partition, e.TopicPartition.Offset))
 			}
 		default:
-			log.Printf("Ignored event: %s", e)
+			bus.Logger.Error("Ignored event: " + e.String())
 		}
 	}()
 

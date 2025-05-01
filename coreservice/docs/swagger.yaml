@@ -1,8 +1,10 @@
 basePath: /
 definitions:
-  entity.BalanceBody:
+  entity.Balance:
     properties:
       balance:
+        example: 10.2
+        minimum: 0
         type: number
     type: object
   entity.Error:
@@ -25,6 +27,8 @@ definitions:
   entity.SearchParams:
     properties:
       name:
+        maxLength: 100
+        minLength: 1
         type: string
     type: object
   entity.Season:
@@ -354,7 +358,7 @@ paths:
         name: deposit
         required: true
         schema:
-          $ref: '#/definitions/entity.BalanceBody'
+          $ref: '#/definitions/entity.Balance'
       produces:
       - application/json
       responses:

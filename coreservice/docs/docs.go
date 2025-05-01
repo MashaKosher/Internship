@@ -443,7 +443,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/entity.BalanceBody"
+                            "$ref": "#/definitions/entity.Balance"
                         }
                     }
                 ],
@@ -509,11 +509,13 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "entity.BalanceBody": {
+        "entity.Balance": {
             "type": "object",
             "properties": {
                 "balance": {
-                    "type": "number"
+                    "type": "number",
+                    "minimum": 0,
+                    "example": 10.2
                 }
             }
         },
@@ -548,7 +550,9 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 1
                 }
             }
         },

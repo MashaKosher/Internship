@@ -39,7 +39,7 @@ func initPlanRoutes(deps di.Container) *seasonRoutes {
 // @Failure 401 {object} entity.ErrorResponse "Unauthorized (invalid or missing token)"
 // @Failure 403 {object} entity.ErrorResponse "Forbidden (user is not admin)"
 // @Failure 500 {object} entity.ErrorResponse "Internal server error"
-// @Router /detail-plan [post]
+// @Router /deatil-plan [post]
 func (sr *seasonRoutes) planSeason(w http.ResponseWriter, r *http.Request) {
 
 	var season entity.DetailSeasonJson

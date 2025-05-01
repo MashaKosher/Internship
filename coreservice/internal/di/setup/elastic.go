@@ -33,6 +33,7 @@ func esCreateIndexIfNotexist(ESClient di.ESClient, logger di.LoggerType) {
 
 	createIndex(ESClient, logger, UserSearchIndex)
 	createIndex(ESClient, logger, SeasonSearchIndex)
+
 	// _, err := esapi.IndicesExistsRequest{
 	// 	Index: []string{UserSearchIndex},
 	// }.Do(context.Background(), ESClient)

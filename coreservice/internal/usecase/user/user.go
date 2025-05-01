@@ -6,6 +6,7 @@ import (
 	"coreservice/internal/entity"
 	"coreservice/pkg"
 	sqlcutils "coreservice/pkg/sqlc_utils"
+	"fmt"
 )
 
 type UseCase struct {
@@ -31,27 +32,17 @@ func (u *UseCase) UserInfo(data any) (entity.User, error) {
 
 func (u *UseCase) MakeDeposit(data any, deposit entity.Balance) (entity.Response, error) {
 
-	player, err := pkg.ConvertAnyToDBUser(data)
+	user, err := pkg.ConvertAnyToDBUser(data)
 	if err != nil {
 		return entity.Response{}, err
 	}
 
-	// var currentBalance float64
-	// if player.Balance.Valid { // Chcecking if balance is NOT NULL
+	currentBalance := sqlcutils.NumericToFloat64(user.Balance)
 
-	// 	currentBalance = sqlcutils.NumericToFloat64(player.Balance)
-
-	// 	// left, _ := player.Balance.Int.Float64()
-	// 	// currentBalance = left / math.Pow(float64(10), -float64(player.Balance.Exp))
-	// }
-
-	//
-	currentBalance := sqlcutils.NumericToFloat64(player.Balance)
-
-	player, err = u.repo.UpdateBalance(player.ID, deposit.Balance+currentBalance)
+	user, err = u.repo.UpdateBalance(user.ID, deposit.Balance+currentBalance)
 	if err != nil {
 		return entity.Response{}, err
 	}
 
-	return entity.Response{Message: player.Balance.Int.String()}, nil
+	return entity.Response{Message: fmt.Sprint(sqlcutils.NumericToFloat64(user.Balance))}, nil
 }

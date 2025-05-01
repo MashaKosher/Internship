@@ -87,6 +87,9 @@ func (r *SeasonRepo) EndSeason(seasonID int) error {
 }
 
 func (r *SeasonRepo) GetSeasonsByIds(seasonIDs []int32) ([]db.Season, error) {
+	if len(seasonIDs) == 0 {
+		return []db.Season{}, nil
+	}
 	seasons, err := r.Query.GetSeasonsByID(context.Background(), seasonIDs)
 	if err != nil {
 		return []db.Season{}, err

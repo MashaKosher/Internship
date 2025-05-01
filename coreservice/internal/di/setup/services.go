@@ -32,7 +32,7 @@ func mustServices(db di.DBType, logger di.LoggerType, elastic di.ElasticType) di
 	seasonUseCase := season.New(
 		seasonRepo.New(db),
 		logger,
-		seasonStatusElasticRepo.New(elastic.ESClient, elastic.UserSearchIndex, logger),
+		seasonStatusElasticRepo.New(elastic.ESClient, elastic.SeasonSearchIndex, logger),
 	)
 
 	searchUseCase := search.New(

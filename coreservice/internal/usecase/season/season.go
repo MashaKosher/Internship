@@ -7,6 +7,7 @@ import (
 	"coreservice/internal/entity"
 	db "coreservice/internal/repository/sqlc/generated"
 	"coreservice/pkg"
+	"errors"
 	"fmt"
 )
 
@@ -57,6 +58,10 @@ func (u *UseCase) CurrentSeason() ([]db.Season, error) {
 
 	u.logger.Info("Elastic found current season index: " + fmt.Sprint(ids))
 
+	if len(ids) == 0 {
+		return []db.Season{}, errors.New("there is no active season right now")
+	}
+
 	seasons, err := u.repo.GetSeasonsByIds(ids)
 	if err != nil {
 		return []db.Season{}, err
@@ -71,6 +76,10 @@ func (u *UseCase) PlannedSeason() ([]db.Season, error) {
 		return []db.Season{}, err
 	}
 	u.logger.Info("Elastic found planned seasons indexes: " + fmt.Sprint(ids))
+
+	if len(ids) == 0 {
+		return []db.Season{}, errors.New("there is no planned season right now")
+	}
 
 	seasons, err := u.repo.GetSeasonsByIds(ids)
 	if err != nil {

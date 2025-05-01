@@ -54,10 +54,10 @@ func (r *userRoutes) makeDeposit(c *gin.Context) {
 		return
 	}
 
-	s := fmt.Sprintf("%.3f", deposit.Balance)
+	s := fmt.Sprint(deposit.Balance)
 	parts := strings.Split(s, ".")
 	if len(parts) == 2 && len(parts[1]) > 2 {
-		c.JSON(http.StatusBadRequest, entity.Error{Error: "баланс должен иметь не более 2 знаков после запятой"})
+		c.JSON(http.StatusBadRequest, entity.Error{Error: "депозит должен иметь не более 2 знаков после запятой"})
 		return
 	}
 

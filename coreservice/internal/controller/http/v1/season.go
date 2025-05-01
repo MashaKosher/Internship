@@ -125,7 +125,8 @@ func (r *seasonRoutes) currentSeason(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, entity.Error{Error: err.Error()})
 		return
 	}
-	r.l.Info("Current season succesfully found: " + fmt.Sprint(seasons[0]))
+
+	r.l.Info("Current season succesfully found: " + fmt.Sprint(seasons))
 	c.JSON(http.StatusOK, seasons)
 }
 
