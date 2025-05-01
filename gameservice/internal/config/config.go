@@ -37,6 +37,11 @@ type Config struct {
 		Password string `mapstructure:"password"`
 		DB       int    `mapstructure:"db"`
 	} `mapstructure:"redis"`
+
+	Random struct {
+		ApiKey string `mapstructure:"api-key"`
+		ApiUrl string `mapstructure:"api-url"`
+	} `mapstructure:"random"`
 }
 
 func MustParseConfig() Config {

@@ -19,6 +19,7 @@ type Container struct {
 	Bus        Bus
 	DB         DBType
 	Cache      CacheType
+	// Random     RandomApi
 }
 
 // ///////////////////////////////////
@@ -36,3 +37,8 @@ type Bus struct {
 	AuthProducer         *kafka.Producer
 	Logger               LoggerType
 }
+
+// type RandomApi struct {
+// 	ApiKey string
+// 	Client *http.Client
+// }

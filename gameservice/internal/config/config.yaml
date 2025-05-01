@@ -30,6 +30,11 @@ redis:
   db: 0
 
 
+random:
+  api-key: ff9512b9-99c4-4b88-bf63-a40b27e13bb8
+  api-url: https://api.random.org/json-rpc/2/invoke
+
+
   
 
 

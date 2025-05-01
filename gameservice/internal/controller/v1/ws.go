@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"gameservice/internal/di"
 	"gameservice/internal/entity"
+	randomapi "gameservice/third_party/randomApi"
 	"math/rand"
 	"net/http"
 	"strconv"
@@ -19,45 +20,44 @@ import (
 type wsRoutes struct {
 	u di.GameService
 	l di.LoggerType
+	c di.ConfigType
 }
 
+const playerAmount = 2
+const minDiceAmount = 0
+const maxDiceAmount = 6
+
 func InitWSRoutes(e *echo.Echo, deps di.Container) {
-	r := &gameRoutes{u: deps.Services.Game, l: deps.Logger}
+	r := &wsRoutes{u: deps.Services.Game, l: deps.Logger, c: deps.Config}
 	e.GET("/ws", r.handleWS)
 }
 
-func (r *gameRoutes) handleWS(c echo.Context) error {
-	// Поднимаем WebSocket соединение.
+func (r *wsRoutes) handleWS(c echo.Context) error {
+
 	conn, err := upgrader.Upgrade(c.Response(), c.Request(), nil)
 	if err != nil {
 		r.l.Error("Error upgrading connection:" + err.Error())
 		return err
 	}
 
-	// Получаем player_id из query параметра
 	playerID := c.QueryParam("player_id")
 	if playerID == "" {
 		r.l.Error("Player ID is required")
 		return nil
 	}
 
-	// Создаём игрока
 	player := &Player{
 		conn: conn,
 		send: make(chan []byte),
 		id:   playerID,
 	}
 
-	// Находим или создаём комнату
 	room := roomManager.FindOrCreateRoom(player)
 
 	r.l.Info("Room ID: " + room.id)
 
-	// Запускаем горутины для чтения и записи
-	go player.writePump(r.l) // для отправки сообщений (writePump),
-	// go player.readPump()  // для чтения сообщений (readPump).
+	go player.writePump(r.l)
 
-	// Если комната полная, начинаем игру
 	if room.full {
 		r.startGame(room)
 	} else {
@@ -69,91 +69,113 @@ func (r *gameRoutes) handleWS(c echo.Context) error {
 
 // Игрок
 type Player struct {
-	conn *websocket.Conn // WebSocket соединение игрока
-	send chan []byte     // Канал для отправки сообщений игроку
-	id   string          // Уникальный идентификатор игрока
-	room *Room           // Ссылка на комнату, в которой находится игрок
+	conn *websocket.Conn
+	send chan []byte
+	id   string
+	room *Room
 }
 
 // Комната для игры
 type Room struct {
 	id      string
-	players [2]*Player // максимум два игрока
-	full    bool       // флаг "заполнена ли комната"
-	mutex   sync.Mutex // защита данных комнаты от гонок (конкурентного доступа)
+	players [playerAmount]*Player
+	full    bool
+	mutex   sync.Mutex
 }
 
 // Менеджер комнат
 type RoomManager struct {
-	rooms map[string]*Room // все активные комнаты
-	mutex sync.Mutex       // защита доступа к картe комнат
-} // Идея: менеджер отвечает за создание и поиск комнат.
+	rooms map[string]*Room
+	mutex sync.Mutex
+}
 
 // Маппинг для всех комнат
 var roomManager = RoomManager{
 	rooms: make(map[string]*Room),
-} // Важно: разрешаем соединение с любым источником (на продакшене это небезопасно).
+}
 
-// Для WebSocket соединений
+// Upgrade connection
 var upgrader = websocket.Upgrader{
 	CheckOrigin: func(r *http.Request) bool { return true },
 }
 
-// Генерация уникального ID для комнаты
 func generateRoomID() string {
 	return uuid.New().String()
 }
 
-// Метод для поиска или создания комнаты
 func (rm *RoomManager) FindOrCreateRoom(p *Player) *Room {
-	// Блокируем доступ к комнатам (rm.mutex.Lock()).
 	rm.mutex.Lock()
 	defer rm.mutex.Unlock()
 
-	// Ищем первую неполную комнату
 	for _, room := range rm.rooms {
-		// Если найдена:
 		if !room.full {
-			room.players[1] = p // Ставим нового игрока во вторую позицию.
-			room.full = true    // Помечаем комнату как полную.
-			p.room = room       // привязваем комнату к игроку
+			room.players[1] = p
+			room.full = true
+			p.room = room
 			return room
 		}
 	}
 
-	// Если не нашли — создаём новую
 	id := generateRoomID()
 	newRoom := &Room{
 		id:      id,
-		players: [2]*Player{p, nil}, // Создаём с одним игроком.
+		players: [playerAmount]*Player{p, nil},
 		full:    false,
 	}
-	rm.rooms[id] = newRoom // Сохраняем в мапу.
-	p.room = newRoom       // привязваем комнату к игроку
+	rm.rooms[id] = newRoom
+	p.room = newRoom
 	return newRoom
 }
 
+func generateTwoRandomInt() (int, int) {
+	random := rand.New(rand.NewSource(time.Now().UnixNano()))
+	return random.Intn(maxDiceAmount + 1), random.Intn(maxDiceAmount + 1)
+}
+
+func generateTwoRandomWithApi(c di.ConfigType, ch chan struct{}, resCh chan int) {
+	client := randomapi.NewClient(c.Random.ApiKey, c.Random.ApiUrl)
+
+	res, err := client.GenerateIntegers(playerAmount, minDiceAmount, maxDiceAmount, true)
+	if err != nil {
+		return
+	}
+
+	ch <- struct{}{}
+	resCh <- res[0]
+	resCh <- res[1]
+}
+
 // Метод для начала игры
-func (r *gameRoutes) startGame(room *Room) {
+func (r *wsRoutes) startGame(room *Room) {
 
 	gameSettings, _ := r.u.GetGameSettings()
 	// time.Sleep(5 * time.Second)
-	// Блокируем доступ к комнате
 	room.mutex.Lock()
 	defer room.mutex.Unlock()
 
-	// Получаем игроков.
 	p1 := room.players[0]
 	p2 := room.players[1]
 
 	r.l.Info("Игра игроков " + fmt.Sprint(room.players[0]) + fmt.Sprint(room.players[1]) + " начнется после небольшого перерыва")
 
-	// Бросаем кубики (rand.Intn(7) генерирует 0–6).
+	// Бросаем кубики
 	flag := false
-	random := rand.New(rand.NewSource(time.Now().UnixNano()))
-	roll1 := random.Intn(7)
-	roll2 := random.Intn(7)
+	var roll1, roll2 int
 	for !flag {
+
+		ch := make(chan struct{})
+		res := make(chan int, 2)
+		go generateTwoRandomWithApi(r.c, ch, res)
+		select {
+		case <-time.After(time.Second * time.Duration(gameSettings.WaitingTime)):
+			roll1, roll2 = generateTwoRandomInt()
+			r.l.Info("Numbers generated ourselves")
+		case <-ch:
+			r.l.Info("Numbers generated with API")
+			roll1 = <-res
+			roll2 = <-res
+		}
+
 		if roll1 != roll2 {
 			flag = true
 		}
@@ -165,7 +187,6 @@ func (r *gameRoutes) startGame(room *Room) {
 	gameResult.WinAmount = gameSettings.WinAmount
 	gameResult.GameTime = time.Now()
 
-	// Формируем JSON с результатом:
 	result := map[string]interface{}{
 		"type": "game_result",
 		"p1":   roll1,
@@ -232,9 +253,7 @@ func (r *gameRoutes) startGame(room *Room) {
 
 // Отправка сообщений игроку
 func (p *Player) writePump(logger di.LoggerType) {
-	// Ждём сообщения в канале send.
 	for msg := range p.send {
-		// При получении отправляем через WebSocket клиенту.
 		logger.Info("writePump send message to client ")
 		err := p.conn.WriteMessage(websocket.TextMessage, msg)
 		if err != nil {
