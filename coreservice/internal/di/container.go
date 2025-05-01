@@ -5,6 +5,7 @@ import (
 	db "coreservice/internal/repository/sqlc/generated"
 	"os"
 
+	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/elastic/go-elasticsearch/v8"
 	"github.com/go-playground/validator/v10"
 	"go.uber.org/zap"
@@ -15,10 +16,10 @@ type Container struct {
 	Logger     LoggerType
 	LoggerFile LoggerFileType
 	Services   Services
-	// Bus        Bus
-	DB        DBType
-	Validator ValidatorType
-	Elastic   ElasticType
+	Bus        Bus
+	DB         DBType
+	Validator  ValidatorType
+	Elastic    ElasticType
 }
 
 type (
@@ -35,4 +36,12 @@ type ElasticType struct {
 	ESClient          ESClient
 	UserSearchIndex   ElasticIndex
 	SeasonSearchIndex ElasticIndex
+}
+
+type Bus struct {
+	AuthConsumer      *kafka.Consumer
+	DailyTaskConsumer *kafka.Consumer
+	SeasonConsumer    *kafka.Consumer
+	AuthProducer      *kafka.Producer
+	Logger            LoggerType
 }

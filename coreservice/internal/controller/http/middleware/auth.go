@@ -15,7 +15,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AuthMiddleWare(logger di.LoggerType, db di.DBType, ESClient di.ESClient, Index di.ElasticIndex) gin.HandlerFunc {
+func AuthMiddleWare(cfg di.ConfigType, logger di.LoggerType, db di.DBType, ESClient di.ESClient, Index di.ElasticIndex, bus di.Bus) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		userRepo := userRepo.New(db)
@@ -34,10 +34,10 @@ func AuthMiddleWare(logger di.LoggerType, db di.DBType, ESClient di.ESClient, In
 		refreshToken, _ := c.Cookie("refresh")
 
 		// Sending token to authserver through kafka
-		producers.CheckToken(accessToken, refreshToken)
+		producers.CheckToken(accessToken, refreshToken, cfg, bus)
 
 		// Receiving an answer from authserver through kafka
-		answer, _ := consumers.RecieveTokenInfo()
+		answer, _ := consumers.RecieveTokenInfo(cfg, bus)
 
 		// If token is not valid fieвs Err will be not empty
 		if len(answer.Err) != 0 {

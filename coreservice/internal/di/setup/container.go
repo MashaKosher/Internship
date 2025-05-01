@@ -9,7 +9,7 @@ func MustContainer(cfg di.ConfigType) di.Container {
 	loggerFile := mustLoggerFile(cfg)
 	db := mustDB(cfg, logger)
 	elastic := mustElastic(logger)
-	// bus := mustBus(cfg, logger)
+	bus := mustBus(cfg, logger)
 	validator := mustValiadtor()
 	services := mustServices(db, logger, elastic)
 
@@ -19,9 +19,9 @@ func MustContainer(cfg di.ConfigType) di.Container {
 		LoggerFile: loggerFile,
 		Services:   services,
 		DB:         db,
-		// Bus:        bus,
-		Validator: validator,
-		Elastic:   elastic,
+		Bus:        bus,
+		Validator:  validator,
+		Elastic:    elastic,
 	}
 }
 
@@ -29,5 +29,5 @@ func DeferContainer(container di.Container) {
 	deferLoggerFile(container.LoggerFile)
 	deferLogger(container.Logger)
 	deferDB()
-	// deferBus(container.Bus)
+	deferBus(container.Bus)
 }

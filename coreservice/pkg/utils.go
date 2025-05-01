@@ -4,7 +4,9 @@ import (
 	"coreservice/internal/entity"
 	db "coreservice/internal/repository/sqlc/generated"
 	"errors"
+	"fmt"
 	"math"
+	"time"
 
 	"github.com/jackc/pgx/v5/pgtype"
 )
@@ -46,4 +48,39 @@ func ConvertAnyToDBUser(entity any) (db.User, error) {
 	}
 
 	return user, nil
+}
+
+func ParseTimeToLocal(input string) (time.Time, error) {
+	// Парсим строку в объект времени
+	layout := "2006-01-02 15:04:05 -0700 MST"
+	parsedTime, err := time.Parse(layout, input)
+	if err != nil {
+		fmt.Println("Ошибка парсинга:", err)
+		return time.Time{}, err
+	}
+
+	// Получаем локальную временную зону
+	localLocation, err := time.LoadLocation("Local")
+	if err != nil {
+		fmt.Println("Ошибка загрузки временной зоны:", err)
+		return time.Time{}, err
+	}
+
+	// Создаем новое время с теми же значениями, но в локальной временной зоне
+	localTime := time.Date(
+		parsedTime.Year(),
+		parsedTime.Month(),
+		parsedTime.Day(),
+		parsedTime.Hour(),
+		parsedTime.Minute(),
+		parsedTime.Second(),
+		parsedTime.Nanosecond(),
+		localLocation,
+	)
+
+	// Выводим результат
+	fmt.Println("Исходное время:", parsedTime)
+	fmt.Println("Локальное время:", localTime)
+
+	return localTime, nil
 }
