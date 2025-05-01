@@ -11,9 +11,11 @@ import (
 	dailyTaskRepo "coreservice/internal/adapter/db/postgres/daily_task"
 	seasonRepo "coreservice/internal/adapter/db/postgres/season"
 	userRepo "coreservice/internal/adapter/db/postgres/user"
+	seasonStatusElasticRepo "coreservice/internal/adapter/elastic/seasons"
+	userNameElasticRepo "coreservice/internal/adapter/elastic/user"
 )
 
-func mustServices(db di.DBType, logger di.LoggerType, cfg di.ConfigType) di.Services {
+func mustServices(db di.DBType, logger di.LoggerType, elastic di.ElasticType) di.Services {
 
 	// Создаем Use Case
 	dailyTasksUseCase := dailyTask.New(
@@ -30,10 +32,12 @@ func mustServices(db di.DBType, logger di.LoggerType, cfg di.ConfigType) di.Serv
 	seasonUseCase := season.New(
 		seasonRepo.New(db),
 		logger,
+		seasonStatusElasticRepo.New(elastic.ESClient, elastic.UserSearchIndex, logger),
 	)
 
 	searchUseCase := search.New(
 		logger,
+		userNameElasticRepo.New(elastic.ESClient, elastic.UserSearchIndex, logger, userRepo.New(db)),
 	)
 
 	return di.Services{

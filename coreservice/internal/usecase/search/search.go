@@ -1,24 +1,26 @@
 package search
 
 import (
-	"coreservice/internal/adapter/elastic"
+	elasticRepo "coreservice/internal/adapter/elastic"
 	"coreservice/internal/di"
 	"coreservice/internal/entity"
 	"fmt"
 )
 
 type UseCase struct {
-	logger di.LoggerType
+	logger              di.LoggerType
+	elasticUserNameRepo elasticRepo.UserNameRepo
 }
 
-func New(logger di.LoggerType) *UseCase {
+func New(logger di.LoggerType, elasticUserNameRepo elasticRepo.UserNameRepo) *UseCase {
 	return &UseCase{
-		logger: logger,
+		logger:              logger,
+		elasticUserNameRepo: elasticUserNameRepo,
 	}
 }
 
 func (u *UseCase) UserBuildSearchIndex() ([]entity.User, error) {
-	users, err := elastic.AddingAllUsersToIndex()
+	users, err := u.elasticUserNameRepo.AddingAllUsersToIndex()
 	if err != nil {
 		return []entity.User{}, err
 	}
@@ -27,7 +29,7 @@ func (u *UseCase) UserBuildSearchIndex() ([]entity.User, error) {
 }
 
 func (u *UseCase) SearchElasticByNameStrict(name string) ([]entity.User, error) {
-	users, err := elastic.GetUserByName(name, elastic.Strict)
+	users, err := u.elasticUserNameRepo.GetUserByNameStrict(name)
 	if err != nil {
 
 		return []entity.User{}, err
@@ -36,7 +38,7 @@ func (u *UseCase) SearchElasticByNameStrict(name string) ([]entity.User, error) 
 }
 
 func (u *UseCase) SearchElasticByNameWildcard(name string) ([]entity.User, error) {
-	users, err := elastic.GetUserByName(name, elastic.Wildcard)
+	users, err := u.elasticUserNameRepo.GetUserByNameWildcard(name)
 	if err != nil {
 		return []entity.User{}, err
 	}
@@ -44,7 +46,7 @@ func (u *UseCase) SearchElasticByNameWildcard(name string) ([]entity.User, error
 }
 
 func (u *UseCase) SearchElasticByNameFuzzy(name string) ([]entity.User, error) {
-	users, err := elastic.GetUserByName(name, elastic.Fuzzy)
+	users, err := u.elasticUserNameRepo.GetUserByNameWildcard(name)
 	if err != nil {
 		return []entity.User{}, err
 	}

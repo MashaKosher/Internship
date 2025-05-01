@@ -2,7 +2,7 @@ package season
 
 import (
 	repo "coreservice/internal/adapter/db/postgres"
-	"coreservice/internal/adapter/elastic"
+	elasticRepo "coreservice/internal/adapter/elastic"
 	"coreservice/internal/di"
 	"coreservice/internal/entity"
 	db "coreservice/internal/repository/sqlc/generated"
@@ -11,14 +11,16 @@ import (
 )
 
 type UseCase struct {
-	repo   repo.SeasonRepo
-	logger di.LoggerType
+	repo                    repo.SeasonRepo
+	logger                  di.LoggerType
+	elasticSeasonStatusRepo elasticRepo.SeasonStatusRepo
 }
 
-func New(repo repo.SeasonRepo, logger di.LoggerType) *UseCase {
+func New(repo repo.SeasonRepo, logger di.LoggerType, elasticSeasonStatusRepo elasticRepo.SeasonStatusRepo) *UseCase {
 	return &UseCase{
-		repo:   repo,
-		logger: logger,
+		repo:                    repo,
+		logger:                  logger,
+		elasticSeasonStatusRepo: elasticSeasonStatusRepo,
 	}
 }
 
@@ -48,7 +50,7 @@ func (u *UseCase) SeasonLeaderBoard(id int) ([]entity.Leaderboard, error) {
 }
 
 func (u *UseCase) CurrentSeason() ([]db.Season, error) {
-	ids, err := elastic.SearchSeasonsByStatus(elastic.CurrentSeason)
+	ids, err := u.elasticSeasonStatusRepo.ActiveSeason()
 	if err != nil {
 		return []db.Season{}, err
 	}
@@ -64,7 +66,7 @@ func (u *UseCase) CurrentSeason() ([]db.Season, error) {
 }
 
 func (u *UseCase) PlannedSeason() ([]db.Season, error) {
-	ids, err := elastic.SearchSeasonsByStatus(elastic.PlannedSeason)
+	ids, err := u.elasticSeasonStatusRepo.PlannedSeasons()
 	if err != nil {
 		return []db.Season{}, err
 	}

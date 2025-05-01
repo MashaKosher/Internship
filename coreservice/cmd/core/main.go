@@ -2,7 +2,6 @@ package main
 
 import (
 	"coreservice/internal/adapter/asynq/consumer"
-	"coreservice/internal/adapter/elastic"
 	"coreservice/internal/adapter/kafka/consumers"
 	"coreservice/internal/config"
 	v1 "coreservice/internal/controller/http"
@@ -37,8 +36,8 @@ func main() {
 	go consumers.RecieveSeasonInfo()
 	go consumers.ReceiveDailyTask()
 
-	elastic.ESClientConnection()
-	elastic.ESCreateIndexIfNotexist()
+	// elastic.ESClientConnection()
+	// elastic.ESCreateIndexIfNotexist()
 
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()

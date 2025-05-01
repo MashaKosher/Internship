@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"coreservice/internal/adapter/elastic"
 	"coreservice/internal/adapter/kafka/consumers"
 	"coreservice/internal/adapter/kafka/producers"
 	"coreservice/internal/di"
@@ -10,13 +9,17 @@ import (
 	"fmt"
 	"net/http"
 
-	repository "coreservice/internal/repository/sqlc"
+	userRepo "coreservice/internal/adapter/db/postgres/user"
+	userNameElasticRepo "coreservice/internal/adapter/elastic/user"
 
 	"github.com/gin-gonic/gin"
 )
 
-func AuthMiddleWare(logger di.LoggerType) gin.HandlerFunc {
+func AuthMiddleWare(logger di.LoggerType, db di.DBType, ESClient di.ESClient, Index di.ElasticIndex) gin.HandlerFunc {
 	return func(c *gin.Context) {
+
+		userRepo := userRepo.New(db)
+		elastic := userNameElasticRepo.New(ESClient, Index, logger, userRepo)
 
 		logger.Info("Middleware for Token check")
 		accessToken, err := c.Cookie("access")
@@ -51,7 +54,7 @@ func AuthMiddleWare(logger di.LoggerType) gin.HandlerFunc {
 		}
 
 		// Serching for user in DB using Elastic
-		player, exists := repository.GetPlayerById(answer.ID)
+		player, exists := userRepo.GetPlayerById(answer.ID)
 		if exists {
 			logger.Info("Player already in DB: " + fmt.Sprintln(player))
 			c.Set("message", "User already in DB")
@@ -61,7 +64,7 @@ func AuthMiddleWare(logger di.LoggerType) gin.HandlerFunc {
 		}
 
 		// If user not exists adding user to DB
-		player, err = repository.AddPlayer(answer)
+		player, err = userRepo.AddPlayer(answer)
 		if err != nil {
 			logger.Error(err.Error())
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

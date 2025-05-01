@@ -15,7 +15,7 @@ func NewRouter(router *gin.Engine, deps di.Container) {
 	routes.SearchRoutes(router, deps)
 
 	// Auth middleware for all routes
-	router.Use(middleware.AuthMiddleWare(deps.Logger))
+	router.Use(middleware.AuthMiddleWare(deps.Logger, deps.DB, deps.Elastic.ESClient, deps.Elastic.UserSearchIndex))
 
 	routes.UserRoutes(router, deps)
 
