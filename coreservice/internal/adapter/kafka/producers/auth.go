@@ -23,7 +23,7 @@ func CheckToken(accessToken, resfreshToken string, cfg di.ConfigType, bus di.Bus
 	request.AccessToken = accessToken
 	request.RefreshToken = resfreshToken
 
-	message := pkg.CreateMessage(request, cfg.Kafka.AuthTopicSend, cfg.Kafka.Partition)
+	message := pkg.CreateMessage(request, cfg.Kafka.AuthTopicSend, cfg.Kafka.Partition, bus.Logger)
 
 	//	Канал для получения событий доставки
 	deliveryChan := make(chan kafka.Event)

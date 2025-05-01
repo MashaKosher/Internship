@@ -6,14 +6,11 @@ import (
 )
 
 func ConvertSeasonDBListToJson(seasons []db.Season) []entity.SeasonListElement {
-
 	result := make([]entity.SeasonListElement, 0, len(seasons))
 	for _, season := range seasons {
 		result = append(result, convertSeasonDBElemToJson(&season))
 	}
-
 	return result
-
 }
 
 func convertSeasonDBElemToJson(season *db.Season) entity.SeasonListElement {

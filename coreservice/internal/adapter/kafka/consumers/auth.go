@@ -33,7 +33,7 @@ func RecieveTokenInfo(cfg di.ConfigType, bus di.Bus) (entity.AuthAnswer, error) 
 		if err == nil {
 			bus.Logger.Info("Received message: " + string(msg.Value) + " from topic:" + msg.TopicPartition.String() + " with offset " + msg.TopicPartition.Offset.String())
 
-			answer, err := pkg.DeserializeAuthAnswer(msg.Value, answer)
+			answer, err := pkg.DeserializeAuthAnswer(msg.Value, answer, bus.Logger)
 			if err != nil {
 				bus.Logger.Error("Error while consuming: " + err.Error())
 				return answer, err

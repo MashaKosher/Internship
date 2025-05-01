@@ -43,7 +43,7 @@ func RecieveSeasonInfo(cfg di.ConfigType, bus di.Bus, db di.DBType, ESClient di.
 
 			bus.Logger.Info("Received message: " + string(msg.Value) + " from topic:" + msg.TopicPartition.String() + " with offset " + msg.TopicPartition.Offset.String())
 
-			answer, err := pkg.DeseriSeasonAnswer(msg.Value, season)
+			answer, err := pkg.DeseriSeasonAnswer(msg.Value, season, bus.Logger)
 			if err != nil {
 				bus.Logger.Error("Error while consuming: " + err.Error())
 			}
@@ -66,7 +66,7 @@ func RecieveSeasonInfo(cfg di.ConfigType, bus di.Bus, db di.DBType, ESClient di.
 			if err != nil {
 				panic(err)
 			}
-			producer.PlanSeasonTasks(int(answer.ID), startTime, endTime)
+			producer.PlanSeasonTasks(int(answer.ID), startTime, endTime, cfg, bus.Logger)
 
 			elastic.AddSeasonToIndex(int(answer.ID))
 		} else {

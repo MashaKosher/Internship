@@ -3,12 +3,10 @@ package pkg
 import (
 	"coreservice/internal/entity"
 	db "coreservice/internal/repository/sqlc/generated"
+	sqlcutils "coreservice/pkg/sqlc_utils"
 	"errors"
 	"fmt"
-	"math"
 	"time"
-
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 func GetUserInfo(user *db.User) entity.User {
@@ -16,8 +14,8 @@ func GetUserInfo(user *db.User) entity.User {
 	var jsonUser entity.User
 
 	jsonUser.Login = user.Login
-	jsonUser.Balance = ValidateNumeric(user.Balance)
-	jsonUser.WinRate = ValidateNumeric(user.WinRate)
+	jsonUser.Balance = sqlcutils.NumericToFloat64(user.Balance)
+	jsonUser.WinRate = sqlcutils.NumericToFloat64(user.WinRate)
 
 	return jsonUser
 
@@ -29,16 +27,6 @@ func ConvertDBUserSliceToUser(users []db.User) []entity.User {
 		result = append(result, GetUserInfo(&user))
 	}
 	return result
-}
-
-func ValidateNumeric(entity pgtype.Numeric) float64 {
-	var res float64
-	if !entity.Valid { // if field is NULL in DB
-		return res
-	}
-	res, _ = entity.Int.Float64()
-
-	return res / math.Pow(float64(10), -float64(entity.Exp))
 }
 
 func ConvertAnyToDBUser(entity any) (db.User, error) {

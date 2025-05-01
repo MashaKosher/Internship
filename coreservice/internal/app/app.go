@@ -14,10 +14,10 @@ import (
 func Run(cfg di.ConfigType) {
 
 	deps := setup.MustContainer(cfg)
-	go consumer.AsynqConsumer()
+	go consumer.AsynqConsumer(deps)
 
 	go consumers.RecieveSeasonInfo(cfg, deps.Bus, deps.DB, deps.Elastic.ESClient, deps.Elastic.SeasonSearchIndex)
-	go consumers.ReceiveDailyTask(cfg, deps.Bus)
+	go consumers.ReceiveDailyTask(cfg, deps.Bus, deps.DB)
 
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()

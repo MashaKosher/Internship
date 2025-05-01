@@ -3,15 +3,18 @@ package consumers
 import (
 	"coreservice/internal/di"
 	"coreservice/internal/entity"
-	repo "coreservice/internal/repository/sqlc"
 	"encoding/json"
 	"fmt"
+
+	dailyTaskRepo "coreservice/internal/adapter/db/postgres/daily_task"
 )
 
-func ReceiveDailyTask(cfg di.ConfigType, bus di.Bus) {
+func ReceiveDailyTask(cfg di.ConfigType, bus di.Bus, db di.DBType) {
 
 	var err error
 	var dailyTask entity.DailyTask
+
+	repo := dailyTaskRepo.New(db)
 
 	// consumer, err := kafka.NewConsumer(&kafka.ConfigMap{
 	// 	"bootstrap.servers": config.AppConfig.Kafka.Host + ":" + config.AppConfig.Kafka.Port, // Используйте localhost

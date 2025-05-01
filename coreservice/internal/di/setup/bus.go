@@ -8,15 +8,15 @@ import (
 
 func mustBus(cfg di.ConfigType, logger di.LoggerType) di.Bus {
 	return di.Bus{
-		AuthConsumer:      createConsumer(cfg, logger),
-		DailyTaskConsumer: createConsumer(cfg, logger),
-		SeasonConsumer:    createConsumer(cfg, logger),
-		AuthProducer:      createProducer(cfg, logger),
+		AuthConsumer:      createBusConsumer(cfg, logger),
+		DailyTaskConsumer: createBusConsumer(cfg, logger),
+		SeasonConsumer:    createBusConsumer(cfg, logger),
+		AuthProducer:      createBusProducer(cfg, logger),
 		Logger:            logger,
 	}
 }
 
-func createConsumer(cfg di.ConfigType, logger di.LoggerType) *kafka.Consumer {
+func createBusConsumer(cfg di.ConfigType, logger di.LoggerType) *kafka.Consumer {
 	c, err := kafka.NewConsumer(&kafka.ConfigMap{
 		"bootstrap.servers": cfg.Kafka.Host + ":" + cfg.Kafka.Port,
 		"group.id":          "adminservice",
@@ -28,7 +28,7 @@ func createConsumer(cfg di.ConfigType, logger di.LoggerType) *kafka.Consumer {
 	return c
 }
 
-func createProducer(cfg di.ConfigType, logger di.LoggerType) *kafka.Producer {
+func createBusProducer(cfg di.ConfigType, logger di.LoggerType) *kafka.Producer {
 	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": cfg.Kafka.Host + ":" + cfg.Kafka.Port})
 	if err != nil {
 		logger.Error("Failed to create producer:" + err.Error())
@@ -42,5 +42,4 @@ func deferBus(bus di.Bus) {
 	bus.DailyTaskConsumer.Close()
 	bus.SeasonConsumer.Close()
 	bus.AuthProducer.Close()
-
 }

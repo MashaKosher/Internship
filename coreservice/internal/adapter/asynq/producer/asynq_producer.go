@@ -2,25 +2,27 @@ package producer
 
 import (
 	"coreservice/internal/adapter/asynq/tasks"
-	"coreservice/internal/config"
-	"coreservice/internal/logger"
+	"coreservice/internal/di"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/hibiken/asynq"
 )
 
-func PlanSeasonTasks(seasonID int, startTime, endTime time.Time) {
-	// some sron code
-	// cronTest()
+const clientPoolSize = 10
+const maxSendRetry = 3
+const queueType = "critical"
 
-	client := asynq.NewClient(asynq.RedisClientOpt{Addr: config.AppConfig.Redis.Host + ":" + config.AppConfig.Redis.Port, PoolSize: 10})
+func PlanSeasonTasks(seasonID int, startTime, endTime time.Time, cfg di.ConfigType, logger di.LoggerType) {
+
+	client := asynq.NewClient(
+		asynq.RedisClientOpt{
+			Addr:     cfg.Redis.Host + ":" + cfg.Redis.Port,
+			PoolSize: clientPoolSize,
+		})
 	defer client.Close()
 
-	logger.Logger.Info("Asynq Client  connected successfully")
-
-	// season := ebSeason{SeasonID: rand.Int(), StartTime: time.Now().Add(time.Second * 10), EndTime: time.Now().Add(time.Second * 20)}
+	logger.Info("Asynq Client  connected successfully")
 
 	// Creating task for season start
 	task, err := tasks.NewSeasonTask(seasonID, startTime, tasks.CurrentSeason)
@@ -28,23 +30,21 @@ func PlanSeasonTasks(seasonID int, startTime, endTime time.Time) {
 	if err != nil {
 		panic(err)
 	}
-
-	fmt.Println("Start Time dif:: ", startTime.Sub(time.Now()))
+	logger.Info("Start Time dif: " + fmt.Sprint(time.Until(startTime)))
 
 	info, err := client.Enqueue(
 		task,
-		// asynq.ProcessAt(time.Now().Add(time.Second*20)),
 		asynq.ProcessAt(startTime),
-		asynq.MaxRetry(3),
-		asynq.Queue("critical"),
+		asynq.MaxRetry(maxSendRetry),
+		asynq.Queue(queueType),
 	)
 
-	logger.Logger.Info("Task will be start at: " + fmt.Sprint(startTime))
+	logger.Info("Task will be start at: " + fmt.Sprint(startTime))
 	if err != nil {
 		panic(err)
 	}
 
-	log.Printf("enqued task: id = %s queue = %s ", info.ID, info.Queue)
+	logger.Info(fmt.Sprintf("enqued task: id = %s queue = %s ", info.ID, info.Queue))
 
 	// creating task for end season
 	task, err = tasks.NewSeasonTask(seasonID, endTime, tasks.CancelSeason)
@@ -53,20 +53,19 @@ func PlanSeasonTasks(seasonID int, startTime, endTime time.Time) {
 		panic(err)
 	}
 
-	fmt.Println("End Time dif:: ", endTime.Sub(time.Now()))
+	logger.Info("End Time dif: " + fmt.Sprint(time.Until(endTime)))
 
 	info, err = client.Enqueue(
 		task,
 		// asynq.ProcessAt(time.Now().Add(time.Second*30)),
 		asynq.ProcessAt(endTime),
-		asynq.MaxRetry(3),
-		asynq.Queue("critical"),
+		asynq.MaxRetry(maxSendRetry),
+		asynq.Queue(queueType),
 	)
-	logger.Logger.Info("Task will be end at: " + fmt.Sprint(endTime))
+	logger.Info("Task will be end at: " + fmt.Sprint(endTime))
 	if err != nil {
 		panic(err)
 	}
 
-	log.Printf("enqued task: id = %s queue = %s ", info.ID, info.Queue)
-
+	logger.Info(fmt.Sprintf("enqued task: id = %s queue = %s ", info.ID, info.Queue))
 }

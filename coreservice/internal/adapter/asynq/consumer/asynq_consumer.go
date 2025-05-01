@@ -3,26 +3,31 @@ package consumer
 import (
 	"coreservice/internal/adapter/asynq/tasks"
 	"coreservice/internal/config"
-	"coreservice/internal/logger"
+	"coreservice/internal/di"
 	"strings"
 	"time"
 
 	"github.com/hibiken/asynq"
 )
 
-func AsynqConsumer() {
+const connPoolsize = 10
+const concSize = 10
+const criticalPriority = 1
+const retryTimeDelay = 2 * time.Second
+
+func AsynqConsumer(deps di.Container) {
 	srv := asynq.NewServer(
 		asynq.RedisClientOpt{
 			Addr:     config.AppConfig.Redis.Host + ":" + config.AppConfig.Redis.Port,
-			PoolSize: 10,
+			PoolSize: connPoolsize,
 		},
 		asynq.Config{
-			Concurrency: 10,
+			Concurrency: concSize,
 			Queues: map[string]int{
-				"critical": 1,
+				"critical": criticalPriority,
 			},
 			RetryDelayFunc: func(n int, e error, t *asynq.Task) time.Duration {
-				return 2 * time.Second
+				return retryTimeDelay
 			},
 			IsFailure: func(err error) bool {
 				if strings.Contains(err.Error(), "task expired") {
@@ -33,14 +38,14 @@ func AsynqConsumer() {
 		},
 	)
 
-	logger.Logger.Info("Asynq consumer connected successfully")
+	deps.Logger.Info("Asynq consumer connected successfully")
 	// mux maps a type to a handler
 	mux := asynq.NewServeMux()
-	mux.HandleFunc(tasks.TypeSeason, tasks.SeasonTaskHadler)
+	mux.HandleFunc(tasks.TypeSeason, tasks.SeasonTaskHadler(deps.Logger, deps.DB, deps.Elastic.ESClient, deps.Elastic.SeasonSearchIndex))
 
 	if err := srv.Run(mux); err != nil {
-		logger.Logger.Fatal("could not run server: " + err.Error())
+		deps.Logger.Fatal("could not run server: " + err.Error())
 	}
 
-	logger.Logger.Info("Asynq consumer dont work")
+	deps.Logger.Info("Asynq consumer dont work")
 }
