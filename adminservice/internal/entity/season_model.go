@@ -30,8 +30,8 @@ type SeasonJson struct {
 
 type DetailSeasonJson struct {
 	SeasonJson
-	StartTime string `json:"start-time" validate:"required`
-	EndTime   string `json:"end-time" validate:"required`
+	StartTime string `json:"start-time" validate:"required"`
+	EndTime   string `json:"end-time" validate:"required"`
 	Fund      uint   `json:"fund" example:"5000" minimum:"0" validate:"gte=0"`
 }
 

@@ -35,6 +35,7 @@ type Bus struct {
 	AuthConsumer         *kafka.Consumer
 	GameSettingsConsumer *kafka.Consumer
 	AuthProducer         *kafka.Producer
+	MatchProducer        *kafka.Producer
 	Logger               LoggerType
 }
 

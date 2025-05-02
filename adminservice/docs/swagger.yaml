@@ -43,7 +43,9 @@ definitions:
         type: string
     required:
     - end-date
+    - end-time
     - start-date
+    - start-time
     type: object
   entity.ErrorResponse:
     properties:

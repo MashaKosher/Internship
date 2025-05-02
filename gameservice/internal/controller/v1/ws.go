@@ -12,6 +12,8 @@ import (
 	"sync"
 	"time"
 
+	"gameservice/internal/adapter/kafka/producers"
+
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
@@ -21,6 +23,7 @@ type wsRoutes struct {
 	u di.GameService
 	l di.LoggerType
 	c di.ConfigType
+	b di.Bus
 }
 
 const playerAmount = 2
@@ -28,7 +31,7 @@ const minDiceAmount = 0
 const maxDiceAmount = 6
 
 func InitWSRoutes(e *echo.Echo, deps di.Container) {
-	r := &wsRoutes{u: deps.Services.Game, l: deps.Logger, c: deps.Config}
+	r := &wsRoutes{u: deps.Services.Game, l: deps.Logger, c: deps.Config, b: deps.Bus}
 	e.GET("/ws", r.handleWS)
 }
 
@@ -234,6 +237,8 @@ func (r *wsRoutes) startGame(room *Room) {
 	gameResult.LoserResult = loser_res
 
 	go r.u.SaveGame(gameResult)
+
+	go producers.SendMatchInfo(gameResult, r.c, r.b)
 
 	////////////
 	room.full = false

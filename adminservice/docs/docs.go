@@ -264,7 +264,9 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "end-date",
-                "start-date"
+                "end-time",
+                "start-date",
+                "start-time"
             ],
             "properties": {
                 "end-date": {

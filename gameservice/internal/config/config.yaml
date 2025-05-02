@@ -21,6 +21,7 @@ kafka:
   auth_topic_send: jwtCheckAnswer
   auth_topic_recieve: jwtCheckRequest
   gameSettings_topic_recieve: gameSettings
+  match_topic_send: match
 
 
 redis:

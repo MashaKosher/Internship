@@ -34,28 +34,6 @@ func esCreateIndexIfNotexist(ESClient di.ESClient, logger di.LoggerType) {
 	createIndex(ESClient, logger, UserSearchIndex)
 	createIndex(ESClient, logger, SeasonSearchIndex)
 
-	// _, err := esapi.IndicesExistsRequest{
-	// 	Index: []string{UserSearchIndex},
-	// }.Do(context.Background(), ESClient)
-
-	// // If error Index does not exists
-	// if err != nil {
-	// 	ESClient.Indices.Create(UserSearchIndex)
-	// }
-
-	// logger.Info("Index User Index exits")
-
-	// _, err = esapi.IndicesExistsRequest{
-	// 	Index: []string{SeasonSearchIndex},
-	// }.Do(context.Background(), ESClient)
-
-	// // If error Index does not exists
-	// if err != nil {
-	// 	ESClient.Indices.Create(SeasonSearchIndex)
-	// }
-
-	// logger.Info("Index Season Index exits")
-
 }
 
 func createIndex(ESClient di.ESClient, logger di.LoggerType, indexType di.ElasticIndex) {

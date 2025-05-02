@@ -29,6 +29,7 @@ type Config struct {
 		AuthTopicSend            string `mapstructure:"auth_topic_send"`
 		AuthTopicRecieve         string `mapstructure:"auth_topic_recieve"`
 		GameSettingsTopicRecieve string `mapstructure:"gameSettings_topic_recieve"`
+		MatchTopicSend           string `mapstructure:"match_topic_send"`
 	} `mapstructure:"kafka"`
 
 	Redis struct {
