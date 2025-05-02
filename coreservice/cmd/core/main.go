@@ -15,5 +15,4 @@ import (
 func main() {
 	cfg := config.MustParseConfig()
 	app.Run(cfg)
-
 }

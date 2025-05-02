@@ -1,6 +1,7 @@
 package di
 
 import (
+	kafkaRepo "coreservice/internal/adapter/kafka"
 	"coreservice/internal/config"
 	db "coreservice/internal/repository/sqlc/generated"
 	"os"
@@ -24,7 +25,6 @@ type Container struct {
 	Validator  ValidatorType
 	Elastic    ElasticType
 	Cache      CacheType
-	// DelayTask  DelayTaskType
 }
 
 type (
@@ -37,7 +37,8 @@ type (
 	ESClient       = *elasticsearch.Client
 	DelayProducer  = *asynq.Client
 	CacheType      = *redis.Client
-	// DelayConsumer  = *asynq.Server
+	KafkaProducer  = *kafka.Producer
+	KafkaConsumer  = *kafka.Consumer
 )
 
 type ElasticType struct {
@@ -47,16 +48,9 @@ type ElasticType struct {
 }
 
 type Bus struct {
-	AuthConsumer      *kafka.Consumer
-	DailyTaskConsumer *kafka.Consumer
-	SeasonConsumer    *kafka.Consumer
-	GameConsumer      *kafka.Consumer
-	AuthProducer      *kafka.Producer
-	Logger            LoggerType
+	AuthConsumer       kafkaRepo.AuthConsumer
+	AuthProducer       kafkaRepo.AuthProducer
+	DailyTaskConsumer  kafkaRepo.DailyTaskConsumer
+	MatchInfoConsumer  kafkaRepo.MatchInfoConsumer
+	SeasonInfoConsumer kafkaRepo.SeasonInfoConsumer
 }
-
-// type DelayTaskType struct {
-// 	SeasonConsumer *asynq.Server
-// 	SeasonProducer *asynq.Client
-// 	Logger         LoggerType
-// }

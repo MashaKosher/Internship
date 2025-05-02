@@ -10,15 +10,11 @@ import (
 )
 
 func GetUserInfo(user *db.User) entity.User {
-
-	var jsonUser entity.User
-
-	jsonUser.Login = user.Login
-	jsonUser.Balance = sqlcutils.NumericToFloat64(user.Balance)
-	jsonUser.WinRate = sqlcutils.NumericToFloat64(user.WinRate)
-
-	return jsonUser
-
+	return entity.User{
+		Balance: sqlcutils.NumericToFloat64(user.Balance),
+		WinRate: sqlcutils.NumericToFloat64(user.WinRate),
+		Login:   user.Login,
+	}
 }
 
 func ConvertDBUserSliceToUser(users []db.User) []entity.User {

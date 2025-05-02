@@ -1,8 +1,6 @@
 package middleware
 
 import (
-	"coreservice/internal/adapter/kafka/consumers"
-	"coreservice/internal/adapter/kafka/producers"
 	"coreservice/internal/di"
 	"coreservice/pkg"
 
@@ -34,10 +32,10 @@ func AuthMiddleWare(cfg di.ConfigType, logger di.LoggerType, db di.DBType, ESCli
 		refreshToken, _ := c.Cookie("refresh")
 
 		// Sending token to authserver through kafka
-		producers.CheckToken(accessToken, refreshToken, cfg, bus)
+		bus.AuthProducer.CheckAuthTokenRequest(accessToken, refreshToken)
 
 		// Receiving an answer from authserver through kafka
-		answer, _ := consumers.RecieveTokenInfo(cfg, bus)
+		answer, _ := bus.AuthConsumer.RecieveTokenInfo()
 
 		// If token is not valid fieвs Err will be not empty
 		if len(answer.Err) != 0 {

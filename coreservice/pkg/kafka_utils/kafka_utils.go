@@ -1,4 +1,4 @@
-package pkg
+package kafkautils
 
 import (
 	"coreservice/internal/di"

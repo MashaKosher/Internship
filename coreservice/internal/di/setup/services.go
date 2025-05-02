@@ -19,7 +19,6 @@ import (
 
 func mustServices(db di.DBType, logger di.LoggerType, elastic di.ElasticType, redis di.CacheType) di.Services {
 
-	// Создаем Use Case
 	dailyTasksUseCase := dailyTask.New(
 		dailyTaskRepo.New(db),
 	)

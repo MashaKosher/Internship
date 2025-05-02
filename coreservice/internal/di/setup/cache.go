@@ -10,12 +10,11 @@ import (
 func mustCache(cfg di.ConfigType, logger di.LoggerType) di.CacheType {
 	ctx := context.Background()
 	r := redis.NewClient(&redis.Options{
-		Addr:     cfg.Redis.Host + ":" + cfg.Redis.Port, // "localhost:6379", // адрес Redis
-		Password: cfg.Redis.Password,                    //"" // пароль, если есть
-		DB:       cfg.Redis.DB,                          // 0 // номер базы данных
+		Addr:     cfg.Redis.Host + ":" + cfg.Redis.Port,
+		Password: cfg.Redis.Password,
+		DB:       cfg.Redis.DB,
 	})
 
-	// Проверка подключения
 	_, err := r.Ping(ctx).Result()
 	if err != nil {
 		logger.Fatal(err.Error())

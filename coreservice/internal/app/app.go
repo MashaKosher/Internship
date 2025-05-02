@@ -2,7 +2,6 @@ package app
 
 import (
 	"coreservice/internal/adapter/asynq/consumer"
-	"coreservice/internal/adapter/kafka/consumers"
 	"coreservice/internal/di"
 	"coreservice/internal/di/setup"
 
@@ -15,10 +14,9 @@ func Run(cfg di.ConfigType) {
 
 	deps := setup.MustContainer(cfg)
 	go consumer.AsynqConsumer(deps)
-
-	go consumers.RecieveSeasonInfo(cfg, deps.Bus, deps.DB, deps.Elastic.ESClient, deps.Elastic.SeasonSearchIndex)
-	go consumers.ReceiveDailyTask(cfg, deps.Bus, deps.DB)
-	go consumers.RecieveMatchInfo(cfg, deps.Bus, deps.DB, deps.Elastic.ESClient, deps.Elastic.SeasonSearchIndex)
+	go deps.Bus.SeasonInfoConsumer.RecieveSeasonInfo()
+	go deps.Bus.DailyTaskConsumer.ReceiveDailyTask()
+	go deps.Bus.MatchInfoConsumer.RecieveMatchInfo()
 
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
