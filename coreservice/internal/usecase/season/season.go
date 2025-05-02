@@ -3,6 +3,7 @@ package season
 import (
 	repo "coreservice/internal/adapter/db/postgres"
 	elasticRepo "coreservice/internal/adapter/elastic"
+	redis "coreservice/internal/adapter/redis"
 	"coreservice/internal/di"
 	"coreservice/internal/entity"
 	db "coreservice/internal/repository/sqlc/generated"
@@ -15,13 +16,15 @@ type UseCase struct {
 	repo                    repo.SeasonRepo
 	logger                  di.LoggerType
 	elasticSeasonStatusRepo elasticRepo.SeasonStatusRepo
+	redis                   redis.LeaderBoardCache
 }
 
-func New(repo repo.SeasonRepo, logger di.LoggerType, elasticSeasonStatusRepo elasticRepo.SeasonStatusRepo) *UseCase {
+func New(repo repo.SeasonRepo, logger di.LoggerType, elasticSeasonStatusRepo elasticRepo.SeasonStatusRepo, redis redis.LeaderBoardCache) *UseCase {
 	return &UseCase{
 		repo:                    repo,
 		logger:                  logger,
 		elasticSeasonStatusRepo: elasticSeasonStatusRepo,
+		redis:                   redis,
 	}
 }
 
@@ -43,11 +46,32 @@ func (u *UseCase) Seasons() ([]entity.SeasonListElement, error) {
 }
 
 func (u *UseCase) SeasonLeaderBoard(id int) ([]entity.Leaderboard, error) {
-	leaderBoard, err := u.repo.GetSeasonLeaderBoard(int64(id))
+
+	leaderboard, err := u.redis.GetSeasonLeaderBoard(id)
 	if err != nil {
-		return []entity.Leaderboard{}, err
+		return []entity.Leaderboard{}, errors.New("problems with redis: " + err.Error())
 	}
-	return pkg.ConvertLeaderBoardDBListToJson(leaderBoard), nil
+
+	u.logger.Info("LeaderBoard from Redis: " + fmt.Sprint(leaderboard))
+
+	if len(leaderboard) == 0 {
+		leaderBoard, err := u.repo.GetSeasonLeaderBoard(int64(id))
+		if err != nil {
+			return []entity.Leaderboard{}, err
+		}
+
+		leaderboard = pkg.ConvertLeaderBoardDBListToJson(leaderBoard)
+
+		u.logger.Info("LeaderBoard from DB: " + fmt.Sprint(leaderboard))
+
+		err = u.redis.UpdateLeaderBoard(leaderboard, id)
+		if err != nil {
+			return []entity.Leaderboard{}, errors.New("some troubles with adding info to redis")
+		}
+
+	}
+
+	return leaderboard, nil
 }
 
 func (u *UseCase) CurrentSeason() ([]db.Season, error) {

@@ -30,6 +30,17 @@ func DeserializeAuthAnswer(value []byte, answer entity.AuthAnswer, logger di.Log
 	return answer, err
 }
 
+func DeserializeMatchAnswer(value []byte, answer entity.Match, logger di.LoggerType) (entity.Match, error) {
+
+	err := json.Unmarshal(value, &answer)
+	logger.Info("Request recieved: " + fmt.Sprintln(answer))
+	if err != nil {
+		logger.Fatal("Error while consuming: " + err.Error())
+	}
+
+	return answer, err
+}
+
 func DeseriSeasonAnswer(value []byte, season entity.Season, logger di.LoggerType) (entity.Season, error) {
 
 	err := json.Unmarshal(value, &season)

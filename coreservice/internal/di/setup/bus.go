@@ -11,6 +11,7 @@ func mustBus(cfg di.ConfigType, logger di.LoggerType) di.Bus {
 		AuthConsumer:      createBusConsumer(cfg, logger),
 		DailyTaskConsumer: createBusConsumer(cfg, logger),
 		SeasonConsumer:    createBusConsumer(cfg, logger),
+		GameConsumer:      createBusConsumer(cfg, logger),
 		AuthProducer:      createBusProducer(cfg, logger),
 		Logger:            logger,
 	}
@@ -41,5 +42,6 @@ func deferBus(bus di.Bus) {
 	bus.AuthConsumer.Close()
 	bus.DailyTaskConsumer.Close()
 	bus.SeasonConsumer.Close()
+	bus.GameConsumer.Close()
 	bus.AuthProducer.Close()
 }

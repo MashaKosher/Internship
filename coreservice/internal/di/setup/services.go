@@ -1,6 +1,8 @@
 package setup
 
 import (
+	"context"
+	leaderBoardCache "coreservice/internal/adapter/redis/leaderBoard"
 	"coreservice/internal/di"
 	dailyTask "coreservice/internal/usecase/daily_task"
 	"coreservice/internal/usecase/search"
@@ -15,7 +17,7 @@ import (
 	userNameElasticRepo "coreservice/internal/adapter/elastic/user"
 )
 
-func mustServices(db di.DBType, logger di.LoggerType, elastic di.ElasticType) di.Services {
+func mustServices(db di.DBType, logger di.LoggerType, elastic di.ElasticType, redis di.CacheType) di.Services {
 
 	// Создаем Use Case
 	dailyTasksUseCase := dailyTask.New(
@@ -33,6 +35,7 @@ func mustServices(db di.DBType, logger di.LoggerType, elastic di.ElasticType) di
 		seasonRepo.New(db),
 		logger,
 		seasonStatusElasticRepo.New(elastic.ESClient, elastic.SeasonSearchIndex, logger),
+		leaderBoardCache.New(redis, context.Background()),
 	)
 
 	searchUseCase := search.New(

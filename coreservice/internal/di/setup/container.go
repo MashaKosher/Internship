@@ -11,7 +11,8 @@ func MustContainer(cfg di.ConfigType) di.Container {
 	elastic := mustElastic(logger)
 	bus := mustBus(cfg, logger)
 	validator := mustValiadtor()
-	services := mustServices(db, logger, elastic)
+	cache := mustCache(cfg, logger)
+	services := mustServices(db, logger, elastic, cache)
 
 	return di.Container{
 		Config:     cfg,
@@ -22,6 +23,7 @@ func MustContainer(cfg di.ConfigType) di.Container {
 		Bus:        bus,
 		Validator:  validator,
 		Elastic:    elastic,
+		Cache:      cache,
 	}
 }
 

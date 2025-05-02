@@ -8,6 +8,8 @@ import (
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/elastic/go-elasticsearch/v8"
 	"github.com/go-playground/validator/v10"
+	"github.com/redis/go-redis/v9"
+
 	"github.com/hibiken/asynq"
 	"go.uber.org/zap"
 )
@@ -21,6 +23,7 @@ type Container struct {
 	DB         DBType
 	Validator  ValidatorType
 	Elastic    ElasticType
+	Cache      CacheType
 	// DelayTask  DelayTaskType
 }
 
@@ -33,6 +36,7 @@ type (
 	ElasticIndex   = string
 	ESClient       = *elasticsearch.Client
 	DelayProducer  = *asynq.Client
+	CacheType      = *redis.Client
 	// DelayConsumer  = *asynq.Server
 )
 
@@ -46,6 +50,7 @@ type Bus struct {
 	AuthConsumer      *kafka.Consumer
 	DailyTaskConsumer *kafka.Consumer
 	SeasonConsumer    *kafka.Consumer
+	GameConsumer      *kafka.Consumer
 	AuthProducer      *kafka.Producer
 	Logger            LoggerType
 }

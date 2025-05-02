@@ -28,4 +28,8 @@ type (
 		EndSeason(seasonID int) error
 		GetSeasonsByIds(seasonIDs []int32) ([]db.Season, error)
 	}
+
+	LeaderboardRepo interface {
+		UpdateSeasonLeaderboard(seasonID, playerID int) error
+	}
 )

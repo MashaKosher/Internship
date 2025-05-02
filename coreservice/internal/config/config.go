@@ -29,11 +29,14 @@ type Config struct {
 		AuthTopicRecieve      string `mapstructure:"auth_topic_recieve"`
 		SeasonTopicRecieve    string `mapstructure:"season_topic_recieve"`
 		DailyTaskTopicRecieve string `mapstructure:"daily_task_topic_recieve"`
+		MatchTopicRecieve     string `mapstructure:"match_topic_recieve"`
 	} `mapstructure:"kafka"`
 
 	Redis struct {
-		Host string `mapstructure:"host"`
-		Port string `mapstructure:"port"`
+		Host     string `mapstructure:"host"`
+		Port     string `mapstructure:"port"`
+		Password string `mapstructure:"password"`
+		DB       int    `mapstructure:"db"`
 	} `mapstructure:"redis"`
 }
 

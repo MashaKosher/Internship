@@ -18,6 +18,7 @@ func Run(cfg di.ConfigType) {
 
 	go consumers.RecieveSeasonInfo(cfg, deps.Bus, deps.DB, deps.Elastic.ESClient, deps.Elastic.SeasonSearchIndex)
 	go consumers.ReceiveDailyTask(cfg, deps.Bus, deps.DB)
+	go consumers.RecieveMatchInfo(cfg, deps.Bus, deps.DB, deps.Elastic.ESClient, deps.Elastic.SeasonSearchIndex)
 
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
