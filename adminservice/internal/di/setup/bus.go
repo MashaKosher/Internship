@@ -1,11 +1,11 @@
 package setup
 
 import (
-	authCons "adminservice/internal/adapter/kafka/consumers/auth"
-	authProds "adminservice/internal/adapter/kafka/producers/auth"
-	dailutaskProds "adminservice/internal/adapter/kafka/producers/daily_task"
-	gamesettingsProds "adminservice/internal/adapter/kafka/producers/game_settings"
-	seasonProds "adminservice/internal/adapter/kafka/producers/season"
+	authCon "adminservice/internal/adapter/kafka/consumers/auth"
+	authProd "adminservice/internal/adapter/kafka/producers/auth"
+	dailutaskProd "adminservice/internal/adapter/kafka/producers/daily_task"
+	gamesettingsProd "adminservice/internal/adapter/kafka/producers/game_settings"
+	seasonProd "adminservice/internal/adapter/kafka/producers/season"
 	"adminservice/internal/di"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
@@ -16,11 +16,11 @@ const offsetSettings = "earliest"
 
 func mustBus(cfg di.ConfigType, logger di.LoggerType) di.Bus {
 
-	authConsumer := authCons.New(cfg, logger, createConsumer(cfg, logger))
-	authProducer := authProds.New(cfg, logger, createProducer(cfg, logger))
-	gameSettingsProducer := gamesettingsProds.New(cfg, logger, createProducer(cfg, logger))
-	seasonProducer := seasonProds.New(cfg, logger, createProducer(cfg, logger))
-	dailyTaskProducer := dailutaskProds.New(cfg, logger, createProducer(cfg, logger))
+	authConsumer := authCon.New(cfg, logger, createConsumer(cfg, logger))
+	authProducer := authProd.New(cfg, logger, createProducer(cfg, logger))
+	gameSettingsProducer := gamesettingsProd.New(cfg, logger, createProducer(cfg, logger))
+	seasonProducer := seasonProd.New(cfg, logger, createProducer(cfg, logger))
+	dailyTaskProducer := dailutaskProd.New(cfg, logger, createProducer(cfg, logger))
 
 	return di.Bus{
 		AuthConsumer:         authConsumer,
