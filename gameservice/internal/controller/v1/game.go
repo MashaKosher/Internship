@@ -105,11 +105,9 @@ func (r *gameRoutes) playGame(c echo.Context) error {
 
 	playerID := data.ID
 
-	// Формируем URL для подключения к WebSocket
 	u := url.URL{Scheme: "ws", Host: "localhost:8005", Path: "/ws", RawQuery: "player_id=" + strconv.Itoa(int(playerID))}
 	r.l.Info("Подключение к " + u.String())
 
-	// Устанавливаем соединение
 	wsConn, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
 	if err != nil {
 		r.l.Error("Ошибка при подключении к WebSocket:" + err.Error())
@@ -117,20 +115,17 @@ func (r *gameRoutes) playGame(c echo.Context) error {
 	}
 	defer wsConn.Close()
 
-	// Ожидаем сообщение от сервера
 	_, message, err := wsConn.ReadMessage()
 	if err != nil {
 		r.l.Error("Ошибка при чтении сообщения: " + err.Error())
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "ошибка при чтении сообщения"})
 	}
 
-	// Декодируем JSON-ответ
 	var result map[string]interface{}
 	if err := json.Unmarshal(message, &result); err != nil {
 		r.l.Error("Ошибка при декодировании JSON:" + err.Error())
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "не удалось декодировать ответ"})
 	}
 
-	// Отправляем результат клиенту
 	return c.JSON(http.StatusOK, result)
 }

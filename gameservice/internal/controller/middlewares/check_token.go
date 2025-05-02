@@ -5,8 +5,6 @@ import (
 
 	"github.com/labstack/echo/v4"
 
-	"gameservice/internal/adapter/kafka/consumers"
-	"gameservice/internal/adapter/kafka/producers"
 	"gameservice/internal/di"
 )
 
@@ -26,10 +24,10 @@ func CheckTokenMiddleWare(logger di.LoggerType, cfg di.ConfigType, bus di.Bus) e
 			refreshToken, _ := c.Cookie("refresh")
 
 			// Отправка токена в authserver через Kafka
-			producers.CheckToken(accessToken.Value, refreshToken.Value, cfg, bus)
+			bus.AuthProducer.CheckAuthTokenRequest(accessToken.Value, refreshToken.Value)
 
 			// Получение ответа от authserver
-			answer, _ := consumers.RecieveTokenInfo(cfg, bus)
+			answer, _ := bus.AuthConsumer.RecieveTokenInfo()
 
 			// Проверка валидности токена
 			if answer.Err != "" {

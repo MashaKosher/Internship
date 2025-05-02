@@ -8,8 +8,8 @@ func MustContainer(cfg di.ConfigType) di.Container {
 	logger := mustLogger(cfg)
 	loggerFile := mustLoggerFile(cfg)
 	db := mustDB(cfg, logger)
-	bus := mustBus(cfg, logger)
 	cache := mustCache(cfg, logger)
+	bus := mustBus(cfg, logger, cache)
 	services := mustServices(db, cache, logger, bus)
 
 	return di.Container{

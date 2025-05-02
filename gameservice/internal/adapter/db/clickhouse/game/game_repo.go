@@ -7,12 +7,10 @@ import (
 	"gameservice/internal/entity"
 )
 
-// Переписать
 type GameRepo struct {
 	*sql.DB
 }
 
-// Переписать
 func New(db *sql.DB) *GameRepo {
 	return &GameRepo{db}
 }

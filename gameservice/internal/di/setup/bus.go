@@ -1,26 +1,41 @@
 package setup
 
 import (
+	"context"
+	redisRepo "gameservice/internal/adapter/redis/game_settings"
 	"gameservice/internal/di"
+
+	authCon "gameservice/internal/adapter/kafka/consumers/auth"
+	gameSetttingsProd "gameservice/internal/adapter/kafka/consumers/game_settings"
+	authProd "gameservice/internal/adapter/kafka/producers/auth"
+	matchInfoProd "gameservice/internal/adapter/kafka/producers/match_info"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
-func mustBus(cfg di.ConfigType, logger di.LoggerType) di.Bus {
+const groupID = "adminservice"
+const offsetSettings = "earliest"
+
+func mustBus(cfg di.ConfigType, logger di.LoggerType, cache di.CacheType) di.Bus {
+
+	authConsumer := authCon.New(cfg, logger, createConsumer(cfg, logger))
+	authProducer := authProd.New(cfg, logger, createProducer(cfg, logger))
+	gameSettingsConsumer := gameSetttingsProd.New(cfg, logger, createConsumer(cfg, logger), redisRepo.New(cache, context.Background()))
+	matchInfoProducer := matchInfoProd.New(cfg, logger, createProducer(cfg, logger))
+
 	return di.Bus{
-		AuthConsumer:         createConsumer(cfg, logger),
-		GameSettingsConsumer: createConsumer(cfg, logger),
-		AuthProducer:         createProducer(cfg, logger),
-		MatchProducer:        createProducer(cfg, logger),
-		Logger:               logger,
+		AuthConsumer:         authConsumer,
+		AuthProducer:         authProducer,
+		GameSettingsConsumer: gameSettingsConsumer,
+		MatchInfoProducer:    matchInfoProducer,
 	}
 }
 
 func createConsumer(cfg di.ConfigType, logger di.LoggerType) *kafka.Consumer {
 	c, err := kafka.NewConsumer(&kafka.ConfigMap{
 		"bootstrap.servers": cfg.Kafka.Host + ":" + cfg.Kafka.Port,
-		"group.id":          "gameservice",
-		"auto.offset.reset": "earliest",
+		"group.id":          groupID,
+		"auto.offset.reset": offsetSettings,
 	})
 	if err != nil {
 		logger.Fatal("Failed to create consumer: " + err.Error())
@@ -29,17 +44,19 @@ func createConsumer(cfg di.ConfigType, logger di.LoggerType) *kafka.Consumer {
 }
 
 func createProducer(cfg di.ConfigType, logger di.LoggerType) *kafka.Producer {
-	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": cfg.Kafka.Host + ":" + cfg.Kafka.Port})
+	p, err := kafka.NewProducer(
+		&kafka.ConfigMap{
+			"bootstrap.servers": cfg.Kafka.Host + ":" + cfg.Kafka.Port,
+		})
 	if err != nil {
 		logger.Error("Failed to create producer:" + err.Error())
 	}
-
 	return p
 }
 
 func deferBus(bus di.Bus) {
 	bus.AuthConsumer.Close()
-	bus.GameSettingsConsumer.Close()
 	bus.AuthProducer.Close()
-	bus.MatchProducer.Close()
+	bus.GameSettingsConsumer.Close()
+	bus.MatchInfoProducer.Close()
 }

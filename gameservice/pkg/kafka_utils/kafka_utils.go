@@ -15,7 +15,6 @@ func CreateMessage(entity any, topic string, partition int32, logger di.LoggerTy
 		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: partition},
 		Value:          value,
 		Key:            nil,
-		// Key:            []byte("a"),
 	}
 }
 

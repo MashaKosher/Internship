@@ -2,6 +2,7 @@ package di
 
 import (
 	"database/sql"
+	kafkaRepo "gameservice/internal/adapter/kafka"
 	"gameservice/internal/config"
 	"os"
 
@@ -19,27 +20,21 @@ type Container struct {
 	Bus        Bus
 	DB         DBType
 	Cache      CacheType
-	// Random     RandomApi
 }
 
-// ///////////////////////////////////
 type (
 	ConfigType     = config.Config
 	LoggerType     = *zap.Logger
 	LoggerFileType = *os.File
 	DBType         = *sql.DB
 	CacheType      = *redis.Client
+	KafkaProducer  = *kafka.Producer
+	KafkaConsumer  = *kafka.Consumer
 )
 
 type Bus struct {
-	AuthConsumer         *kafka.Consumer
-	GameSettingsConsumer *kafka.Consumer
-	AuthProducer         *kafka.Producer
-	MatchProducer        *kafka.Producer
-	Logger               LoggerType
+	AuthConsumer         kafkaRepo.AuthConsumer
+	AuthProducer         kafkaRepo.AuthProducer
+	GameSettingsConsumer kafkaRepo.GameSettingsConsumer
+	MatchInfoProducer    kafkaRepo.MatchInfoProducer
 }
-
-// type RandomApi struct {
-// 	ApiKey string
-// 	Client *http.Client
-// }

@@ -3,8 +3,6 @@ package app
 import (
 	"context"
 
-	"gameservice/internal/adapter/kafka/consumers"
-	redisRepo "gameservice/internal/adapter/redis/game_settings"
 	v1 "gameservice/internal/controller"
 	"gameservice/internal/di"
 	"gameservice/internal/di/setup"
@@ -22,7 +20,7 @@ func Run(cfg di.ConfigType) {
 	deps := setup.MustContainer(cfg)
 	defer setup.DeferContainer(deps)
 
-	go consumers.GameSettingsConsumer(redisRepo.New(deps.Cache, context.Background()), cfg, deps.Bus)
+	go deps.Bus.AuthConsumer.RecieveTokenInfo()
 
 	// Graceful Shutdown
 	e := echo.New()

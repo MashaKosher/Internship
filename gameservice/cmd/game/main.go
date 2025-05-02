@@ -4,7 +4,7 @@ import (
 	"gameservice/internal/app"
 	"gameservice/internal/config"
 
-	_ "gameservice/docs" // подключение сгенерированной документации Swagger
+	_ "gameservice/docs"
 )
 
 // @title						Game service
@@ -17,6 +17,5 @@ import (
 // @externalDocs.url			https://swagger.io/resources/open-api/
 func main() {
 	cfg := config.MustParseConfig()
-
 	app.Run(cfg)
 }

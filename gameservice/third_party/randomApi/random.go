@@ -22,7 +22,6 @@ func NewClient(apiKey string, apiUrl string) *Client {
 	}
 }
 
-// Request структура для запроса
 type generateIntegersRequest struct {
 	JSONRPC string `json:"jsonrpc"`
 	Method  string `json:"method"`
@@ -36,7 +35,6 @@ type generateIntegersRequest struct {
 	ID int `json:"id"`
 }
 
-// Response структура для ответа
 type generateIntegersResponse struct {
 	JSONRPC string `json:"jsonrpc"`
 	Result  struct {
@@ -47,7 +45,6 @@ type generateIntegersResponse struct {
 	ID int `json:"id"`
 }
 
-// GenerateIntegers генерирует случайные целые числа
 func (c *Client) GenerateIntegers(n, min, max int, replacement bool) ([]int, error) {
 	reqBody := generateIntegersRequest{
 		JSONRPC: "2.0",

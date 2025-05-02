@@ -12,8 +12,6 @@ import (
 	"sync"
 	"time"
 
-	"gameservice/internal/adapter/kafka/producers"
-
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
@@ -238,7 +236,7 @@ func (r *wsRoutes) startGame(room *Room) {
 
 	go r.u.SaveGame(gameResult)
 
-	go producers.SendMatchInfo(gameResult, r.c, r.b)
+	go r.b.MatchInfoProducer.SendMatchInfo(gameResult)
 
 	////////////
 	room.full = false
@@ -248,15 +246,12 @@ func (r *wsRoutes) startGame(room *Room) {
 	delete(roomManager.rooms, room.id)
 	roomManager.mutex.Unlock()
 	////////////
-
-	// Отправляем результат обеим сторонам
 	msg, _ := json.Marshal(result)
 	p1.send <- msg
 	p2.send <- msg
 
 }
 
-// Отправка сообщений игроку
 func (p *Player) writePump(logger di.LoggerType) {
 	for msg := range p.send {
 		logger.Info("writePump send message to client ")

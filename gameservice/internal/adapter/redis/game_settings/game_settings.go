@@ -36,7 +36,6 @@ func (r *GameSettingsRepo) GetGameSettings() (entity.GameSettings, error) {
 
 	jsonData, err := r.Client.Get(r.Context, gameSettingsKey).Bytes()
 	if err == redis.Nil {
-		// Если ключ не существует, возвращаем пустую структуру
 		return settings, nil
 	} else if err != nil {
 		return settings, err
