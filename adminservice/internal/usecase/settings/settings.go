@@ -2,7 +2,6 @@ package settings
 
 import (
 	repo "adminservice/internal/adapter/db/sql"
-	"adminservice/internal/adapter/kafka/producers"
 	"adminservice/internal/di"
 	"adminservice/internal/entity"
 )
@@ -30,7 +29,7 @@ func (u *UseCase) UpdateSettings(settings entity.SettingsJson) error {
 		return err
 	}
 
-	go producers.SendGameSettings(settings, u.cfg, u.bus)
+	go u.bus.GameSettingsProducer.SendGameSettings(settings)
 
 	return nil
 }

@@ -1,8 +1,6 @@
 package middleware
 
 import (
-	"adminservice/internal/adapter/kafka/consumers"
-	"adminservice/internal/adapter/kafka/producers"
 	"adminservice/internal/di"
 	"adminservice/internal/entity"
 	"context"
@@ -28,12 +26,12 @@ func CheckToken(cfg di.ConfigType, bus di.Bus) func(next http.Handler) http.Hand
 			refreshToken, _ := r.Cookie("refresh")
 
 			// Executing Auth Response to AuthService
-			producers.CheckToken(accessToken.Value, refreshToken.Value, cfg, bus)
+			bus.AuthProducer.CheckToken(accessToken.Value, refreshToken.Value)
 			log.Println("Auth Request sent")
 
 			// Recieving Auth Response from AuthService
 			var val entity.AuthAnswer
-			val, _ = consumers.AnswerTokens(cfg, bus)
+			val, _ = bus.AuthConsumer.AnswerTokens()
 			log.Println("Auth answer received")
 			log.Println(val)
 
