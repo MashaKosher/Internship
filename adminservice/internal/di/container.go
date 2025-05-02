@@ -22,7 +22,6 @@ type Container struct {
 	Validator  ValidatorType
 }
 
-// ///////////////////////////////////
 type (
 	ConfigType     = config.Config
 	LoggerType     = *zap.Logger

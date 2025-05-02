@@ -4,33 +4,6 @@ import (
 	"time"
 )
 
-// func StoreDeatailSeasonInDBEntity(seasonJSON *entity.DetailSeasonJson, seasonDB *entity.Season) error {
-
-// 	startTime, err := GetTimeFromString(seasonJSON.StartDate, seasonJSON.StartTime)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	if startTime.Before(time.Now()) {
-// 		return errors.New("season cannot starting before Now")
-// 	}
-
-// 	endTime, err := GetTimeFromString(seasonJSON.EndDate, seasonJSON.EndTime)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	if startTime.After(endTime) {
-// 		return errors.New("end date can't be earlier then start date")
-// 	}
-
-// 	seasonDB.StartDate = startTime
-// 	seasonDB.EndDate = endTime
-// 	seasonDB.Fund = seasonJSON.Fund
-
-// 	return nil
-// }
-
 func GetTimeFromString(stringDate, stringTime string) (time.Time, error) {
 	timeFormatDate, err := parseDate(stringDate)
 	if err != nil {

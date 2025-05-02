@@ -29,8 +29,8 @@ func initPlanRoutes(deps di.Container) *seasonRoutes {
 //	{
 //	    "start-date": "2024-06-01",
 //	    "end-date": "2024-08-31",
-//	    "start-time": "09:00:00",
-//	    "end-time": "18:00:00",
+//	    "start-time": "09-00-00",
+//	    "end-time": "18-00-00",
 //	    "fund": 5000
 //	}
 //

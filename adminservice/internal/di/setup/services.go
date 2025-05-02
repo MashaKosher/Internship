@@ -14,33 +14,30 @@ import (
 )
 
 func mustServices(db di.DBType, logger di.LoggerType, cfg di.ConfigType, bus di.Bus) di.Services {
-	// Создаем Use Case
+
 	planUseCase := plan.New(
-		planRepo.New(db), // создаем конкретный репозиторий и передаем в конретный Use Case
+		planRepo.New(db),
 		logger,
 		cfg,
 		bus,
 	)
 
-	// Создаем Use Case
 	settingsUseCase := settings.New(
-		settingsRepo.New(db), // создаем конкретный репозиторий и передаем в конретный Use Case
+		settingsRepo.New(db),
 		logger,
 		cfg,
 		bus,
 	)
 
-	// Создаем Use Case
 	dailyTasksUseCase := dailyTask.New(
-		dailyTaskRepo.New(db), // создаем конкретный репозиторий и передаем в конретный Use Case
+		dailyTaskRepo.New(db),
 		logger,
 		cfg,
 		bus,
 	)
 
-	// Создаем Use Case
 	statisticUseCase := statistic.New(
-		statisticRepo.New(db), // создаем конкретный репозиторий и передаем в конретный Use Case
+		statisticRepo.New(db),
 		logger,
 		cfg,
 		bus,

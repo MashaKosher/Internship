@@ -11,6 +11,9 @@ import (
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
+const groupID = "adminservice"
+const offsetSettings = "earliest"
+
 func mustBus(cfg di.ConfigType, logger di.LoggerType) di.Bus {
 
 	authConsumer := authCons.New(cfg, logger, createConsumer(cfg, logger))
@@ -31,8 +34,8 @@ func mustBus(cfg di.ConfigType, logger di.LoggerType) di.Bus {
 func createConsumer(cfg di.ConfigType, logger di.LoggerType) *kafka.Consumer {
 	c, err := kafka.NewConsumer(&kafka.ConfigMap{
 		"bootstrap.servers": cfg.Kafka.Host + ":" + cfg.Kafka.Port,
-		"group.id":          "adminservice",
-		"auto.offset.reset": "earliest",
+		"group.id":          groupID,
+		"auto.offset.reset": offsetSettings,
 	})
 	if err != nil {
 		logger.Fatal("Failed to create consumer: " + err.Error())
@@ -41,11 +44,13 @@ func createConsumer(cfg di.ConfigType, logger di.LoggerType) *kafka.Consumer {
 }
 
 func createProducer(cfg di.ConfigType, logger di.LoggerType) *kafka.Producer {
-	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": cfg.Kafka.Host + ":" + cfg.Kafka.Port})
+	p, err := kafka.NewProducer(
+		&kafka.ConfigMap{
+			"bootstrap.servers": cfg.Kafka.Host + ":" + cfg.Kafka.Port,
+		})
 	if err != nil {
 		logger.Error("Failed to create producer:" + err.Error())
 	}
-
 	return p
 }
 

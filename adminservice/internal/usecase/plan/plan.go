@@ -23,8 +23,6 @@ func New(r repo.PlanRepo, logger di.LoggerType, cfg di.ConfigType, bus di.Bus) *
 	}
 }
 
-// Опять же, у тебя бизнес логика берет данные из параметров http хендлера, а что если поменяется веб-фрейм,
-// и будут другие параметры, или вообще транспорт поменяется с http на grpc?
 func (u *UseCase) PlanSeasons(season entity.DetailSeasonJson) error {
 	dbSeason, err := season.ToDB()
 	if err != nil {

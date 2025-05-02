@@ -31,7 +31,7 @@ func main() {
 
 	server := &http.Server{Addr: cfg.Server.Host + ":" + cfg.Server.Port, Handler: app.Run(deps)}
 
-	log.Println("Program started")
+	deps.Logger.Info("Program started")
 	serverCtx, serverStopCtx := context.WithCancel(context.Background())
 
 	sig := make(chan os.Signal, 1)
@@ -46,7 +46,7 @@ func main() {
 		go func() {
 			<-shutdownCtx.Done()
 			if shutdownCtx.Err() == context.DeadlineExceeded {
-				log.Println("graceful shutdown timed out.. forcing exit.")
+				deps.Logger.Info("graceful shutdown timed out.. forcing exit.")
 			}
 		}()
 
@@ -61,7 +61,7 @@ func main() {
 	// Run the server
 	err := server.ListenAndServe()
 	if err != nil && err != http.ErrServerClosed {
-		log.Println(err)
+		deps.Logger.Error(err.Error())
 	}
 
 	// Wait for server context to be stopped

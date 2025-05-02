@@ -8,8 +8,6 @@ import (
 )
 
 type UseCase struct {
-	// Пиши интерфейсы по месту использования, а не реализации.
-	// Интерфейсы - контракт, заключаемый между вызывающим и вызываемым кодом.
 	repo   repo.DailyTaskRepo
 	logger di.LoggerType
 	cfg    di.ConfigType

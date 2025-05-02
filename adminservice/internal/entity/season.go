@@ -25,13 +25,13 @@ func (s *Season) ToDTO() SeasonOut {
 
 type SeasonJson struct {
 	StartDate string `json:"start-date" example:"01-06-2024" format:"date" validate:"required,datetime=02-01-2006"`
-	EndDate   string `json:"end-date" example:"31-08-3034" format:"date" validate:"required,datetime=02-01-2006"`
+	EndDate   string `json:"end-date" example:"31-08-2034" format:"date" validate:"required,datetime=02-01-2006"`
 }
 
 type DetailSeasonJson struct {
 	SeasonJson
-	StartTime string `json:"start-time" validate:"required"`
-	EndTime   string `json:"end-time" validate:"required"`
+	StartTime string `json:"start-time" example:"00-20-30" validate:"required"`
+	EndTime   string `json:"end-time" example:"01-20-30" validate:"required"`
 	Fund      uint   `json:"fund" example:"5000" minimum:"0" validate:"gte=0"`
 }
 
