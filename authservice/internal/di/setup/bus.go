@@ -5,14 +5,14 @@ import (
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 
-	authCons "authservice/internal/adapter/kafka/consumers/auth"
+	authCon "authservice/internal/adapter/kafka/consumers/auth"
 	authProd "authservice/internal/adapter/kafka/producers/auth"
 )
 
 func mustBus(cfg di.ConfigType, logger di.LoggerType, db di.DBType, RSAKeys di.RSAKeys) di.Bus {
 
 	authProducer := authProd.New(cfg, logger, createProducer(cfg, logger))
-	authConsumer := authCons.New(cfg, logger, createConsumer(cfg, logger), authProducer, createAuthUseCase(db, logger, RSAKeys))
+	authConsumer := authCon.New(cfg, logger, createConsumer(cfg, logger), authProducer, createAuthUseCase(db, logger, RSAKeys))
 
 	return di.Bus{
 		AuthProducer: authProducer,

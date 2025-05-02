@@ -126,7 +126,6 @@ func (uc *UseCase) CheckRefreshToken(refreshToken string) (entity.UserOutDTO, er
 		return entity.UserOutDTO{}, fiber.NewError(fiber.StatusInternalServerError, "Problem with creating Access JWT Token")
 	}
 	uc.logger.Info("Access JWT created successfully")
-	// return convertUserToUserOutDTO(user, accessToken, refreshToken), nil
 	return user.ToDTO(accessToken, refreshToken), nil
 }
 

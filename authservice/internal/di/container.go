@@ -40,11 +40,8 @@ type (
 )
 
 type Bus struct {
-	// Consumer *kafka.Consumer
-	// Producer *kafka.Producer
 	AuthProducer kafkaRepo.AuthProducer
 	AuthConsumer kafkaRepo.AuthConsumer
-	// Logger       LoggerType
 }
 
 type RSAKeys struct {

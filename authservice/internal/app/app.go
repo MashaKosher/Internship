@@ -1,7 +1,6 @@
 package app
 
 import (
-	// "authservice/internal/adapter/kafka/consumers"
 	"authservice/internal/config"
 	v1 "authservice/internal/controller/http"
 	"authservice/internal/di/setup"

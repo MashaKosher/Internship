@@ -6,7 +6,6 @@ import (
 	"authservice/internal/entity"
 	"authservice/pkg"
 	"fmt"
-	// producer "authservice/internal/adapter/kafka/producers"
 )
 
 type AuthConsumer struct {

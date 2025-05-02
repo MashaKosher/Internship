@@ -14,8 +14,6 @@ func New(db *gorm.DB) *AuthRepo {
 	return &AuthRepo{db}
 }
 
-//
-
 func (r *AuthRepo) CreateUser(user *entity.User) error {
 	err := r.DB.Save(user).Error
 	return err
