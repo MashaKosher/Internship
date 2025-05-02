@@ -8,7 +8,7 @@ func MustContainer(cfg di.ConfigType) di.Container {
 	logger := mustLogger(cfg)
 	loggerFile := mustLoggerFile(cfg)
 	db := mustDB(cfg, logger)
-	elastic := mustElastic(logger)
+	elastic := mustElastic(logger, db)
 	bus := mustBus(cfg, logger, db, elastic)
 	validator := mustValiadtor()
 	cache := mustCache(cfg, logger)

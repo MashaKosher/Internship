@@ -8,16 +8,15 @@ import (
 	"net/http"
 
 	userRepo "coreservice/internal/adapter/db/postgres/user"
-	userNameElasticRepo "coreservice/internal/adapter/elastic/user"
 
 	"github.com/gin-gonic/gin"
 )
 
-func AuthMiddleWare(cfg di.ConfigType, logger di.LoggerType, db di.DBType, ESClient di.ESClient, Index di.ElasticIndex, bus di.Bus) gin.HandlerFunc {
+func AuthMiddleWare(cfg di.ConfigType, logger di.LoggerType, db di.DBType, elastic di.ElasticType, bus di.Bus) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		userRepo := userRepo.New(db)
-		elastic := userNameElasticRepo.New(ESClient, Index, logger, userRepo)
+		// elastic := userNameElasticRepo.New(ESClient, Index, logger, userRepo)
 
 		logger.Info("Middleware for Token check")
 		accessToken, err := c.Cookie("access")
@@ -73,7 +72,7 @@ func AuthMiddleWare(cfg di.ConfigType, logger di.LoggerType, db di.DBType, ESCli
 		// Adding new user to Elastic Index
 		user := pkg.GetUserInfo(&player)
 
-		if err := elastic.AddUserToIndex(user, int(player.ID)); err != nil {
+		if err := elastic.UserName.AddUserToIndex(user, int(player.ID)); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			c.Abort()
 			return

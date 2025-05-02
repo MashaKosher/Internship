@@ -5,7 +5,6 @@ import (
 	leaderboardRepo "coreservice/internal/adapter/db/postgres/leaderboard"
 	seasonRepo "coreservice/internal/adapter/db/postgres/season"
 	userRepo "coreservice/internal/adapter/db/postgres/user"
-	seasonStatusElasticRepo "coreservice/internal/adapter/elastic/seasons"
 
 	authCon "coreservice/internal/adapter/kafka/consumers/auth"
 	dailyTaskCon "coreservice/internal/adapter/kafka/consumers/daily_task"
@@ -31,7 +30,9 @@ func mustBus(cfg di.ConfigType, logger di.LoggerType, db di.DBType, elastic di.E
 		createConsumer(cfg, logger),
 		userRepo.New(db),
 		leaderboardRepo.New(db),
-		seasonStatusElasticRepo.New(elastic.ESClient, elastic.SeasonSearchIndex, logger),
+		elastic.SeasonStatus,
+		// seasonStatusElasticRepo.New(elastic.ESClient, elastic.SeasonSearchIndex, logger),
+
 	)
 
 	seasonInfoConsumer := seasonInfoCon.New(
@@ -39,7 +40,8 @@ func mustBus(cfg di.ConfigType, logger di.LoggerType, db di.DBType, elastic di.E
 		logger,
 		createConsumer(cfg, logger),
 		seasonRepo.New(db),
-		seasonStatusElasticRepo.New(elastic.ESClient, elastic.SeasonSearchIndex, logger),
+		// seasonStatusElasticRepo.New(elastic.ESClient, elastic.SeasonSearchIndex, logger),
+		elastic.SeasonStatus,
 	)
 
 	return di.Bus{

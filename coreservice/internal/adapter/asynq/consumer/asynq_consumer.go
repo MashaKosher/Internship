@@ -41,7 +41,7 @@ func AsynqConsumer(deps di.Container) {
 	deps.Logger.Info("Asynq consumer connected successfully")
 	// mux maps a type to a handler
 	mux := asynq.NewServeMux()
-	mux.HandleFunc(tasks.TypeSeason, tasks.SeasonTaskHadler(deps.Logger, deps.DB, deps.Elastic.ESClient, deps.Elastic.SeasonSearchIndex))
+	mux.HandleFunc(tasks.TypeSeason, tasks.SeasonTaskHadler(deps.Logger, deps.DB, deps.Elastic))
 
 	if err := srv.Run(mux); err != nil {
 		deps.Logger.Fatal("could not run server: " + err.Error())

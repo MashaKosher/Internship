@@ -19,12 +19,12 @@ import (
 
 type UserNameRepo struct {
 	ESClient di.ESClient
-	Index    di.ElasticIndex
+	Index    entity.ElasticIndexType
 	Logger   di.LoggerType
 	Repo     *userRepo.UserRepo
 }
 
-func New(ESClient di.ESClient, Index di.ElasticIndex, Logger di.LoggerType, Repo *userRepo.UserRepo) *UserNameRepo {
+func New(ESClient di.ESClient, Index entity.ElasticIndexType, Logger di.LoggerType, Repo *userRepo.UserRepo) *UserNameRepo {
 	if ESClient == nil {
 		panic("ESClient is nil")
 	}
@@ -77,7 +77,7 @@ func (er *UserNameRepo) AddUserToIndex(user entity.User, userId int) error {
 
 	// making elatic request
 	req := esapi.IndexRequest{
-		Index:      er.Index,
+		Index:      string(er.Index),
 		DocumentID: strconv.Itoa(userId),
 		Body:       bytes.NewReader(data),
 		Refresh:    "true",
@@ -108,7 +108,7 @@ func (er *UserNameRepo) GetUserByNameFuzzy(name string) ([]entity.User, error) {
 	return getUserByName(name, Fuzzy, er.Logger, er.ESClient, er.Index, er.Repo)
 }
 
-func getUserByName(name string, searchType SearchType, logger di.LoggerType, ESClient di.ESClient, Index di.ElasticIndex, repo *userRepo.UserRepo) ([]entity.User, error) {
+func getUserByName(name string, searchType SearchType, logger di.LoggerType, ESClient di.ESClient, Index entity.ElasticIndexType, repo *userRepo.UserRepo) ([]entity.User, error) {
 	if name == "" {
 		return []entity.User{}, nil
 	}
@@ -127,7 +127,7 @@ func getUserByName(name string, searchType SearchType, logger di.LoggerType, ESC
 
 	// execute query
 	res, err := ESClient.Search(
-		ESClient.Search.WithIndex(Index),
+		ESClient.Search.WithIndex(string(Index)),
 		ESClient.Search.WithBody(&buf),
 	)
 	defer res.Body.Close()

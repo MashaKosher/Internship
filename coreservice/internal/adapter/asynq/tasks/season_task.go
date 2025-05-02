@@ -8,7 +8,6 @@ import (
 	"time"
 
 	seasonRepo "coreservice/internal/adapter/db/postgres/season"
-	seasonStatusElasticRepo "coreservice/internal/adapter/elastic/seasons"
 
 	"github.com/hibiken/asynq"
 )
@@ -44,10 +43,10 @@ func NewSeasonTask(seasonId int, seasonTime time.Time, action actionType) (*asyn
 	return task, nil
 }
 
-func SeasonTaskHadler(logger di.LoggerType, db di.DBType, ESClient di.ESClient, Index di.ElasticIndex) func(ctx context.Context, t *asynq.Task) error {
+func SeasonTaskHadler(logger di.LoggerType, db di.DBType, elastic di.ElasticType) func(ctx context.Context, t *asynq.Task) error {
 	return func(ctx context.Context, t *asynq.Task) error {
 		seasonRepo := seasonRepo.New(db)
-		elastic := seasonStatusElasticRepo.New(ESClient, Index, logger)
+		// elastic := seasonStatusElasticRepo.New(ESClient, Index, logger)
 
 		logger.Info("Season task produce....")
 		var season SeasonPayload
@@ -67,12 +66,12 @@ func SeasonTaskHadler(logger di.LoggerType, db di.DBType, ESClient di.ESClient, 
 		if season.ActionType == CurrentSeason {
 			seasonRepo.StartSeason(season.SeasonID)
 			logger.Info(fmt.Sprintf("Season %d started\n", season.SeasonID))
-			elastic.StartSeason(season.SeasonID)
+			elastic.SeasonStatus.StartSeason(season.SeasonID)
 		} else {
 			time.Sleep(time.Second)
 			seasonRepo.EndSeason(season.SeasonID)
 			logger.Info(fmt.Sprintf("Season %d ended\n", season.SeasonID))
-			elastic.EndSeason(season.SeasonID)
+			elastic.SeasonStatus.EndSeason(season.SeasonID)
 		}
 
 		return nil

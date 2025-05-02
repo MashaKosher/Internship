@@ -9,7 +9,7 @@ import (
 
 	"coreservice/internal/adapter/asynq/producer"
 	seasonRepo "coreservice/internal/adapter/db/postgres/season"
-	seasonStatusElasticRepo "coreservice/internal/adapter/elastic/seasons"
+	elasticRepo "coreservice/internal/adapter/elastic"
 )
 
 type SeasonInfoConsumer struct {
@@ -17,7 +17,7 @@ type SeasonInfoConsumer struct {
 	logger   di.LoggerType
 	cfg      di.ConfigType
 	repo     *seasonRepo.SeasonRepo
-	elastic  *seasonStatusElasticRepo.SeasonStatusRepo
+	elastic  elasticRepo.SeasonStatusRepo
 }
 
 func New(
@@ -25,7 +25,7 @@ func New(
 	logger di.LoggerType,
 	consumer di.KafkaConsumer,
 	repo *seasonRepo.SeasonRepo,
-	elastic *seasonStatusElasticRepo.SeasonStatusRepo,
+	elastic elasticRepo.SeasonStatusRepo,
 ) *SeasonInfoConsumer {
 	return &SeasonInfoConsumer{
 		consumer: consumer,

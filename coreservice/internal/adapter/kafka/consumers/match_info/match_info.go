@@ -9,7 +9,7 @@ import (
 
 	leaderboardRepo "coreservice/internal/adapter/db/postgres/leaderboard"
 	userRepo "coreservice/internal/adapter/db/postgres/user"
-	seasonStatusElasticRepo "coreservice/internal/adapter/elastic/seasons"
+	elasticRepo "coreservice/internal/adapter/elastic"
 )
 
 type MatchInfoConsumer struct {
@@ -18,7 +18,7 @@ type MatchInfoConsumer struct {
 	cfg             di.ConfigType
 	userRepo        *userRepo.UserRepo
 	leaderboardRepo *leaderboardRepo.LeaderboardRepo
-	elastic         *seasonStatusElasticRepo.SeasonStatusRepo
+	elastic         elasticRepo.SeasonStatusRepo
 }
 
 func New(
@@ -27,7 +27,7 @@ func New(
 	consumer di.KafkaConsumer,
 	userRepo *userRepo.UserRepo,
 	leaderboardRepo *leaderboardRepo.LeaderboardRepo,
-	elastic *seasonStatusElasticRepo.SeasonStatusRepo,
+	elastic elasticRepo.SeasonStatusRepo,
 ) *MatchInfoConsumer {
 	return &MatchInfoConsumer{
 		consumer:        consumer,

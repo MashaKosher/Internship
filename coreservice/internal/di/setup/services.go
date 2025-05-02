@@ -13,8 +13,6 @@ import (
 	dailyTaskRepo "coreservice/internal/adapter/db/postgres/daily_task"
 	seasonRepo "coreservice/internal/adapter/db/postgres/season"
 	userRepo "coreservice/internal/adapter/db/postgres/user"
-	seasonStatusElasticRepo "coreservice/internal/adapter/elastic/seasons"
-	userNameElasticRepo "coreservice/internal/adapter/elastic/user"
 )
 
 func mustServices(db di.DBType, logger di.LoggerType, elastic di.ElasticType, redis di.CacheType) di.Services {
@@ -33,13 +31,15 @@ func mustServices(db di.DBType, logger di.LoggerType, elastic di.ElasticType, re
 	seasonUseCase := season.New(
 		seasonRepo.New(db),
 		logger,
-		seasonStatusElasticRepo.New(elastic.ESClient, elastic.SeasonSearchIndex, logger),
+		// seasonStatusElasticRepo.New(elastic.ESClient, elastic.SeasonSearchIndex, logger),
+		elastic.SeasonStatus,
 		leaderBoardCache.New(redis, context.Background()),
 	)
 
 	searchUseCase := search.New(
 		logger,
-		userNameElasticRepo.New(elastic.ESClient, elastic.UserSearchIndex, logger, userRepo.New(db)),
+		// userNameElasticRepo.New(elastic.ESClient, elastic.UserSearchIndex, logger, userRepo.New(db)),
+		elastic.UserName,
 	)
 
 	return di.Services{

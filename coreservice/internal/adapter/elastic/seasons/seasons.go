@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"coreservice/internal/di"
+	"coreservice/internal/entity"
 	"encoding/json"
 	"fmt"
 	"strconv"
@@ -13,11 +14,11 @@ import (
 
 type SeasonStatusRepo struct {
 	ESClient di.ESClient
-	Index    di.ElasticIndex
+	Index    entity.ElasticIndexType
 	Logger   di.LoggerType
 }
 
-func New(ESClient di.ESClient, Index di.ElasticIndex, Logger di.LoggerType) *SeasonStatusRepo {
+func New(ESClient di.ESClient, Index entity.ElasticIndexType, Logger di.LoggerType) *SeasonStatusRepo {
 	if ESClient == nil {
 		panic("ESClient is nil")
 	}
@@ -49,7 +50,7 @@ func (sr *SeasonStatusRepo) AddSeasonToIndex(seasonID int) error {
 
 	// making elatic request
 	req := esapi.IndexRequest{
-		Index:      sr.Index,
+		Index:      string(sr.Index),
 		DocumentID: strconv.Itoa(seasonID),
 		Body:       bytes.NewReader(data),
 		Refresh:    "true",
@@ -76,7 +77,7 @@ func (sr *SeasonStatusRepo) EndSeason(seasonID int) error {
 	return updateSeasonInIndex(seasonID, EndedSeason, sr.Logger, sr.Index, sr.ESClient)
 }
 
-func updateSeasonInIndex(seasonID int, seasonStatus SeasonStatus, logger di.LoggerType, Index di.ElasticIndex, ESClient di.ESClient) error {
+func updateSeasonInIndex(seasonID int, seasonStatus SeasonStatus, logger di.LoggerType, Index entity.ElasticIndexType, ESClient di.ESClient) error {
 
 	updateData := map[string]interface{}{
 		"doc": SeasonElastic{
@@ -93,7 +94,7 @@ func updateSeasonInIndex(seasonID int, seasonStatus SeasonStatus, logger di.Logg
 
 	// making elatic request
 	req := esapi.UpdateRequest{
-		Index:      Index,
+		Index:      string(Index),
 		DocumentID: strconv.Itoa(seasonID),
 		Body:       bytes.NewReader(data),
 		Refresh:    "true",
@@ -120,7 +121,7 @@ func (sr *SeasonStatusRepo) PlannedSeasons() ([]int32, error) {
 	return searchSeasonsByStatus(PlannedSeason, sr.Logger, sr.Index, sr.ESClient)
 }
 
-func searchSeasonsByStatus(status SeasonStatus, logger di.LoggerType, Index di.ElasticIndex, ESClient di.ESClient) ([]int32, error) {
+func searchSeasonsByStatus(status SeasonStatus, logger di.LoggerType, Index entity.ElasticIndexType, ESClient di.ESClient) ([]int32, error) {
 	query := map[string]interface{}{
 		"query": map[string]interface{}{
 			"term": map[string]interface{}{
@@ -138,7 +139,7 @@ func searchSeasonsByStatus(status SeasonStatus, logger di.LoggerType, Index di.E
 	// Execute query
 	res, err := ESClient.Search(
 		ESClient.Search.WithContext(context.Background()),
-		ESClient.Search.WithIndex(Index), // Используем правильный индекс
+		ESClient.Search.WithIndex(string(Index)), // Используем правильный индекс
 		ESClient.Search.WithBody(&buf),
 	)
 	if err != nil {

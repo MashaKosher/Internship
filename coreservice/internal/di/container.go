@@ -11,6 +11,8 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/redis/go-redis/v9"
 
+	elasticRepo "coreservice/internal/adapter/elastic"
+
 	"github.com/hibiken/asynq"
 	"go.uber.org/zap"
 )
@@ -41,16 +43,15 @@ type (
 	KafkaConsumer  = *kafka.Consumer
 )
 
-type ElasticType struct {
-	ESClient          ESClient
-	UserSearchIndex   ElasticIndex
-	SeasonSearchIndex ElasticIndex
-}
-
 type Bus struct {
 	AuthConsumer       kafkaRepo.AuthConsumer
 	AuthProducer       kafkaRepo.AuthProducer
 	DailyTaskConsumer  kafkaRepo.DailyTaskConsumer
 	MatchInfoConsumer  kafkaRepo.MatchInfoConsumer
 	SeasonInfoConsumer kafkaRepo.SeasonInfoConsumer
+}
+
+type ElasticType struct {
+	SeasonStatus elasticRepo.SeasonStatusRepo
+	UserName     elasticRepo.UserNameRepo
 }
