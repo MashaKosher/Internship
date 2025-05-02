@@ -10,7 +10,7 @@ func MustContainer(cfg di.ConfigType) di.Container {
 	RSAKeys := mustRSAKeys(cfg, logger)
 	db := mustDB(cfg, logger)
 	services := mustServices(db, logger, RSAKeys)
-	bus := mustBus(cfg, logger)
+	bus := mustBus(cfg, logger, db, RSAKeys)
 	validator := mustValiadtor()
 
 	return di.Container{

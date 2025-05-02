@@ -8,13 +8,17 @@ import (
 
 func mustServices(db di.DBType, logger di.LoggerType, RSAKeys di.RSAKeys) di.Services {
 
-	authUseCase := auth.New(
-		authRepo.New(db), // создаем конкретный репозиторий и передаем в конретный Use Case
-		logger,
-		RSAKeys,
-	)
+	authUseCase := createAuthUseCase(db, logger, RSAKeys)
 
 	return di.Services{
 		Auth: authUseCase,
 	}
+}
+
+func createAuthUseCase(db di.DBType, logger di.LoggerType, RSAKeys di.RSAKeys) *auth.UseCase {
+	return auth.New(
+		authRepo.New(db), // создаем конкретный репозиторий и передаем в конретный Use Case
+		logger,
+		RSAKeys,
+	)
 }

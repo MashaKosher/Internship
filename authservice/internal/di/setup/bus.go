@@ -4,16 +4,19 @@ import (
 	"authservice/internal/di"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
+
+	authCons "authservice/internal/adapter/kafka/consumers/auth"
+	authProd "authservice/internal/adapter/kafka/producers/auth"
 )
 
-func mustBus(cfg di.ConfigType, logger di.LoggerType) di.Bus {
-	consumer := createConsumer(cfg, logger)
-	producer := createProducer(cfg, logger)
+func mustBus(cfg di.ConfigType, logger di.LoggerType, db di.DBType, RSAKeys di.RSAKeys) di.Bus {
+
+	authProducer := authProd.New(cfg, logger, createProducer(cfg, logger))
+	authConsumer := authCons.New(cfg, logger, createConsumer(cfg, logger), authProducer, createAuthUseCase(db, logger, RSAKeys))
 
 	return di.Bus{
-		Consumer: consumer,
-		Producer: producer,
-		Logger:   logger,
+		AuthProducer: authProducer,
+		AuthConsumer: authConsumer,
 	}
 }
 
@@ -39,6 +42,6 @@ func createProducer(cfg di.ConfigType, logger di.LoggerType) *kafka.Producer {
 }
 
 func deferBus(bus di.Bus) {
-	bus.Consumer.Close()
-	bus.Producer.Close()
+	bus.AuthConsumer.Close()
+	bus.AuthProducer.Close()
 }

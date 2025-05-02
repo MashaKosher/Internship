@@ -1,6 +1,7 @@
 package di
 
 import (
+	kafkaRepo "authservice/internal/adapter/kafka"
 	"authservice/internal/config"
 	"crypto/rsa"
 	"os"
@@ -34,12 +35,16 @@ type (
 	LoggerFileType = *os.File
 	DBType         = *gorm.DB
 	ValidatorType  = *validator.Validate
+	KafkaProducer  = *kafka.Producer
+	KafkaConsumer  = *kafka.Consumer
 )
 
 type Bus struct {
-	Consumer *kafka.Consumer
-	Producer *kafka.Producer
-	Logger   LoggerType
+	// Consumer *kafka.Consumer
+	// Producer *kafka.Producer
+	AuthProducer kafkaRepo.AuthProducer
+	AuthConsumer kafkaRepo.AuthConsumer
+	// Logger       LoggerType
 }
 
 type RSAKeys struct {

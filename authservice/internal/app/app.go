@@ -1,7 +1,7 @@
 package app
 
 import (
-	"authservice/internal/adapter/kafka/consumers"
+	// "authservice/internal/adapter/kafka/consumers"
 	"authservice/internal/config"
 	v1 "authservice/internal/controller/http"
 	"authservice/internal/di/setup"
@@ -19,7 +19,7 @@ func Run(cfg config.Config) {
 	deps := setup.MustContainer(cfg)
 	defer setup.DeferContainer(deps)
 
-	go consumers.ConsumerAnswerTokens(deps.Services.Auth, deps.Logger, cfg, deps.Bus)
+	go deps.Bus.AuthConsumer.ConsumerAnswerTokens()
 
 	app := fiber.New(fiber.Config{
 		AppName: "Auth Service",
