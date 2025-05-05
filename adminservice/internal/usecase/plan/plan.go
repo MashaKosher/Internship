@@ -46,3 +46,12 @@ func (u *UseCase) PlanSeasons(season entity.DetailSeasonJson) error {
 
 	return nil
 }
+
+func (u *UseCase) Seasons() ([]entity.Season, error) {
+	seasons, err := u.repo.Seasons()
+	if err != nil {
+		return []entity.Season{}, err
+	}
+
+	return seasons, nil
+}

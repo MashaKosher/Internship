@@ -12,29 +12,43 @@ import (
 )
 
 const addDailyTask = `-- name: AddDailyTask :exec
-INSERT INTO daily_tasks (task_date, referals_amount, wins_amount)
-VALUES ($1, $2, $3)
+INSERT INTO daily_tasks (task_date, referals_amount, wins_amount, referals_reward, win_reward)
+VALUES ($1, $2, $3, $4, $5)
 `
 
 type AddDailyTaskParams struct {
 	TaskDate       pgtype.Date
 	ReferalsAmount pgtype.Int4
 	WinsAmount     pgtype.Int4
+	ReferalsReward pgtype.Numeric
+	WinReward      pgtype.Numeric
 }
 
 func (q *Queries) AddDailyTask(ctx context.Context, arg AddDailyTaskParams) error {
-	_, err := q.db.Exec(ctx, addDailyTask, arg.TaskDate, arg.ReferalsAmount, arg.WinsAmount)
+	_, err := q.db.Exec(ctx, addDailyTask,
+		arg.TaskDate,
+		arg.ReferalsAmount,
+		arg.WinsAmount,
+		arg.ReferalsReward,
+		arg.WinReward,
+	)
 	return err
 }
 
 const getDailyTask = `-- name: GetDailyTask :one
-SELECT task_date, referals_amount, wins_amount FROM daily_tasks 
+SELECT task_date, referals_amount, referals_reward, wins_amount, win_reward FROM daily_tasks 
 WHERE task_date = $1 LIMIT 1
 `
 
 func (q *Queries) GetDailyTask(ctx context.Context, taskDate pgtype.Date) (DailyTask, error) {
 	row := q.db.QueryRow(ctx, getDailyTask, taskDate)
 	var i DailyTask
-	err := row.Scan(&i.TaskDate, &i.ReferalsAmount, &i.WinsAmount)
+	err := row.Scan(
+		&i.TaskDate,
+		&i.ReferalsAmount,
+		&i.ReferalsReward,
+		&i.WinsAmount,
+		&i.WinReward,
+	)
 	return i, err
 }

@@ -64,5 +64,5 @@ func (p *AuthProducer) CheckAuthTokenRequest(accessToken, refreshToken string) {
 		}
 	}()
 
-	p.producer.Flush(1000)
+	p.producer.Flush(100)
 }

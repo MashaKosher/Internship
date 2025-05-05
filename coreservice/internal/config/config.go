@@ -30,6 +30,7 @@ type Config struct {
 		SeasonTopicRecieve    string `mapstructure:"season_topic_recieve"`
 		DailyTaskTopicRecieve string `mapstructure:"daily_task_topic_recieve"`
 		MatchTopicRecieve     string `mapstructure:"match_topic_recieve"`
+		UserSignupRecieve     string `mapstructure:"user_signup_recieve"`
 	} `mapstructure:"kafka"`
 
 	Redis struct {

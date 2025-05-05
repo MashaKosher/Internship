@@ -14,6 +14,33 @@ type User struct {
 	Role     Role   `json:"-" gorm:"default:user"`
 }
 
+func (user *User) ToUserSignUpOutDTO(referalID int) UserSignUpOutDTO {
+	return UserSignUpOutDTO{
+		ID:        user.ID,
+		Username:  user.Username,
+		Role:      user.Role,
+		ReferalID: referalID,
+	}
+}
+
+type UserSignUpInDTO struct {
+	User
+	ReferalID int `json:"referal-id" validate:"required,min=1,gte=0"`
+}
+
+type UserSignUpOutDTO struct {
+	ID        uint   `json:"id" gorm:"primaryKey"`
+	Username  string `json:"username" validate:"required,min=1"`
+	Role      Role   `json:"-" gorm:"default:user"`
+	ReferalID int    `json:"referal-id" validate:"required,min=1,gte=0"`
+}
+
+// func (user *UserSignUpDTO) ToUserInDTO() UserInDTO{
+// 	return user.UserInDTO{
+// 		U
+// 	}
+// }
+
 type UserResponse struct {
 	ID           uint   `json:"id"`
 	Username     string `json:"username"`

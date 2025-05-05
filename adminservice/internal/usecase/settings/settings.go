@@ -33,3 +33,13 @@ func (u *UseCase) UpdateSettings(settings entity.SettingsJson) error {
 
 	return nil
 }
+
+func (u *UseCase) GameSettings() (entity.SettingsJson, error) {
+
+	settings, err := u.repo.GameSettings()
+	if err != nil {
+		return entity.SettingsJson{}, err
+	}
+
+	return settings.ToJSON(), nil
+}

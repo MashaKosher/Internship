@@ -64,3 +64,37 @@ func (sr *seasonRoutes) planSeason(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(season)
 
 }
+
+// @Summary Get all seasons
+// @Description Retrieve the list of all available seasons
+// @Tags Season Planning
+// @Accept json
+// @Produce json
+// @Success 200 {array} entity.Season "Successfully retrieved all seasons"
+// @Failure 400 {object} entity.ErrorResponse "No seasons found"
+// @Failure 500 {object} entity.ErrorResponse "Internal server error"
+// @Router /seasons [get]
+func (sr *seasonRoutes) seasons(w http.ResponseWriter, r *http.Request) {
+
+	seasons, err := sr.u.Seasons()
+
+	if err != nil {
+		if err == entity.ErrRecordNotFound {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	prettyJSON, err := json.MarshalIndent(seasons, "", "  ")
+	if err != nil {
+		http.Error(w, "Error formatting JSON", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(prettyJSON)
+
+}

@@ -12,4 +12,9 @@ type (
 		Close()
 		ConsumerAnswerTokens()
 	}
+
+	SignUpProducer interface {
+		Close()
+		SendUserSignUpInfo(user entity.UserSignUpOutDTO)
+	}
 )

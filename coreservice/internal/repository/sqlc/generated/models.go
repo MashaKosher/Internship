@@ -11,7 +11,9 @@ import (
 type DailyTask struct {
 	TaskDate       pgtype.Date
 	ReferalsAmount pgtype.Int4
+	ReferalsReward pgtype.Numeric
 	WinsAmount     pgtype.Int4
+	WinReward      pgtype.Numeric
 }
 
 type Leaderboard struct {
@@ -26,6 +28,15 @@ type Season struct {
 	SeasonEnd    pgtype.Timestamptz
 	SeasonFund   pgtype.Int4
 	SeasonStatus pgtype.Text
+}
+
+type TaskStatusTbl struct {
+	TaskDate       pgtype.Date
+	UserID         int32
+	Win            pgtype.Int4
+	WinStatus      bool
+	Referals       pgtype.Int4
+	ReferalsStatus bool
 }
 
 type User struct {

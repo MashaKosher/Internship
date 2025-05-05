@@ -2,6 +2,7 @@ package settings
 
 import (
 	"adminservice/internal/entity"
+	"errors"
 	"log"
 
 	"gorm.io/gorm"
@@ -35,4 +36,16 @@ func (r *SettingsRepo) UpdateSettings(newSettings entity.GameSettings) error {
 		}
 	}
 	return err
+}
+
+func (r *SettingsRepo) GameSettings() (entity.GameSettings, error) {
+	var settings entity.GameSettings
+	err := r.DB.First(&settings).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return entity.GameSettings{}, entity.ErrRecordNotFound
+		}
+		return entity.GameSettings{}, err
+	}
+	return settings, nil
 }

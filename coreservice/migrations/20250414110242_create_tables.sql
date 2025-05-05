@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS leaderboard (
 
 
 CREATE TABLE IF NOT EXISTS daily_tasks (
-    task_date        DATE PRIMARY KEY,
+    task_date          DATE PRIMARY KEY,
     referals_amount    INTEGER,
     wins_amount        INTEGER
 );

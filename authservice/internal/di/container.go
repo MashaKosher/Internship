@@ -40,8 +40,9 @@ type (
 )
 
 type Bus struct {
-	AuthProducer kafkaRepo.AuthProducer
-	AuthConsumer kafkaRepo.AuthConsumer
+	AuthProducer   kafkaRepo.AuthProducer
+	AuthConsumer   kafkaRepo.AuthConsumer
+	SignUpProducer kafkaRepo.SignUpProducer
 }
 
 type RSAKeys struct {

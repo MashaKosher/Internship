@@ -9,6 +9,8 @@ import (
 	"authservice/pkg/tokens"
 	"fmt"
 
+	kafkaRepo "authservice/internal/adapter/kafka"
+
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -16,13 +18,15 @@ type UseCase struct {
 	repo    repo.AuthRepo
 	logger  di.LoggerType
 	RSAKeys di.RSAKeys
+	Bus     kafkaRepo.SignUpProducer
 }
 
-func New(r repo.AuthRepo, logger di.LoggerType, RSAKeys di.RSAKeys) *UseCase {
+func New(r repo.AuthRepo, logger di.LoggerType, RSAKeys di.RSAKeys, signUpProducer kafkaRepo.SignUpProducer) *UseCase {
 	return &UseCase{
 		repo:    r,
 		logger:  logger,
 		RSAKeys: RSAKeys,
+		Bus:     signUpProducer,
 	}
 }
 
@@ -129,8 +133,8 @@ func (uc *UseCase) CheckRefreshToken(refreshToken string) (entity.UserOutDTO, er
 	return user.ToDTO(accessToken, refreshToken), nil
 }
 
-func (uc *UseCase) UserSignUp(user entity.User) (entity.UserOutDTO, error) {
-	outUser, err := signUp(user, entity.UserRole, uc.repo, uc.logger, uc.RSAKeys)
+func (uc *UseCase) UserSignUp(user entity.User, referalID int) (entity.UserOutDTO, error) {
+	outUser, err := signUp(user, entity.UserRole, uc.repo, uc.logger, uc.RSAKeys, uc.Bus, referalID)
 	if err != nil {
 		return entity.UserOutDTO{}, err
 	}
@@ -138,8 +142,8 @@ func (uc *UseCase) UserSignUp(user entity.User) (entity.UserOutDTO, error) {
 	return outUser, nil
 }
 
-func (uc *UseCase) AdminSignUp(user entity.User) (entity.UserOutDTO, error) {
-	outUser, err := signUp(user, entity.AdminRole, uc.repo, uc.logger, uc.RSAKeys)
+func (uc *UseCase) AdminSignUp(user entity.User, referalID int) (entity.UserOutDTO, error) {
+	outUser, err := signUp(user, entity.AdminRole, uc.repo, uc.logger, uc.RSAKeys, uc.Bus, referalID)
 	if err != nil {
 		return entity.UserOutDTO{}, err
 	}
@@ -147,7 +151,7 @@ func (uc *UseCase) AdminSignUp(user entity.User) (entity.UserOutDTO, error) {
 	return outUser, nil
 }
 
-func signUp(user entity.User, userRole entity.Role, repo repo.AuthRepo, logger di.LoggerType, RSAKeys di.RSAKeys) (entity.UserOutDTO, error) {
+func signUp(user entity.User, userRole entity.Role, repo repo.AuthRepo, logger di.LoggerType, RSAKeys di.RSAKeys, bus kafkaRepo.SignUpProducer, referalID int) (entity.UserOutDTO, error) {
 	// Hashing Password to store in DB
 	hashed, err := passwords.HashPassword(user.Password)
 	if err != nil {
@@ -185,6 +189,9 @@ func signUp(user entity.User, userRole entity.Role, repo repo.AuthRepo, logger d
 		return entity.UserOutDTO{}, fiber.NewError(fiber.StatusInternalServerError, "Problem with creating Refresh JWT Token")
 	}
 	logger.Info("Refresh JWT created successfully")
+
+	// Отправляем на кор
+	go bus.SendUserSignUpInfo(user.ToUserSignUpOutDTO(referalID))
 
 	return user.ToDTO(accessToken, refreshToken), nil
 }

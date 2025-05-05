@@ -49,6 +49,7 @@ type Bus struct {
 	DailyTaskConsumer  kafkaRepo.DailyTaskConsumer
 	MatchInfoConsumer  kafkaRepo.MatchInfoConsumer
 	SeasonInfoConsumer kafkaRepo.SeasonInfoConsumer
+	UserSignUpConsumer kafkaRepo.UserSignUpConsumer
 }
 
 type ElasticType struct {

@@ -1,4 +1,4 @@
-package internal
+package v1
 
 import (
 	"authservice/internal/di"
@@ -133,14 +133,14 @@ func (r *authRoutes) checkRefreshToken(c *fiber.Ctx) error {
 // @Tags         Sign Up
 // @Accept       json
 // @Produce      json
-// @Param        request body entity.User true "User registration data"
+// @Param        request body entity.UserSignUpInDTO true "User registration data"
 // @Success      201 {object} entity.UserInDTO "Successfully registered"
 // @Failure      400 {object} entity.Error "Invalid input data"
 // @Failure      409 {object} entity.Error "Conflict - Username already exists"
 // @Failure      500 {object} entity.Error "Internal server error"
 // @Router       /auth/sign-up/user [post]
 func (r *authRoutes) userSignUp(c *fiber.Ctx) error {
-	var user entity.User
+	var user entity.UserSignUpInDTO
 	c.BodyParser(&user)
 	r.l.Info(fmt.Sprintf("User with UserName %s is trying to log in", user.Username))
 
@@ -151,7 +151,7 @@ func (r *authRoutes) userSignUp(c *fiber.Ctx) error {
 	}
 	r.l.Info("User credentials verified successfully")
 
-	outUser, err := r.u.UserSignUp(user)
+	outUser, err := r.u.UserSignUp(user.User, user.ReferalID)
 	if err != nil {
 		c.ClearCookie()
 		return err
@@ -164,7 +164,7 @@ func (r *authRoutes) userSignUp(c *fiber.Ctx) error {
 // @Tags         Sign Up
 // @Accept       json
 // @Produce      json
-// @Param        request body entity.User true "Admin registration data"
+// @Param        request body entity.UserSignUpInDTO true "Admin registration data"
 // @Success      201 {object} entity.UserInDTO  "Admin successfully registered"
 // @Failure      400 {object} entity.Error "Invalid input data"
 // @Failure      401 {object} entity.Error "Unauthorized - Only existing admins can create new admins"
@@ -173,7 +173,7 @@ func (r *authRoutes) userSignUp(c *fiber.Ctx) error {
 // @Failure      500 {object} entity.Error "Internal server error"
 // @Router       /auth/sign-up/admin [post]}
 func (r *authRoutes) adminSignUp(c *fiber.Ctx) error {
-	var user entity.User
+	var user entity.UserSignUpInDTO
 	c.BodyParser(&user)
 	r.l.Info(fmt.Sprintf("User with UserName %s is trying to log in", user.Username))
 
@@ -184,11 +184,12 @@ func (r *authRoutes) adminSignUp(c *fiber.Ctx) error {
 	}
 	r.l.Info("User credentials verified successfully")
 
-	outUser, err := r.u.AdminSignUp(user)
+	outUser, err := r.u.AdminSignUp(user.User, user.ReferalID)
 	if err != nil {
 		c.ClearCookie()
 		return err
 	}
+
 	return c.JSON(outUser)
 }
 

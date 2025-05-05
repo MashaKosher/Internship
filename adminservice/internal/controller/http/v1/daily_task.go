@@ -70,14 +70,42 @@ func (dr *dailyTasksRoutes) createDailyTask(w http.ResponseWriter, r *http.Reque
 // @Failure 400 {object} entity.Response "No tasks found for today or deletion error"
 // @Failure 500 {object} entity.Response "Internal server error"
 // @Router /daily-tasks [delete]
-func (dr *dailyTasksRoutes) deleteTodaysTask(w http.ResponseWriter, r *http.Request) {
+func (dr *dailyTasksRoutes) deleteDailyTask(w http.ResponseWriter, r *http.Request) {
 
 	err := dr.u.DeleteDailyTask()
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		if err == entity.ErrRecordNotFound {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(entity.Response{Message: "Task deleted successfully"})
+}
+
+// @Summary Get today's daily task
+// @Description Retrieve the daily task for the current date
+// @Tags DailyTasks
+// @Accept json
+// @Produce json
+// @Success 200 {object} entity.DailyTasks "Successfully retrieved today's task"
+// @Failure 400 {object} entity.Response "Task not found for today"
+// @Failure 500 {object} entity.Response "Internal server error"
+// @Router /daily-tasks [get]
+func (dr *dailyTasksRoutes) dailyTask(w http.ResponseWriter, r *http.Request) {
+	task, err := dr.u.GetDailyTask()
+	if err != nil {
+		if err == entity.ErrRecordNotFound {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(task)
 }

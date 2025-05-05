@@ -28,7 +28,7 @@ func (p *AuthProducer) Close() {
 }
 
 func (p *AuthProducer) AnswerToken(answer entity.AuthAnswer, partition int32) {
-	p.logger.Info("Producer created successfully")
+	p.logger.Info("Auth Producer created successfully")
 
 	message := pkg.CreateMessage(answer, p.cfg.Kafka.TopicSend, partition, p.logger)
 

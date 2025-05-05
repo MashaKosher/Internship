@@ -2,6 +2,10 @@ basePath: /
 definitions:
   entity.DBDailyTasks:
     properties:
+      game-task-reward:
+        example: 10
+        minimum: 0
+        type: integer
       games-amount:
         example: 5
         minimum: 0
@@ -10,13 +14,23 @@ definitions:
         example: 10
         minimum: 0
         type: integer
+      referals-task-reward:
+        example: 10
+        minimum: 0
+        type: integer
     type: object
   entity.DailyTasks:
     properties:
+      game-task-reward:
+        example: 10
+        type: integer
       games-amount:
         example: 5
         type: integer
       referals-amount:
+        example: 10
+        type: integer
+      referals-task-reward:
         example: 10
         type: integer
       task-date:
@@ -26,10 +40,11 @@ definitions:
   entity.DetailSeasonJson:
     properties:
       end-date:
-        example: 31-08-3034
+        example: 31-08-2034
         format: date
         type: string
       end-time:
+        example: 01-20-30
         type: string
       fund:
         example: 5000
@@ -40,6 +55,7 @@ definitions:
         format: date
         type: string
       start-time:
+        example: 00-20-30
         type: string
     required:
     - end-date
@@ -57,15 +73,27 @@ definitions:
       message:
         type: string
     type: object
+  entity.Season:
+    properties:
+      end-date:
+        type: string
+      fund:
+        type: integer
+      start-date:
+        type: string
+    type: object
   entity.SettingsJson:
     properties:
       lose-amount:
+        example: 5.97
         minimum: 0
         type: number
       waiting-time:
+        example: 3
         minimum: 0
         type: integer
       win-amount:
+        example: 10.05
         minimum: 0
         type: number
     type: object
@@ -100,6 +128,28 @@ paths:
           schema:
             $ref: '#/definitions/entity.Response'
       summary: Delete today's daily tasks
+      tags:
+      - DailyTasks
+    get:
+      consumes:
+      - application/json
+      description: Retrieve the daily task for the current date
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved today's task
+          schema:
+            $ref: '#/definitions/entity.DailyTasks'
+        "400":
+          description: Task not found for today
+          schema:
+            $ref: '#/definitions/entity.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/entity.Response'
+      summary: Get today's daily task
       tags:
       - DailyTasks
     post:
@@ -169,8 +219,55 @@ paths:
       summary: Season detailed planning
       tags:
       - Season Planning
+  /seasons:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve the list of all available seasons
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved all seasons
+          schema:
+            items:
+              $ref: '#/definitions/entity.Season'
+            type: array
+        "400":
+          description: No seasons found
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+      summary: Get all seasons
+      tags:
+      - Season Planning
   /settings:
-    post:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve the game configuration settings for the current user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved game settings
+          schema:
+            $ref: '#/definitions/entity.SettingsJson'
+        "400":
+          description: Game settings not found
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+      summary: Get game settings
+      tags:
+      - Settings
+    put:
       consumes:
       - application/json
       description: Update game configuration settings for authenticated user

@@ -44,3 +44,12 @@ func (u *UseCase) DeleteDailyTask() error {
 	}
 	return nil
 }
+
+func (u *UseCase) GetDailyTask() (entity.DailyTasks, error) {
+	dailytask, err := u.repo.GetDailyTask()
+	if err != nil {
+		return entity.DailyTasks{}, err
+	}
+
+	return dailytask.ToDTO(), nil
+}

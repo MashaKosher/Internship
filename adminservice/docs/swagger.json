@@ -10,6 +10,39 @@
     "basePath": "/",
     "paths": {
         "/daily-tasks": {
+            "get": {
+                "description": "Retrieve the daily task for the current date",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "DailyTasks"
+                ],
+                "summary": "Get today's daily task",
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved today's task",
+                        "schema": {
+                            "$ref": "#/definitions/entity.DailyTasks"
+                        }
+                    },
+                    "400": {
+                        "description": "Task not found for today",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Response"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Create a new set of daily tasks for the current date",
                 "consumes": [
@@ -146,8 +179,79 @@
                 }
             }
         },
+        "/seasons": {
+            "get": {
+                "description": "Retrieve the list of all available seasons",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Season Planning"
+                ],
+                "summary": "Get all seasons",
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved all seasons",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.Season"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "No seasons found",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/settings": {
-            "post": {
+            "get": {
+                "description": "Retrieve the game configuration settings for the current user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Get game settings",
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved game settings",
+                        "schema": {
+                            "$ref": "#/definitions/entity.SettingsJson"
+                        }
+                    },
+                    "400": {
+                        "description": "Game settings not found",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
                 "description": "Update game configuration settings for authenticated user",
                 "consumes": [
                     "application/json"
@@ -225,6 +329,11 @@
         "entity.DBDailyTasks": {
             "type": "object",
             "properties": {
+                "game-task-reward": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "example": 10
+                },
                 "games-amount": {
                     "type": "integer",
                     "minimum": 0,
@@ -234,17 +343,30 @@
                     "type": "integer",
                     "minimum": 0,
                     "example": 10
+                },
+                "referals-task-reward": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "example": 10
                 }
             }
         },
         "entity.DailyTasks": {
             "type": "object",
             "properties": {
+                "game-task-reward": {
+                    "type": "integer",
+                    "example": 10
+                },
                 "games-amount": {
                     "type": "integer",
                     "example": 5
                 },
                 "referals-amount": {
+                    "type": "integer",
+                    "example": 10
+                },
+                "referals-task-reward": {
                     "type": "integer",
                     "example": 10
                 },
@@ -266,10 +388,11 @@
                 "end-date": {
                     "type": "string",
                     "format": "date",
-                    "example": "31-08-3034"
+                    "example": "31-08-2034"
                 },
                 "end-time": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "01-20-30"
                 },
                 "fund": {
                     "type": "integer",
@@ -282,7 +405,8 @@
                     "example": "01-06-2024"
                 },
                 "start-time": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "00-20-30"
                 }
             }
         },
@@ -302,20 +426,37 @@
                 }
             }
         },
+        "entity.Season": {
+            "type": "object",
+            "properties": {
+                "end-date": {
+                    "type": "string"
+                },
+                "fund": {
+                    "type": "integer"
+                },
+                "start-date": {
+                    "type": "string"
+                }
+            }
+        },
         "entity.SettingsJson": {
             "type": "object",
             "properties": {
                 "lose-amount": {
                     "type": "number",
-                    "minimum": 0
+                    "minimum": 0,
+                    "example": 5.97
                 },
                 "waiting-time": {
                     "type": "integer",
-                    "minimum": 0
+                    "minimum": 0,
+                    "example": 3
                 },
                 "win-amount": {
                     "type": "number",
-                    "minimum": 0
+                    "minimum": 0,
+                    "example": 10.05
                 }
             }
         }

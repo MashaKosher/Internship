@@ -159,6 +159,7 @@ func (r *wsRoutes) startGame(room *Room) {
 
 	r.l.Info("Игра игроков " + fmt.Sprint(room.players[0]) + fmt.Sprint(room.players[1]) + " начнется после небольшого перерыва")
 
+	r.l.Info("буки начинаюь бросатся ")
 	// Бросаем кубики
 	flag := false
 	var roll1, roll2 int

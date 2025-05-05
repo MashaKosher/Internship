@@ -1,6 +1,7 @@
 server:
+  # host: localhost
   host: localhost
-  port: 8080
+  port: 0.0.0.0:8080
 
 db:
   host: localhost
@@ -24,3 +25,4 @@ kafka:
   port: 9092
   auth_topic_send: jwtCheckAnswer
   auth_topic_recieve: jwtCheckRequest
+  user_signup_send: userSignUp

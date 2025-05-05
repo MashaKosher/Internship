@@ -10,18 +10,6 @@ definitions:
       new-password:
         type: string
     type: object
-  entity.User:
-    properties:
-      password:
-        minLength: 1
-        type: string
-      username:
-        minLength: 1
-        type: string
-    required:
-    - password
-    - username
-    type: object
   entity.UserInDTO:
     properties:
       password:
@@ -46,6 +34,22 @@ definitions:
         type: string
       username:
         type: string
+    type: object
+  entity.UserSignUpInDTO:
+    properties:
+      password:
+        minLength: 1
+        type: string
+      referal-id:
+        minimum: 0
+        type: integer
+      username:
+        minLength: 1
+        type: string
+    required:
+    - password
+    - referal-id
+    - username
     type: object
 externalDocs:
   description: OpenAPI
@@ -201,7 +205,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/entity.User'
+          $ref: '#/definitions/entity.UserSignUpInDTO'
       produces:
       - application/json
       responses:
@@ -243,7 +247,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/entity.User'
+          $ref: '#/definitions/entity.UserSignUpInDTO'
       produces:
       - application/json
       responses:

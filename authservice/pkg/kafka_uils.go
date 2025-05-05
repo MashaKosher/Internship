@@ -9,17 +9,18 @@ import (
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
-func CreateMessage(entity entity.AuthAnswer, topic string, partition int32, logger di.LoggerType) kafka.Message {
-	value := serializeAuthAnswer(entity, logger)
+func CreateMessage[T entity.AuthAnswer | entity.UserSignUpOutDTO](entity T, topic string, partition int32, logger di.LoggerType) kafka.Message {
+	value := serializeEntity(entity, logger)
 	return kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: partition},
 		Value:          value,
-		Key:            []byte("a"),
+		// Key:            []byte("a"),
+		Key: nil,
 	}
 }
 
-func serializeAuthAnswer(answer entity.AuthAnswer, logger di.LoggerType) []byte {
-	value, err := json.Marshal(answer)
+func serializeEntity[T entity.AuthAnswer | entity.UserSignUpOutDTO](entity T, logger di.LoggerType) []byte {
+	value, err := json.Marshal(entity)
 	if err != nil {
 		logger.Fatal("Error marshaling answer: " + err.Error())
 	}

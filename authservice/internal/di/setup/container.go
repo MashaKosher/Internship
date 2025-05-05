@@ -9,8 +9,8 @@ func MustContainer(cfg di.ConfigType) di.Container {
 	loggerFile := mustLoggerFile(cfg)
 	RSAKeys := mustRSAKeys(cfg, logger)
 	db := mustDB(cfg, logger)
-	services := mustServices(db, logger, RSAKeys)
 	bus := mustBus(cfg, logger, db, RSAKeys)
+	services := mustServices(db, logger, RSAKeys, bus.SignUpProducer)
 	validator := mustValiadtor()
 
 	return di.Container{

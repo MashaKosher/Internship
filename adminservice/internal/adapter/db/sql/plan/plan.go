@@ -55,3 +55,15 @@ func (r *PlanRepo) FindSeasonCross(season *entity.Season) error {
 
 	return nil
 }
+
+func (r *PlanRepo) Seasons() ([]entity.Season, error) {
+	var seasons []entity.Season
+	if err := r.DB.Find(&seasons).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return []entity.Season{}, entity.ErrRecordNotFound
+		}
+		return []entity.Season{}, err
+	}
+
+	return seasons, nil
+}

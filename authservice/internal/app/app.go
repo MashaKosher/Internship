@@ -21,12 +21,13 @@ func Run(cfg config.Config) {
 	go deps.Bus.AuthConsumer.ConsumerAnswerTokens()
 
 	app := fiber.New(fiber.Config{
+
 		AppName: "Auth Service",
 	})
 	v1.NewRouter(app, deps)
 
 	go func() {
-		if err := app.Listen(":" + cfg.Server.Port); err != nil {
+		if err := app.Listen(cfg.Server.Port); err != nil {
 			deps.Logger.Error("Server error:" + err.Error())
 		}
 	}()

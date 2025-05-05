@@ -1,17 +1,18 @@
 0
-66
+68
 __consumer_offsets 13 0
 seasons 1 0
-jwtCheckRequest 2 30
+jwtCheckRequest 2 58
 __consumer_offsets 46 0
+userSignUp 1 10
 __consumer_offsets 9 0
 __consumer_offsets 42 0
-match 1 5
+match 1 12
 __consumer_offsets 21 0
-jwtCheckAnswer 0 27
-__consumer_offsets 17 7
-__consumer_offsets 30 68
-jwtCheckAnswer 1 73
+jwtCheckAnswer 0 70
+__consumer_offsets 17 8
+__consumer_offsets 30 192
+jwtCheckAnswer 1 119
 __consumer_offsets 26 0
 __consumer_offsets 5 0
 __consumer_offsets 38 0
@@ -23,7 +24,7 @@ __consumer_offsets 45 0
 __consumer_offsets 12 0
 __consumer_offsets 41 0
 __consumer_offsets 24 0
-match 0 4
+match 0 10
 __consumer_offsets 20 0
 __consumer_offsets 49 0
 __consumer_offsets 0 0
@@ -35,15 +36,15 @@ __consumer_offsets 8 0
 __consumer_offsets 37 0
 __consumer_offsets 4 0
 __consumer_offsets 33 0
-__consumer_offsets 15 174
-jwtCheckRequest 0 27
+__consumer_offsets 15 301
+jwtCheckRequest 0 76
 __consumer_offsets 48 0
 __consumer_offsets 11 0
 __consumer_offsets 44 0
 __consumer_offsets 23 0
 __consumer_offsets 19 0
 __consumer_offsets 32 0
-dailyTasks 0 1
+dailyTasks 0 12
 __consumer_offsets 28 0
 jwtCheckAnswer 3 0
 gameSettings 1 1
@@ -51,8 +52,9 @@ __consumer_offsets 7 0
 __consumer_offsets 40 0
 __consumer_offsets 3 0
 __consumer_offsets 36 0
-jwtCheckRequest 1 73
+jwtCheckRequest 1 112
 __consumer_offsets 47 0
+userSignUp 0 16
 __consumer_offsets 14 0
 seasons 0 7
 __consumer_offsets 43 0
@@ -61,7 +63,7 @@ __consumer_offsets 22 0
 __consumer_offsets 18 0
 __consumer_offsets 31 0
 __consumer_offsets 27 0
-jwtCheckAnswer 2 30
+jwtCheckAnswer 2 58
 __consumer_offsets 39 0
 __consumer_offsets 6 0
 __consumer_offsets 35 0

@@ -9,6 +9,12 @@ type (
 	DailyTaskRepo interface {
 		GetDailyTask() (db.DailyTask, error)
 		AddDailyTask(dailyTask entity.DailyTask) error
+		AddWin(userID int, dailyTask db.DailyTask) (int, error)
+		AddReferal(userID int, dailyTask db.DailyTask) (int, error)
+		CompleteWinTask(userID int, dailyTask db.DailyTask) error
+		CompleteReferalsTask(userID int, dailyTask db.DailyTask) error
+		WinTaskStatus(userID int, dailyTask db.DailyTask) (bool, error)
+		ReferalsTaskStatus(userID int, dailyTask db.DailyTask) (bool, error)
 	}
 
 	UserRepo interface {

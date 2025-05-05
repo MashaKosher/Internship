@@ -29,4 +29,9 @@ type (
 		Close()
 		RecieveSeasonInfo()
 	}
+
+	UserSignUpConsumer interface {
+		Close()
+		ReceiveSignedUpUser()
+	}
 )

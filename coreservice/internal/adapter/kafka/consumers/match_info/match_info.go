@@ -4,9 +4,11 @@ import (
 	"coreservice/internal/di"
 	"coreservice/internal/entity"
 	utils "coreservice/pkg/kafka_utils"
+	sqlcUtils "coreservice/pkg/sqlc_utils"
 	"fmt"
 	"strconv"
 
+	dailyTaskRepo "coreservice/internal/adapter/db/postgres/daily_task"
 	leaderboardRepo "coreservice/internal/adapter/db/postgres/leaderboard"
 	userRepo "coreservice/internal/adapter/db/postgres/user"
 	elasticRepo "coreservice/internal/adapter/elastic"
@@ -17,6 +19,7 @@ type MatchInfoConsumer struct {
 	logger          di.LoggerType
 	cfg             di.ConfigType
 	userRepo        *userRepo.UserRepo
+	dailyTaskRepo   *dailyTaskRepo.DailyTaskRepo
 	leaderboardRepo *leaderboardRepo.LeaderboardRepo
 	elastic         elasticRepo.SeasonStatusRepo
 }
@@ -26,6 +29,7 @@ func New(
 	logger di.LoggerType,
 	consumer di.KafkaConsumer,
 	userRepo *userRepo.UserRepo,
+	dailyTaskRepo *dailyTaskRepo.DailyTaskRepo,
 	leaderboardRepo *leaderboardRepo.LeaderboardRepo,
 	elastic elasticRepo.SeasonStatusRepo,
 ) *MatchInfoConsumer {
@@ -34,6 +38,7 @@ func New(
 		logger:          logger,
 		cfg:             cfg,
 		userRepo:        userRepo,
+		dailyTaskRepo:   dailyTaskRepo,
 		leaderboardRepo: leaderboardRepo,
 		elastic:         elastic,
 	}
@@ -83,12 +88,16 @@ func (c *MatchInfoConsumer) RecieveMatchInfo() {
 
 			}
 
-			if _, err := c.userRepo.UpdateBalance(int32(answer.Winner), float64(answer.WinAmount)); err != nil {
+			winner, _ := c.userRepo.GetPlayerById(int32(answer.Winner))
+
+			if _, err := c.userRepo.UpdateBalance(int32(answer.Winner), float64(answer.WinAmount+sqlcUtils.NumericToFloat64(winner.Balance))); err != nil {
 				c.logger.Fatal("Pizda upfdating winner balance: " + err.Error())
 			}
 			c.logger.Info("Winner balance updated successfully")
 
-			if _, err := c.userRepo.UpdateBalance(int32(answer.Loser), float64(-answer.LoseAmount)); err != nil {
+			loser, _ := c.userRepo.GetPlayerById(int32(answer.Loser))
+
+			if _, err := c.userRepo.UpdateBalance(int32(answer.Loser), float64(sqlcUtils.NumericToFloat64(loser.Balance)-answer.LoseAmount)); err != nil {
 				c.logger.Fatal("Pizda upfdating loser balance: " + err.Error())
 			}
 			c.logger.Info("Loser balance updated successfully")
@@ -96,6 +105,44 @@ func (c *MatchInfoConsumer) RecieveMatchInfo() {
 			c.logger.Info(fmt.Sprint(season))
 
 			c.logger.Info("Match recievd; " + fmt.Sprint(answer))
+
+			// /////////////////////
+			dailyTask, err := c.dailyTaskRepo.GetDailyTask()
+			if err != nil {
+				if err == entity.ErrNoDailyTask {
+					c.logger.Info("There is no daily task for today")
+					return
+				}
+				c.logger.Error(err.Error())
+				return
+			}
+			c.logger.Info("There is a task for today: " + fmt.Sprint(dailyTask))
+			c.logger.Info(fmt.Sprint(sqlcUtils.NumericToFloat64(dailyTask.WinReward)))
+			c.logger.Info(fmt.Sprint(sqlcUtils.NumberToNumeric(sqlcUtils.NumericToFloat64(dailyTask.WinReward))))
+
+			winStatus, err := c.dailyTaskRepo.WinTaskStatus(int(winner.ID), dailyTask)
+			if err != nil {
+				c.logger.Error(err.Error())
+			}
+
+			if winStatus {
+				c.logger.Info("User with ID: " + fmt.Sprint(winner.ID) + " done referal task")
+				return
+			}
+
+			c.logger.Info("Referal Task Status: " + fmt.Sprint(winStatus) + " for user with ID: " + fmt.Sprint(winner.ID))
+
+			winsAmount, err := c.dailyTaskRepo.AddWin(int(winner.ID), dailyTask)
+			if err != nil {
+				c.logger.Error(err.Error())
+			}
+
+			if winsAmount == int(dailyTask.WinsAmount.Int32) {
+				c.dailyTaskRepo.CompleteWinTask(int(winner.ID), dailyTask)
+				c.logger.Info("User with ID: " + fmt.Sprint(winner.ID) + " done referal task")
+
+				c.userRepo.UpdateBalance(int32(winner.ID), sqlcUtils.NumericToFloat64(dailyTask.ReferalsReward)+sqlcUtils.NumericToFloat64(winner.Balance))
+			}
 
 		} else {
 			c.logger.Error("Error while consuming: " + err.Error())

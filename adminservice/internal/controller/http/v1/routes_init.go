@@ -20,9 +20,11 @@ func InitAdminRoutes(r *chi.Mux, deps di.Container) {
 
 		// Plan
 		r.Post("/deatil-plan", plans.planSeason)
+		r.Get("/seasons", plans.seasons)
 
 		// Settings
-		r.Post("/settings", settings.gameSettings)
+		r.Get("/settings", settings.gameSettings)
+		r.Put("/settings", settings.updatGameSettings)
 
 		// Statistic
 		r.Route("/statistic", func(r chi.Router) {
@@ -31,8 +33,9 @@ func InitAdminRoutes(r *chi.Mux, deps di.Container) {
 		})
 
 		// Daily Task
+		r.Get("/daily-tasks", dailyTask.dailyTask)
 		r.Post("/daily-tasks", dailyTask.createDailyTask)
-		r.Delete("/daily-tasks", dailyTask.deleteTodaysTask)
+		r.Delete("/daily-tasks", dailyTask.deleteDailyTask)
 	})
 
 }

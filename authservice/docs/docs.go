@@ -232,7 +232,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/entity.User"
+                            "$ref": "#/definitions/entity.UserSignUpInDTO"
                         }
                     }
                 ],
@@ -296,7 +296,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/entity.User"
+                            "$ref": "#/definitions/entity.UserSignUpInDTO"
                         }
                     }
                 ],
@@ -346,23 +346,6 @@ const docTemplate = `{
                 }
             }
         },
-        "entity.User": {
-            "type": "object",
-            "required": [
-                "password",
-                "username"
-            ],
-            "properties": {
-                "password": {
-                    "type": "string",
-                    "minLength": 1
-                },
-                "username": {
-                    "type": "string",
-                    "minLength": 1
-                }
-            }
-        },
         "entity.UserInDTO": {
             "type": "object",
             "required": [
@@ -397,6 +380,28 @@ const docTemplate = `{
                 },
                 "username": {
                     "type": "string"
+                }
+            }
+        },
+        "entity.UserSignUpInDTO": {
+            "type": "object",
+            "required": [
+                "password",
+                "referal-id",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "referal-id": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "username": {
+                    "type": "string",
+                    "minLength": 1
                 }
             }
         }

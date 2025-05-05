@@ -10,6 +10,7 @@ import (
 	dailyTaskCon "coreservice/internal/adapter/kafka/consumers/daily_task"
 	matchInfoCon "coreservice/internal/adapter/kafka/consumers/match_info"
 	seasonInfoCon "coreservice/internal/adapter/kafka/consumers/season_info"
+	userSignedUpCon "coreservice/internal/adapter/kafka/consumers/user_signup"
 	authProd "coreservice/internal/adapter/kafka/producers/auth"
 	"coreservice/internal/di"
 
@@ -29,6 +30,7 @@ func mustBus(cfg di.ConfigType, logger di.LoggerType, db di.DBType, elastic di.E
 		logger,
 		createConsumer(cfg, logger),
 		userRepo.New(db),
+		dailyTaskRepo.New(db),
 		leaderboardRepo.New(db),
 		elastic.SeasonStatus,
 		// seasonStatusElasticRepo.New(elastic.ESClient, elastic.SeasonSearchIndex, logger),
@@ -44,12 +46,21 @@ func mustBus(cfg di.ConfigType, logger di.LoggerType, db di.DBType, elastic di.E
 		elastic.SeasonStatus,
 	)
 
+	userSignedUpConsmer := userSignedUpCon.New(
+		cfg,
+		logger,
+		createConsumer(cfg, logger),
+		dailyTaskRepo.New(db),
+		userRepo.New(db),
+	)
+
 	return di.Bus{
 		AuthConsumer:       authConsumer,
 		AuthProducer:       authProducer,
 		DailyTaskConsumer:  dailyTaskConsumer,
 		MatchInfoConsumer:  matchInfoConsumer,
 		SeasonInfoConsumer: seasonInfoConsumer,
+		UserSignUpConsumer: userSignedUpConsmer,
 	}
 }
 

@@ -17,6 +17,7 @@ func Run(cfg di.ConfigType) {
 	go deps.Bus.SeasonInfoConsumer.RecieveSeasonInfo()
 	go deps.Bus.DailyTaskConsumer.ReceiveDailyTask()
 	go deps.Bus.MatchInfoConsumer.RecieveMatchInfo()
+	go deps.Bus.UserSignUpConsumer.ReceiveSignedUpUser()
 
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()

@@ -27,10 +27,11 @@ type Config struct {
 	} `mapstructure:"rsa_keys"`
 
 	Kafka struct {
-		Host         string `mapstructure:"host"`
-		Port         string `mapstructure:"port"`
-		TopicSend    string `mapstructure:"auth_topic_send"`
-		TopicRecieve string `mapstructure:"auth_topic_recieve"`
+		Host           string `mapstructure:"host"`
+		Port           string `mapstructure:"port"`
+		TopicSend      string `mapstructure:"auth_topic_send"`
+		TopicRecieve   string `mapstructure:"auth_topic_recieve"`
+		UserSignupSend string `mapstructure:"user_signup_send"`
 	} `mapstructure:"kafka"`
 }
 

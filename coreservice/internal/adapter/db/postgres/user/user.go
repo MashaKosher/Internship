@@ -4,9 +4,12 @@ import (
 	"context"
 	"coreservice/internal/entity"
 	db "coreservice/internal/repository/sqlc/generated"
-	"math/big"
 
-	"github.com/jackc/pgx/v5/pgtype"
+	// "math/big"
+
+	// "github.com/jackc/pgx/v5/pgtype"
+
+	utils "coreservice/pkg/sqlc_utils"
 )
 
 type UserRepo struct {
@@ -38,18 +41,23 @@ func (r *UserRepo) AddPlayer(player entity.AuthAnswer) (db.User, error) {
 
 func (r *UserRepo) UpdateBalance(playerID int32, newBalance float64) (db.User, error) {
 
-	var num pgtype.Numeric
+	// var num pgtype.Numeric
 
-	num.Int = big.NewInt(int64(newBalance * 100))
-	num.Exp = -2
-	num.Valid = true
+	// num.Int = big.NewInt(int64(newBalance * 100))
+	// num.Exp = -2
+	// num.Valid = true
+
+	num, err := utils.NumberToNumeric(newBalance)
+	if err != nil {
+		return db.User{}, err
+	}
 
 	player, err := r.Query.UpdateBalance(context.Background(), db.UpdateBalanceParams{ID: playerID, Column2: num})
 	if err != nil {
-		return db.User{}, err // Возвращаем ошибку, если она произошла
+		return db.User{}, err
 	}
 
-	return player, nil // Возвращаем обновленного игрока
+	return player, nil
 }
 
 func (r *UserRepo) GetAllUsers() ([]db.User, error) {
