@@ -33,7 +33,7 @@ externalDocs:
 host: localhost:8005
 info:
   contact: {}
-  description: Auth server API
+  description: Game server API
   title: Game service
   version: "1.0"
 paths:

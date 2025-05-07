@@ -1,7 +1,8 @@
 server:
   # host: localhost
-  host: localhost
-  port: 0.0.0.0:8080
+  host: 0.0.0.0
+  # host: 127.0.0.1
+  port: 8080
 
 db:
   host: localhost
@@ -21,8 +22,14 @@ rsa_keys:
 
 
 kafka:
-  host: localhost
+  host: 127.0.0.1
   port: 9092
   auth_topic_send: jwtCheckAnswer
   auth_topic_recieve: jwtCheckRequest
   user_signup_send: userSignUp
+
+
+jaeger:
+  host: localhost
+  port: 6831
+  service_name: auth-service

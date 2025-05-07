@@ -33,6 +33,12 @@ type Config struct {
 		TopicRecieve   string `mapstructure:"auth_topic_recieve"`
 		UserSignupSend string `mapstructure:"user_signup_send"`
 	} `mapstructure:"kafka"`
+
+	Jaeger struct {
+		Host        string `mapstructure:"host"`
+		Port        string `mapstructure:"port"`
+		ServiceName string `mapstructure:"service_name"`
+	} `mapstructure:"jaeger"`
 }
 
 func MustParseConfig() Config {

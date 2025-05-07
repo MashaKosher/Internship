@@ -7,6 +7,7 @@ import (
 func MustContainer(cfg di.ConfigType) di.Container {
 	logger := mustLogger(cfg)
 	loggerFile := mustLoggerFile(cfg)
+	tracer := mustJaeger(cfg)
 	RSAKeys := mustRSAKeys(cfg, logger)
 	db := mustDB(cfg, logger)
 	bus := mustBus(cfg, logger, db, RSAKeys)
@@ -22,6 +23,7 @@ func MustContainer(cfg di.ConfigType) di.Container {
 		Bus:        bus,
 		RSAKeys:    RSAKeys,
 		Validator:  validator,
+		Tracer:     tracer,
 	}
 }
 
@@ -29,4 +31,5 @@ func DeferContainer(container di.Container) {
 	deferLoggerFile(container.LoggerFile)
 	deferLogger(container.Logger)
 	deferBus(container.Bus)
+	deferJaeger(container.Tracer.Closer)
 }

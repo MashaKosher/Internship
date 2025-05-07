@@ -26,12 +26,25 @@ func mustBus(cfg di.ConfigType, logger di.LoggerType, db di.DBType, RSAKeys di.R
 func createConsumer(cfg di.ConfigType, logger di.LoggerType) *kafka.Consumer {
 	c, err := kafka.NewConsumer(&kafka.ConfigMap{
 		"bootstrap.servers": cfg.Kafka.Host + ":" + cfg.Kafka.Port,
+		// "security.protocol": "PLAINTEXT",
 		"group.id":          "authService",
 		"auto.offset.reset": "earliest",
+		// "session.timeout.ms":    10000,
+		// "heartbeat.interval.ms": 3000,
+		// "bootstrap.servers":        cfg.Kafka.Host + ":" + cfg.Kafka.Port,
+		// "group.id":                 "authService",
+		// "auto.offset.reset":        "earliest",
+		// "enable.auto.commit":       false,
+		// "go.events.channel.enable": true, // Используем channel-based API
+		// "session.timeout.ms":       30000,
+		// "heartbeat.interval.ms":    3000,
+		// "max.poll.interval.ms":     300000,
+		// "socket.keepalive.enable":  true,
 	})
 	if err != nil {
 		logger.Fatal("Failed to create consumer: " + err.Error())
 	}
+	logger.Info("Consumer created successfully")
 	return c
 }
 

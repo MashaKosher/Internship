@@ -4,11 +4,12 @@ import (
 	"database/sql"
 	kafkaRepo "gameservice/internal/adapter/kafka"
 	"gameservice/internal/config"
+	"io"
 	"os"
 
-	"github.com/redis/go-redis/v9"
-
 	"github.com/confluentinc/confluent-kafka-go/kafka"
+	"github.com/opentracing/opentracing-go"
+	"github.com/redis/go-redis/v9"
 	"go.uber.org/zap"
 )
 
@@ -20,6 +21,7 @@ type Container struct {
 	Bus        Bus
 	DB         DBType
 	Cache      CacheType
+	Tracer     JaegerType
 }
 
 type (
@@ -30,6 +32,7 @@ type (
 	CacheType      = *redis.Client
 	KafkaProducer  = *kafka.Producer
 	KafkaConsumer  = *kafka.Consumer
+	TracerType     = opentracing.Tracer
 )
 
 type Bus struct {
@@ -37,4 +40,9 @@ type Bus struct {
 	AuthProducer         kafkaRepo.AuthProducer
 	GameSettingsConsumer kafkaRepo.GameSettingsConsumer
 	MatchInfoProducer    kafkaRepo.MatchInfoProducer
+}
+
+type JaegerType struct {
+	Tracer TracerType
+	Closer io.Closer
 }

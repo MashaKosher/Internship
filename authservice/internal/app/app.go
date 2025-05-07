@@ -27,7 +27,7 @@ func Run(cfg config.Config) {
 	v1.NewRouter(app, deps)
 
 	go func() {
-		if err := app.Listen(cfg.Server.Port); err != nil {
+		if err := app.Listen(cfg.Server.Host + ":" + cfg.Server.Port); err != nil {
 			deps.Logger.Error("Server error:" + err.Error())
 		}
 	}()

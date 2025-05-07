@@ -6,7 +6,5 @@ import (
 )
 
 func IntiMetricsRoutes(router *gin.Engine) {
-	router.GET("/metrics", func(c *gin.Context) {
-		promhttp.Handler().ServeHTTP(c.Writer, c.Request)
-	})
+	router.GET("/metrics", gin.WrapH(promhttp.Handler()))
 }

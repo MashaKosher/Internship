@@ -1,77 +1,81 @@
 package middleware
 
 import (
-	"net/http"
-	"time"
+	"runtime"
 
+	"github.com/shirou/gopsutil/cpu"
+
+	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 )
 
-// Метрики
-// var (
-// 	httpRequestsTotal = promauto.NewCounterVec(
-// 		prometheus.CounterOpts{
-// 			Name: "http_requests_total",
-// 			Help: "Total number of HTTP requests",
-// 		},
-// 		[]string{"method", "path", "status"},
-// 	)
-
-// 	httpDuration = promauto.NewHistogramVec(
-// 		prometheus.HistogramOpts{
-// 			Name:    "http_response_time_seconds",
-// 			Help:    "Duration of HTTP requests",
-// 			Buckets: []float64{0.1, 0.5, 1, 2, 5},
-// 		},
-// 		[]string{"path"},
-// 	)
-// )
-
 var (
 	httpRequestsTotal = promauto.NewCounterVec(
 		prometheus.CounterOpts{
-			Name: "http_requests_total",
+			Name: "http_requests_total_core",
 			Help: "Total number of HTTP requests",
 		},
-		[]string{"method", "path", "status"},
+		[]string{"method", "path"},
+	)
+	httpRequestDuration = promauto.NewHistogramVec(
+		prometheus.HistogramOpts{
+			Name:    "http_request_duration_seconds_core",
+			Help:    "Duration of HTTP requests",
+			Buckets: []float64{0.1, 0.3, 0.5, 1, 2, 5},
+		},
+		[]string{"method", "path"},
 	)
 
-	httpDuration = promauto.NewHistogramVec(
-		prometheus.HistogramOpts{
-			Name:    "http_response_time_seconds",
-			Help:    "Duration of HTTP requests",
-			Buckets: []float64{0.1, 0.5, 1, 2, 5},
+	memUsageMB = promauto.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "memory_usage_mb_core",
+			Help: "Current memory usage in MB",
 		},
-		[]string{"path"},
+	)
+	cpuUsage = promauto.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "cpu_usage_percent_core",
+			Help: "CPU usage percentage",
+		},
 	)
 )
 
-type responseWriter struct {
-	http.ResponseWriter
-	status int
+func UpdateMetrics() {
+	var m runtime.MemStats
+	runtime.ReadMemStats(&m)
+	memUsageMB.Set(float64(m.Alloc) / (1024 * 1024)) // Конвертация в MB
+
+	// Использование CPU можно получать через gopsutil
+	percent, _ := cpu.Percent(0, false)
+	cpuUsage.Set(percent[0])
 }
 
-func (rw *responseWriter) WriteHeader(code int) {
-	rw.status = code
-	rw.ResponseWriter.WriteHeader(code)
-}
+func PrometheusMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if c.Request.URL.Path == "/metrics" {
+			c.Next()
+			return
+		}
 
-func MetricsMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		start := time.Now()
-		path := r.URL.Path
+		// Получаем путь (с fallback)
+		path := c.FullPath()
+		if path == "" {
+			path = c.Request.URL.Path
+		}
 
-		// Обертка для получения статуса ответа
-		rw := &responseWriter{w, http.StatusOK}
-		next.ServeHTTP(rw, r)
-
-		duration := time.Since(start).Seconds()
-		httpDuration.WithLabelValues(path).Observe(duration)
-		httpRequestsTotal.WithLabelValues(
-			r.Method,
+		// Замер времени и инкремент счетчика
+		timer := prometheus.NewTimer(httpRequestDuration.WithLabelValues(
+			c.Request.Method,
 			path,
-			http.StatusText(rw.status),
+		))
+		defer timer.ObserveDuration()
+
+		httpRequestsTotal.WithLabelValues(
+			c.Request.Method,
+			path,
 		).Inc()
-	})
+
+		c.Next()
+	}
 }

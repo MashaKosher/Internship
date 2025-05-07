@@ -1,18 +1,26 @@
 package http
 
 import (
+	customMiddleware "adminservice/internal/controller/http/middlewares"
 	routes "adminservice/internal/controller/http/v1"
 	"adminservice/internal/di"
-
-	custoMiddleware "adminservice/internal/controller/http/middlewares"
+	"time"
 
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
 )
 
 func NewRouter(r *chi.Mux, deps di.Container) {
+
 	// Middlewares
 	middleWares(r)
+
+	go func() {
+		for {
+			customMiddleware.UpdateMetrics()
+			time.Sleep(5 * time.Second) // Обновление каждые 5 секунд
+		}
+	}()
 
 	routes.IntiMetricsRoutes(r)
 
@@ -26,5 +34,6 @@ func NewRouter(r *chi.Mux, deps di.Container) {
 func middleWares(r *chi.Mux) {
 	r.Use(middleware.RequestID)
 	r.Use(middleware.Logger)
-	r.Use(custoMiddleware.MetricsMiddleware)
+	r.Use(customMiddleware.MetricsMiddleware)
+	r.Use(customMiddleware.TracingMiddleware)
 }

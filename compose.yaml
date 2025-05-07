@@ -59,7 +59,8 @@ services:
       - KAFKA_KRAFT_CLUSTER_ID=MkU3OEVBNTcwNTJENDM2Qk
     volumes:
       - ./kafka:/bitnami/kafka
-      
+      - ./create-topics.sh:/create-topics.sh  # Монтируем скрипт
+    command: /bin/bash -c "/opt/bitnami/scripts/kafka/run.sh & /create-topics.sh && tail -f /dev/null"
 
 
   admin_db:
@@ -159,43 +160,6 @@ services:
       - redis_data:/data
     restart: unless-stopped
 
-
-  # mongodb:
-  #   image: mongo:latest
-  #   container_name: mongodb
-  #   restart: always
-  #   environment:
-  #     MONGO_INITDB_ROOT_USERNAME: root
-  #     MONGO_INITDB_ROOT_PASSWORD: example
-  #     MONGO_INITDB_DATABASE: game_db
-  #   ports:
-  #     - "27017:27017"
-  #   volumes:
-  #     - mongodb_data:/data/db
-
-
-  # admin:
-  #   build: ./adminservice
-  #   volumes:
-  #     - ./adminservice:/app
-  #   ports:
-  #     - "8004:8004"
-  #   depends_on:
-  #     - admin_db
-  #     - kafka
-
-
-  # auth:
-  #   build: ./authservice
-  #   volumes:
-  #     - ./authservice:/app
-  #   ports:
-  #     - "8080:8080"
-  #   depends_on:
-  #     - postgres
-  #     - kafka
-
-
   clickhouse-server:
     image: clickhouse/clickhouse-server:latest
     container_name: clickhouse
@@ -237,13 +201,23 @@ services:
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin123
       - GF_USERS_ALLOW_SIGN_UP=false
-      # - GF_PLUGINS_ALLOW_LOCAL_MODE=true
       - GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS=*  # разрешает незарегистрированные плагины
       - GF_PLUGINS_SKIP_TLS_VERIFY=true             # игнорирует ошибки HTTPS
       - GF_PANELS_DISABLE_SANITIZE_HTML=true        # на всякий случай
     depends_on:
       - prometheus
     restart: unless-stopped
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.42
+    ports:
+      - "16686:16686"    # Web UI
+      - "14268:14268"    # HTTP Collector
+      - "6831:6831/udp"  # Agent (UDP)
+    environment:
+      - COLLECTOR_ZIPKIN_HOST_PORT=:9411
+      - COLLECTOR_OTLP_ENABLED=true
+
 
 
 volumes:
@@ -254,8 +228,9 @@ volumes:
   redis_data:
   es_data:
     driver: local
-  # mongodb_data:
+
   clickhouse_data:
   clickhouse_log:
   grafana_data:
   prometheus_data:
+  kafka-data:

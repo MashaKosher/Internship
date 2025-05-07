@@ -43,6 +43,12 @@ type Config struct {
 		ApiKey string `mapstructure:"api-key"`
 		ApiUrl string `mapstructure:"api-url"`
 	} `mapstructure:"random"`
+
+	Jaeger struct {
+		Host        string `mapstructure:"host"`
+		Port        string `mapstructure:"port"`
+		ServiceName string `mapstructure:"service_name"`
+	} `mapstructure:"jaeger"`
 }
 
 func MustParseConfig() Config {

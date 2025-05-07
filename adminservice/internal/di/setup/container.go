@@ -7,6 +7,7 @@ import (
 func MustContainer(cfg di.ConfigType) di.Container {
 	logger := mustLogger(cfg)
 	loggerFile := mustLoggerFile(cfg)
+	tracer := mustJaeger(cfg)
 	db := mustDB(cfg, logger)
 	bus := mustBus(cfg, logger)
 	services := mustServices(db, logger, cfg, bus)
@@ -20,6 +21,7 @@ func MustContainer(cfg di.ConfigType) di.Container {
 		DB:         db,
 		Bus:        bus,
 		Validator:  validator,
+		Tracer:     tracer,
 	}
 }
 
@@ -27,4 +29,5 @@ func DeferContainer(container di.Container) {
 	deferLoggerFile(container.LoggerFile)
 	deferLogger(container.Logger)
 	deferBus(container.Bus)
+	deferJaeger(container.Tracer.Closer)
 }

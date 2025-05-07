@@ -36,6 +36,12 @@ random:
   api-url: https://api.random.org/json-rpc/2/invoke
 
 
+jaeger:
+  host: localhost
+  port: 6831
+  service_name: game-service
+
+
   
 
 

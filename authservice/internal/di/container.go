@@ -4,10 +4,13 @@ import (
 	kafkaRepo "authservice/internal/adapter/kafka"
 	"authservice/internal/config"
 	"crypto/rsa"
+	"io"
 	"os"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/go-playground/validator/v10"
+	"github.com/opentracing/opentracing-go"
+
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
@@ -26,6 +29,7 @@ type Container struct {
 	DB         DBType
 	RSAKeys    RSAKeys
 	Validator  ValidatorType
+	Tracer     JaegerType
 }
 
 // ///////////////////////////////////
@@ -37,6 +41,7 @@ type (
 	ValidatorType  = *validator.Validate
 	KafkaProducer  = *kafka.Producer
 	KafkaConsumer  = *kafka.Consumer
+	TracerType     = opentracing.Tracer
 )
 
 type Bus struct {
@@ -48,4 +53,9 @@ type Bus struct {
 type RSAKeys struct {
 	PublicKey  *rsa.PublicKey
 	PrivateKey *rsa.PrivateKey
+}
+
+type JaegerType struct {
+	Tracer TracerType
+	Closer io.Closer
 }

@@ -1,7 +1,7 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "Auth server API",
+        "description": "Game server API",
         "title": "Game service",
         "contact": {},
         "version": "1.0"

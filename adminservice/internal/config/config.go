@@ -33,6 +33,12 @@ type Config struct {
 		DailyTaskTopicSend    string `mapstructure:"dailyTasks_topic_send"`
 		GameSettingsTopicSend string `mapstructure:"gameSettings_topic_send"`
 	} `mapstructure:"kafka"`
+
+	Jaeger struct {
+		Host        string `mapstructure:"host"`
+		Port        string `mapstructure:"port"`
+		ServiceName string `mapstructure:"service_name"`
+	} `mapstructure:"jaeger"`
 }
 
 func MustParseConfig() Config {

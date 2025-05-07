@@ -9,7 +9,7 @@ import (
 
 // @title						Game service
 // @version						1.0
-// @description					Auth server API
+// @description					Game server API
 // @host						localhost:8005
 // @BasePath					/
 // @securityDefinitions.basic	BasicAuth

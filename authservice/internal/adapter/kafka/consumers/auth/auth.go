@@ -31,8 +31,8 @@ func (p *AuthConsumer) Close() {
 }
 
 func (p *AuthConsumer) ConsumerAnswerTokens() {
-	p.logger.Info("Kafka Answer Auth Tokens Consumer connected successfully")
 
+	p.logger.Info("Kafka Answer Auth Tokens Consumer connected successfully")
 	if err := p.consumer.SubscribeTopics([]string{p.cfg.Kafka.TopicRecieve}, nil); err != nil {
 		p.logger.Fatal("Failed to subscribe to topics: " + err.Error())
 	}

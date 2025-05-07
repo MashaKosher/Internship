@@ -26,6 +26,11 @@ kafka:
   dailyTasks_topic_send: dailyTasks
   gameSettings_topic_send: gameSettings
 
+jaeger:
+  host: localhost
+  port: 6831
+  service_name: admin-service
+
   
 
 

@@ -39,6 +39,12 @@ type Config struct {
 		Password string `mapstructure:"password"`
 		DB       int    `mapstructure:"db"`
 	} `mapstructure:"redis"`
+
+	Jaeger struct {
+		Host        string `mapstructure:"host"`
+		Port        string `mapstructure:"port"`
+		ServiceName string `mapstructure:"service_name"`
+	} `mapstructure:"jaeger"`
 }
 
 var AppConfig Config

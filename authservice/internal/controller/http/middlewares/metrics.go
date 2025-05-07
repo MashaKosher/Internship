@@ -2,57 +2,75 @@ package middleware
 
 import (
 	"net/http"
-	"time"
+	"runtime"
 
+	"github.com/gofiber/fiber/v2"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
+	"github.com/shirou/gopsutil/cpu"
 )
 
 // Метрики
 var (
 	httpRequestsTotal = promauto.NewCounterVec(
 		prometheus.CounterOpts{
-			Name: "http_requests_total",
+			Name: "http_requests_total_auth",
 			Help: "Total number of HTTP requests",
 		},
 		[]string{"method", "path", "status"},
 	)
 
-	httpDuration = promauto.NewHistogramVec(
+	httpRequestDuration = promauto.NewHistogramVec(
 		prometheus.HistogramOpts{
-			Name:    "http_response_time_seconds",
+			Name:    "request_duration_seconds_auth",
 			Help:    "Duration of HTTP requests",
 			Buckets: []float64{0.1, 0.5, 1, 2, 5},
 		},
-		[]string{"path"},
+		[]string{"method", "path"},
+	)
+
+	memUsageMB = promauto.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "memory_usage_mb_auth",
+			Help: "Current memory usage in MB",
+		},
+	)
+	cpuUsage = promauto.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "cpu_usage_percent_auth",
+			Help: "CPU usage percentage",
+		},
 	)
 )
 
-type responseWriter struct {
-	http.ResponseWriter
-	status int
+func UpdateMetrics() {
+	var m runtime.MemStats
+	runtime.ReadMemStats(&m)
+	memUsageMB.Set(float64(m.Alloc) / (1024 * 1024)) // Преобразуем байты в МБ
+
+	percent, _ := cpu.Percent(0, false)
+	cpuUsage.Set(percent[0])
 }
 
-func (rw *responseWriter) WriteHeader(code int) {
-	rw.status = code
-	rw.ResponseWriter.WriteHeader(code)
-}
+// Middleware для сбора метрик
+func MetricsMiddleware(c *fiber.Ctx) error {
+	if c.Path() == "/metrics" {
+		return c.Next()
+	}
 
-func MetricsMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		start := time.Now()
-		path := r.URL.Path
+	method := c.Method()
+	path := c.Path()
 
-		// Обертка для получения статуса ответа
-		rw := &responseWriter{w, http.StatusOK}
-		next.ServeHTTP(rw, r)
+	// duration := time.Since(start).Seconds()
+	// httpRequestDuration.WithLabelValues(path).Observe(duration)
+	timer := prometheus.NewTimer(httpRequestDuration.WithLabelValues(method, path))
+	defer timer.ObserveDuration()
 
-		duration := time.Since(start).Seconds()
-		httpDuration.WithLabelValues(path).Observe(duration)
-		httpRequestsTotal.WithLabelValues(
-			r.Method,
-			path,
-			http.StatusText(rw.status),
-		).Inc()
-	})
+	httpRequestsTotal.WithLabelValues(
+		method,
+		path,
+		http.StatusText(c.Response().StatusCode()),
+	).Inc()
+
+	return c.Next()
 }
