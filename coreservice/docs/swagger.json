@@ -2,45 +2,13 @@
     "swagger": "2.0",
     "info": {
         "description": "This is a sample API for demonstrating Swagger with Gin.",
-        "title": "Example API",
+        "title": "Core Service",
         "contact": {},
         "version": "1.0"
     },
     "host": "localhost:8006",
     "basePath": "/",
     "paths": {
-        "/check-token": {
-            "get": {
-                "description": "Verifies JWT token validity and returns user information",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Authentication"
-                ],
-                "summary": "Validate JWT token",
-                "responses": {
-                    "200": {
-                        "description": "Token validation response with user data",
-                        "schema": {
-                            "$ref": "#/definitions/entity.TypeResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid token format",
-                        "schema": {
-                            "$ref": "#/definitions/entity.Error"
-                        }
-                    },
-                    "401": {
-                        "description": "Missing or invalid token",
-                        "schema": {
-                            "$ref": "#/definitions/entity.Error"
-                        }
-                    }
-                }
-            }
-        },
         "/daily-task": {
             "get": {
                 "description": "Возвращает ежедневную задачу для текущей даты",
@@ -578,23 +546,6 @@
                 },
                 "status": {
                     "type": "string"
-                }
-            }
-        },
-        "entity.TypeResponse": {
-            "type": "object",
-            "properties": {
-                "balance": {
-                    "type": "number"
-                },
-                "login": {
-                    "type": "string"
-                },
-                "message": {
-                    "type": "string"
-                },
-                "win-rate": {
-                    "type": "number"
                 }
             }
         },

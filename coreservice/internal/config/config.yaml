@@ -21,7 +21,7 @@ kafka:
   port: 9092
   partition: 1
   auth_topic_send: jwtCheckAnswer 
-  auth_topic_recieve: jwtCheckRequest
+  auth_topic_recieve: jwtCheckRequest  
   season_topic_recieve: seasons
   daily_task_topic_recieve: dailyTasks
   match_topic_recieve: match

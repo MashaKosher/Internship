@@ -39,6 +39,8 @@ func (p *AuthProducer) AnswerToken(answer entity.AuthAnswer, partition int32) {
 		p.logger.Fatal("Failed to produce message: " + err.Error())
 	}
 
+	p.logger.Info("Produced message: " + fmt.Sprint(answer))
+
 	go func() {
 		event := <-deliveryChan
 		switch e := event.(type) {

@@ -51,17 +51,6 @@ definitions:
       status:
         type: string
     type: object
-  entity.TypeResponse:
-    properties:
-      balance:
-        type: number
-      login:
-        type: string
-      message:
-        type: string
-      win-rate:
-        type: number
-    type: object
   entity.User:
     properties:
       balance:
@@ -75,30 +64,9 @@ host: localhost:8006
 info:
   contact: {}
   description: This is a sample API for demonstrating Swagger with Gin.
-  title: Example API
+  title: Core Service
   version: "1.0"
 paths:
-  /check-token:
-    get:
-      description: Verifies JWT token validity and returns user information
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Token validation response with user data
-          schema:
-            $ref: '#/definitions/entity.TypeResponse'
-        "400":
-          description: Invalid token format
-          schema:
-            $ref: '#/definitions/entity.Error'
-        "401":
-          description: Missing or invalid token
-          schema:
-            $ref: '#/definitions/entity.Error'
-      summary: Validate JWT token
-      tags:
-      - Authentication
   /daily-task:
     get:
       consumes:

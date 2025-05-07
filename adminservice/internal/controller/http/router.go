@@ -6,7 +6,6 @@ import (
 	"adminservice/internal/di"
 	"time"
 
-	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -32,8 +31,6 @@ func NewRouter(r *chi.Mux, deps di.Container) {
 }
 
 func middleWares(r *chi.Mux) {
-	r.Use(middleware.RequestID)
-	r.Use(middleware.Logger)
 	r.Use(customMiddleware.MetricsMiddleware)
 	r.Use(customMiddleware.TracingMiddleware)
 }

@@ -3,6 +3,7 @@ package v1
 import (
 	"coreservice/internal/di"
 	"coreservice/internal/entity"
+	db "coreservice/internal/repository/sqlc/generated"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -29,24 +30,30 @@ func TokenRoutes(app *gin.Engine, deps di.Container) {
 // @Failure 401 {object} entity.Error "Missing or invalid token"
 // @Router /check-token [get]
 func (r *tokenRoutes) checkToken(c *gin.Context) {
-	message, exists := c.Get("message")
-	if !exists {
-		c.JSON(http.StatusBadRequest, entity.Error{Error: "some error"})
+	if r == nil || r.l == nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "internal server error"})
 		return
 	}
+
+	r.l.Info("We are in controller")
+
+	_, exists := c.Get("message")
+	if !exists {
+		r.l.Error("Message not found in context")
+		c.JSON(http.StatusBadRequest, entity.Error{Error: "message required"})
+		return
+	}
+	r.l.Info("Message received")
 
 	data, exists := c.Get("data")
 	if !exists {
-		c.JSON(http.StatusBadRequest, entity.Error{Error: "Token is invalid"})
+		r.l.Error("Data not found in context")
+		c.JSON(http.StatusBadRequest, entity.Error{Error: "token data required"})
 		return
 	}
+	r.l.Info("Data received")
 
-	resp, err := r.u.VerifyToken(message, data)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, entity.Error{Error: err.Error()})
-		return
-	}
+	user, _ := data.(db.User)
 
-	c.JSON(http.StatusOK, resp)
-
+	c.JSON(http.StatusOK, user)
 }

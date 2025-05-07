@@ -2,6 +2,7 @@ package di
 
 import (
 	kafkaRepo "authservice/internal/adapter/kafka"
+	"authservice/internal/adapter/memcached"
 	"authservice/internal/config"
 	"crypto/rsa"
 	"io"
@@ -11,6 +12,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/opentracing/opentracing-go"
 
+	"github.com/bradfitz/gomemcache/memcache"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
@@ -30,6 +32,7 @@ type Container struct {
 	RSAKeys    RSAKeys
 	Validator  ValidatorType
 	Tracer     JaegerType
+	Cache      Cache
 }
 
 // ///////////////////////////////////
@@ -42,6 +45,7 @@ type (
 	KafkaProducer  = *kafka.Producer
 	KafkaConsumer  = *kafka.Consumer
 	TracerType     = opentracing.Tracer
+	CacheType      = *memcache.Client
 )
 
 type Bus struct {
@@ -58,4 +62,8 @@ type RSAKeys struct {
 type JaegerType struct {
 	Tracer TracerType
 	Closer io.Closer
+}
+
+type Cache struct {
+	Token memcached.TokenCacheRepo
 }

@@ -7,20 +7,21 @@ import (
 	"authservice/internal/usecase/auth"
 )
 
-func mustServices(db di.DBType, logger di.LoggerType, RSAKeys di.RSAKeys, signUpProducer kafkaRepo.SignUpProducer) di.Services {
+func mustServices(db di.DBType, logger di.LoggerType, RSAKeys di.RSAKeys, signUpProducer kafkaRepo.SignUpProducer, cache di.Cache) di.Services {
 
-	authUseCase := createAuthUseCase(db, logger, RSAKeys, signUpProducer)
+	authUseCase := createAuthUseCase(db, logger, RSAKeys, signUpProducer, cache)
 
 	return di.Services{
 		Auth: authUseCase,
 	}
 }
 
-func createAuthUseCase(db di.DBType, logger di.LoggerType, RSAKeys di.RSAKeys, signUpProducer kafkaRepo.SignUpProducer) *auth.UseCase {
+func createAuthUseCase(db di.DBType, logger di.LoggerType, RSAKeys di.RSAKeys, signUpProducer kafkaRepo.SignUpProducer, cache di.Cache) *auth.UseCase {
 	return auth.New(
 		authRepo.New(db), // создаем конкретный репозиторий и передаем в конретный Use Case
 		logger,
 		RSAKeys,
 		signUpProducer,
+		cache,
 	)
 }

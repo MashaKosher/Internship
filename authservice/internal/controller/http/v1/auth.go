@@ -100,6 +100,12 @@ func (r *authRoutes) login(c *fiber.Ctx) error {
 // @Router       /auth/check/access [get]
 func (r *authRoutes) checkAccessToken(c *fiber.Ctx) error {
 	var accessToken string = c.Cookies(string(di.ACCESS_TOKEN))
+
+	if len(accessToken) == 0 {
+		r.l.Error("Access token field is empty")
+		return fiber.NewError(fiber.StatusBadRequest, "Access token field is empty")
+	}
+
 	outUser, err := r.u.CheckAccessToken(accessToken)
 	if err != nil {
 		c.ClearCookie()
@@ -119,6 +125,12 @@ func (r *authRoutes) checkAccessToken(c *fiber.Ctx) error {
 // @Router       /auth/check/refresh [get]
 func (r *authRoutes) checkRefreshToken(c *fiber.Ctx) error {
 	var refreshToken string = c.Cookies(string(di.REFRESH_TOKEN))
+
+	if len(refreshToken) == 0 {
+		r.l.Error("Refresh token field is empty")
+		return fiber.NewError(fiber.StatusBadRequest, "Refresh token field is empty")
+	}
+
 	outUser, err := r.u.CheckRefreshToken(refreshToken)
 	if err != nil {
 		c.ClearCookie()

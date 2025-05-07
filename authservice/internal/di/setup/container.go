@@ -9,9 +9,10 @@ func MustContainer(cfg di.ConfigType) di.Container {
 	loggerFile := mustLoggerFile(cfg)
 	tracer := mustJaeger(cfg)
 	RSAKeys := mustRSAKeys(cfg, logger)
+	cache := mustCache(cfg, logger)
 	db := mustDB(cfg, logger)
-	bus := mustBus(cfg, logger, db, RSAKeys)
-	services := mustServices(db, logger, RSAKeys, bus.SignUpProducer)
+	bus := mustBus(cfg, logger, db, RSAKeys, cache)
+	services := mustServices(db, logger, RSAKeys, bus.SignUpProducer, cache)
 	validator := mustValiadtor()
 
 	return di.Container{
@@ -24,6 +25,7 @@ func MustContainer(cfg di.ConfigType) di.Container {
 		RSAKeys:    RSAKeys,
 		Validator:  validator,
 		Tracer:     tracer,
+		Cache:      cache,
 	}
 }
 

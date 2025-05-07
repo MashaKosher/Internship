@@ -39,6 +39,11 @@ type Config struct {
 		Port        string `mapstructure:"port"`
 		ServiceName string `mapstructure:"service_name"`
 	} `mapstructure:"jaeger"`
+
+	Memcached struct {
+		Host string `mapstructure:"host"`
+		Port string `mapstructure:"port"`
+	} `mapstructure:"memcached"`
 }
 
 func MustParseConfig() Config {

@@ -18,7 +18,7 @@ func mustJaeger(conf di.ConfigType) di.JaegerType {
 			Param: 1,
 		},
 		Reporter: &config.ReporterConfig{
-			LogSpans:            true,
+			LogSpans:            false,
 			LocalAgentHostPort:  conf.Jaeger.Host + ":" + conf.Jaeger.Port,
 			BufferFlushInterval: 1 * time.Second,
 		},

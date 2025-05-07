@@ -20,7 +20,7 @@ func Run(cfg di.ConfigType) {
 	go deps.Bus.UserSignUpConsumer.ReceiveSignedUpUser()
 
 	gin.SetMode(gin.ReleaseMode)
-	router := gin.Default()
+	router := gin.New()
 	v1.NewRouter(router, deps)
 	router.Run(cfg.Server.Host + ":" + cfg.Server.Port)
 }

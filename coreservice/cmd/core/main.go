@@ -7,7 +7,7 @@ import (
 	_ "coreservice/docs"
 )
 
-// @title Example API
+// @title Core Service
 // @version 1.0
 // @description This is a sample API for demonstrating Swagger with Gin.
 // @host localhost:8006

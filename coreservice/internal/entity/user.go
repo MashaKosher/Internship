@@ -1,5 +1,7 @@
 package entity
 
+import db "coreservice/internal/repository/sqlc/generated"
+
 type User struct {
 	Balance float64 `json:"balance"`
 	Login   string  `json:"login"`
@@ -30,6 +32,7 @@ type Response struct {
 }
 
 type TypeResponse struct {
-	User
+	User db.User
+
 	Message string `json:"message"`
 }

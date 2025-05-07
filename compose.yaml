@@ -218,7 +218,17 @@ services:
       - COLLECTOR_ZIPKIN_HOST_PORT=:9411
       - COLLECTOR_OTLP_ENABLED=true
 
-
+  memcached:
+    image: memcached:latest
+    ports:
+      - "11211:11211"
+    environment:
+      - MEMCACHED_CACHE_SIZE=256
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "11211"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
 volumes:
   pgdata_auth:  
@@ -234,3 +244,4 @@ volumes:
   grafana_data:
   prometheus_data:
   kafka-data:
+  memcached_data:

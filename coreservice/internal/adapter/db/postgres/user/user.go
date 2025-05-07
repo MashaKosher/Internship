@@ -5,10 +5,6 @@ import (
 	"coreservice/internal/entity"
 	db "coreservice/internal/repository/sqlc/generated"
 
-	// "math/big"
-
-	// "github.com/jackc/pgx/v5/pgtype"
-
 	utils "coreservice/pkg/sqlc_utils"
 )
 

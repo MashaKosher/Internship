@@ -15,38 +15,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/check-token": {
-            "get": {
-                "description": "Verifies JWT token validity and returns user information",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Authentication"
-                ],
-                "summary": "Validate JWT token",
-                "responses": {
-                    "200": {
-                        "description": "Token validation response with user data",
-                        "schema": {
-                            "$ref": "#/definitions/entity.TypeResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid token format",
-                        "schema": {
-                            "$ref": "#/definitions/entity.Error"
-                        }
-                    },
-                    "401": {
-                        "description": "Missing or invalid token",
-                        "schema": {
-                            "$ref": "#/definitions/entity.Error"
-                        }
-                    }
-                }
-            }
-        },
         "/daily-task": {
             "get": {
                 "description": "Возвращает ежедневную задачу для текущей даты",
@@ -587,23 +555,6 @@ const docTemplate = `{
                 }
             }
         },
-        "entity.TypeResponse": {
-            "type": "object",
-            "properties": {
-                "balance": {
-                    "type": "number"
-                },
-                "login": {
-                    "type": "string"
-                },
-                "message": {
-                    "type": "string"
-                },
-                "win-rate": {
-                    "type": "number"
-                }
-            }
-        },
         "entity.User": {
             "type": "object",
             "properties": {
@@ -627,7 +578,7 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "localhost:8006",
 	BasePath:         "/",
 	Schemes:          []string{},
-	Title:            "Example API",
+	Title:            "Core Service",
 	Description:      "This is a sample API for demonstrating Swagger with Gin.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,

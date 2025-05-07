@@ -19,14 +19,16 @@ type UseCase struct {
 	logger  di.LoggerType
 	RSAKeys di.RSAKeys
 	Bus     kafkaRepo.SignUpProducer
+	Cache   di.Cache
 }
 
-func New(r repo.AuthRepo, logger di.LoggerType, RSAKeys di.RSAKeys, signUpProducer kafkaRepo.SignUpProducer) *UseCase {
+func New(r repo.AuthRepo, logger di.LoggerType, RSAKeys di.RSAKeys, signUpProducer kafkaRepo.SignUpProducer, cache di.Cache) *UseCase {
 	return &UseCase{
 		repo:    r,
 		logger:  logger,
 		RSAKeys: RSAKeys,
 		Bus:     signUpProducer,
+		Cache:   cache,
 	}
 }
 
@@ -53,6 +55,8 @@ func (uc *UseCase) Login(user entity.UserInDTO) (entity.UserOutDTO, error) {
 		return entity.UserOutDTO{}, fiber.NewError(fiber.StatusInternalServerError, "Problem with creating Access JWT Token")
 	}
 
+	uc.Cache.Token.AddTokenToCache(accessToken, int(DBUser.ID))
+
 	refreshToken, err := tokens.CreateToken(di.REFRESH_TOKEN, &DBUser, uc.logger, uc.RSAKeys)
 	if err != nil {
 		uc.logger.Error("Problem with creating Refresh JWT Token" + err.Error())
@@ -64,38 +68,53 @@ func (uc *UseCase) Login(user entity.UserInDTO) (entity.UserOutDTO, error) {
 
 }
 
-func checkToken(token string, tokenTpe di.TokenType, r repo.AuthRepo, logger di.LoggerType, RSAKeys di.RSAKeys) (entity.User, error) {
-	// Access Token Verifying
-	validatedToken, err := tokens.TokenVerify(token, logger, RSAKeys)
+func checkToken(token string, tokenTpe di.TokenType, r repo.AuthRepo, logger di.LoggerType, RSAKeys di.RSAKeys, cache di.Cache) (entity.User, error) {
 
-	// If access Token is invalid we clear the cookie and throw error
-	if err != nil {
-		logger.Error("Inavlid " + string(tokenTpe) + " Token: " + err.Error())
-		return entity.User{}, fiber.NewError(fiber.StatusBadRequest, err.Error())
-	}
-	logger.Info(string(tokenTpe) + " Token is valid")
+	mustValidate := true
+	var err error
+	var userId int
 
-	// Get Token type from Token
-	tokenType, err := tokens.GetTypeFromValidatedToken(validatedToken)
-	if err != nil {
-		logger.Error(err.Error())
-		return entity.User{}, fiber.NewError(fiber.StatusBadRequest, err.Error())
+	if tokenTpe == di.ACCESS_TOKEN {
+		userId, err = cache.Token.GetTokenFromCache(token)
+		if err == nil {
+			mustValidate = false
+			logger.Info("Token found in cache")
+		}
 	}
 
-	// Verifying Token type (it must be access)
-	if err := tokens.VerifyTokenType(string(tokenTpe), tokenType); err != nil {
-		logger.Error(err.Error())
-		return entity.User{}, fiber.NewError(fiber.StatusBadRequest, err.Error())
-	}
-	logger.Info("Token type is correct")
+	if mustValidate {
+		// Access Token Verifying
+		validatedToken, err := tokens.TokenVerify(token, logger, RSAKeys)
 
-	// Extracting User ID from valid access Token
-	userId, err := tokens.GetIdFromValidatedToken(validatedToken)
-	if err != nil {
-		logger.Error(err.Error())
-		return entity.User{}, fiber.NewError(fiber.StatusBadRequest, err.Error())
+		// If access Token is invalid we clear the cookie and throw error
+		if err != nil {
+			logger.Error("Inavlid " + string(tokenTpe) + " Token: " + err.Error())
+			return entity.User{}, fiber.NewError(fiber.StatusBadRequest, err.Error())
+		}
+		logger.Info(string(tokenTpe) + " Token is valid")
+
+		// Get Token type from Token
+		tokenType, err := tokens.GetTypeFromValidatedToken(validatedToken)
+		if err != nil {
+			logger.Error(err.Error())
+			return entity.User{}, fiber.NewError(fiber.StatusBadRequest, err.Error())
+		}
+
+		// Verifying Token type (it must be access)
+		if err := tokens.VerifyTokenType(string(tokenTpe), tokenType); err != nil {
+			logger.Error(err.Error())
+			return entity.User{}, fiber.NewError(fiber.StatusBadRequest, err.Error())
+		}
+		logger.Info("Token type is correct")
+
+		// Extracting User ID from valid access Token
+		userId, err = tokens.GetIdFromValidatedToken(validatedToken)
+		if err != nil {
+			logger.Error(err.Error())
+			return entity.User{}, fiber.NewError(fiber.StatusBadRequest, err.Error())
+		}
+		logger.Info("User ID from " + string(tokenTpe) + " Token is: " + fmt.Sprint(userId))
 	}
-	logger.Info("User ID from " + string(tokenTpe) + " Token is: " + fmt.Sprint(userId))
 
 	// Search User by Id in DB
 	user, err := r.FindUserById(int(userId))
@@ -109,7 +128,7 @@ func checkToken(token string, tokenTpe di.TokenType, r repo.AuthRepo, logger di.
 }
 
 func (uc *UseCase) CheckAccessToken(accessToken string) (entity.UserOutDTO, error) {
-	user, err := checkToken(accessToken, di.ACCESS_TOKEN, uc.repo, uc.logger, uc.RSAKeys)
+	user, err := checkToken(accessToken, di.ACCESS_TOKEN, uc.repo, uc.logger, uc.RSAKeys, uc.Cache)
 	if err != nil {
 		return entity.UserOutDTO{}, err
 	}
@@ -118,7 +137,7 @@ func (uc *UseCase) CheckAccessToken(accessToken string) (entity.UserOutDTO, erro
 }
 
 func (uc *UseCase) CheckRefreshToken(refreshToken string) (entity.UserOutDTO, error) {
-	user, err := checkToken(refreshToken, di.REFRESH_TOKEN, uc.repo, uc.logger, uc.RSAKeys)
+	user, err := checkToken(refreshToken, di.REFRESH_TOKEN, uc.repo, uc.logger, uc.RSAKeys, uc.Cache)
 	if err != nil {
 		return entity.UserOutDTO{}, err
 	}
@@ -198,7 +217,7 @@ func signUp(user entity.User, userRole entity.Role, repo repo.AuthRepo, logger d
 
 func (uc *UseCase) ChangePassword(newPassword entity.Password, accessToken string) (entity.UserOutDTO, error) {
 
-	user, err := checkToken(accessToken, di.ACCESS_TOKEN, uc.repo, uc.logger, uc.RSAKeys)
+	user, err := checkToken(accessToken, di.ACCESS_TOKEN, uc.repo, uc.logger, uc.RSAKeys, uc.Cache)
 	if err != nil {
 		return entity.UserOutDTO{}, err
 	}

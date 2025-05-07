@@ -62,7 +62,7 @@ func brokerCheck(authRequest entity.AuthRequest, u di.AuthService, logger di.Log
 	var Answer entity.AuthAnswer
 
 	user, err := u.CheckAccessToken(authRequest.AccessToken)
-	if err != nil {
+	if err == nil {
 		Answer.Role = string(user.UserRole)
 		Answer.ID = int32(user.UserID)
 		Answer.Login = string(user.UserName)

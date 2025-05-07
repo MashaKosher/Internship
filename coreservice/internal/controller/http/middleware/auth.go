@@ -55,10 +55,15 @@ func AuthMiddleWare(cfg di.ConfigType, logger di.LoggerType, db di.DBType, elast
 		if exists {
 			logger.Info("Player already in DB: " + fmt.Sprintln(player))
 			c.Set("message", "User already in DB")
+			logger.Info("Message Set")
 			c.Set("data", player)
+			logger.Info("Data Set")
 			c.Next()
+			logger.Info("Player Already in DB going to controller")
 			return
 		}
+
+		logger.Info("Player not in DB")
 
 		// If user not exists adding user to DB
 		player, err = userRepo.AddPlayer(answer)
