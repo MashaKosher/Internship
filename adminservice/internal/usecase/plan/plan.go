@@ -4,7 +4,6 @@ import (
 	repo "adminservice/internal/adapter/db/sql"
 	"adminservice/internal/di"
 	"adminservice/internal/entity"
-	"log"
 )
 
 type UseCase struct {
@@ -23,14 +22,9 @@ func New(r repo.PlanRepo, logger di.LoggerType, cfg di.ConfigType, bus di.Bus) *
 	}
 }
 
-func (u *UseCase) PlanSeasons(season entity.DetailSeasonJson) error {
+func (u *UseCase) PlanSeason(season entity.DetailSeasonJson) error {
 	dbSeason, err := season.ToDB()
 	if err != nil {
-		return err
-	}
-
-	// Finding if seasons are crossing
-	if err := u.repo.FindSeasonCross(&dbSeason); err != nil {
 		return err
 	}
 
@@ -38,8 +32,6 @@ func (u *UseCase) PlanSeasons(season entity.DetailSeasonJson) error {
 	if err := u.repo.AddNewSeason(&dbSeason); err != nil {
 		return err
 	}
-
-	log.Println("Season IN DB: ", dbSeason)
 
 	// Produsing new season to Core service
 	go u.bus.SeasonProducer.SendSeasonInfo(dbSeason.ToDTO())

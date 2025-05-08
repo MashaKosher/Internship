@@ -3,7 +3,6 @@ package settings
 import (
 	"adminservice/internal/entity"
 	"errors"
-	"log"
 
 	"gorm.io/gorm"
 )
@@ -16,7 +15,10 @@ func New(db *gorm.DB) *SettingsRepo {
 	return &SettingsRepo{db}
 }
 
-func (r *SettingsRepo) UpdateSettings(newSettings entity.GameSettings) error {
+func (r *SettingsRepo) UpdateSettings(newSettings *entity.GameSettings) error {
+	if newSettings == nil {
+		return entity.ErrGameSettingsIsNil
+	}
 
 	var counter int64
 	err := r.DB.Model(&entity.GameSettings{}).Count(&counter).Error
@@ -24,14 +26,12 @@ func (r *SettingsRepo) UpdateSettings(newSettings entity.GameSettings) error {
 		return err
 	}
 
-	log.Println("Records amount: ", counter)
-
 	if counter == 0 {
-		if err := r.DB.Save(&newSettings).Error; err != nil {
+		if err := r.DB.Save(newSettings).Error; err != nil {
 			return err
 		}
 	} else {
-		if err := r.DB.Model(&entity.GameSettings{}).Where("id = 1").Updates(&newSettings).Error; err != nil {
+		if err := r.DB.Model(&entity.GameSettings{}).Where("id = 1").Updates(newSettings).Error; err != nil {
 			return err
 		}
 	}

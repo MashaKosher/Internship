@@ -13,7 +13,7 @@ type Services struct {
 
 type (
 	SesaonPlanService interface {
-		PlanSeasons(season entity.DetailSeasonJson) error
+		PlanSeason(season entity.DetailSeasonJson) error
 		Seasons() ([]entity.Season, error)
 	}
 

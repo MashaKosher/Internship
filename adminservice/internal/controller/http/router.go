@@ -11,13 +11,12 @@ import (
 
 func NewRouter(r *chi.Mux, deps di.Container) {
 
-	// Middlewares
 	middleWares(r)
 
 	go func() {
 		for {
 			customMiddleware.UpdateMetrics()
-			time.Sleep(5 * time.Second) // Обновление каждые 5 секунд
+			time.Sleep(5 * time.Second)
 		}
 	}()
 

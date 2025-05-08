@@ -42,8 +42,7 @@ type Config struct {
 }
 
 func MustParseConfig() Config {
-
-	var Cfg Config
+	var cfg Config
 
 	viper.AddConfigPath("./internal/config")
 	viper.SetConfigType("yaml")
@@ -54,8 +53,8 @@ func MustParseConfig() Config {
 		panic(err)
 	}
 
-	viper.Unmarshal(&Cfg)
+	viper.Unmarshal(&cfg)
 
-	return Cfg
+	return cfg
 
 }

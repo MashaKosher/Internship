@@ -23,9 +23,17 @@ func New(r repo.DailyTaskRepo, logger di.LoggerType, cfg di.ConfigType, bus di.B
 	}
 }
 
-func (u *UseCase) CreateDailyTask(dailyTask entity.DBDailyTasks) (entity.DailyTasks, error) {
+func (u *UseCase) GetDailyTask() (entity.DailyTasks, error) {
+	dailytask, err := u.repo.GetDailyTask()
+	if err != nil {
+		return entity.DailyTasks{}, err
+	}
 
-	if err := u.repo.AddDailyTask(dailyTask); err != nil {
+	return dailytask.ToDTO(), nil
+}
+
+func (u *UseCase) CreateDailyTask(dailyTask entity.DBDailyTasks) (entity.DailyTasks, error) {
+	if err := u.repo.AddDailyTask(&dailyTask); err != nil {
 		return entity.DailyTasks{}, err
 	}
 
@@ -39,17 +47,5 @@ func (u *UseCase) CreateDailyTask(dailyTask entity.DBDailyTasks) (entity.DailyTa
 }
 
 func (u *UseCase) DeleteDailyTask() error {
-	if err := u.repo.DeleteTodaysTask(); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (u *UseCase) GetDailyTask() (entity.DailyTasks, error) {
-	dailytask, err := u.repo.GetDailyTask()
-	if err != nil {
-		return entity.DailyTasks{}, err
-	}
-
-	return dailytask.ToDTO(), nil
+	return u.repo.DeleteTodaysTask()
 }

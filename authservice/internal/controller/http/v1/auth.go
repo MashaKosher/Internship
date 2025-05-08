@@ -97,10 +97,10 @@ func (r *authRoutes) login(c *fiber.Ctx) error {
 // @Tags         Check Token
 // @Produce      json
 // @Success      200 {object} entity.UserInDTO "Refresh token is valid"
-// @Failure      400  {object}  entity.Error      "Bad Request - Missing or empty tokens"
+// @Failure      400 {object} entity.Error "Bad Request - Missing or empty tokens"
 // @Failure      401 {object} entity.Error "Unauthorized - Invalid or expired token"
 // @Failure      403 {object} entity.Error "Forbidden - Token validation failed"
-// @Failure      404  {object}  entity.Error      "Not Found - User not found"
+// @Failure      404 {object} entity.Error "Not Found - User not found"
 // @Failure      500 {object} entity.Error "Internal server error"
 // @Router       /auth/check/access [get]
 func (r *authRoutes) checkAccessToken(c *fiber.Ctx) error {

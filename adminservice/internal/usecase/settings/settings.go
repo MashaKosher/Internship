@@ -23,14 +23,12 @@ func New(r repo.SettingsRepo, logger di.LoggerType, cfg di.ConfigType, bus di.Bu
 }
 
 func (u *UseCase) UpdateSettings(settings entity.SettingsJson) error {
-	dbSettiings := settings.ToDB()
-
-	if err := u.repo.UpdateSettings(dbSettiings); err != nil {
+	dbSettings := settings.ToDB()
+	if err := u.repo.UpdateSettings(&dbSettings); err != nil {
 		return err
 	}
 
 	go u.bus.GameSettingsProducer.SendGameSettings(settings)
-
 	return nil
 }
 

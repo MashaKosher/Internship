@@ -30,7 +30,7 @@ func (p *GameSettingsProducer) Close() {
 func (p *GameSettingsProducer) SendGameSettings(season entity.SettingsJson) {
 	p.logger.Info("Season Producer created successfully")
 
-	message := utils.CreateMessage(season, p.cfg.Kafka.GameSettingsTopicSend, -1)
+	message := utils.CreateMessage(season, p.cfg.Kafka.GameSettingsTopicSend, -1, p.logger)
 
 	deliveryChan := make(chan kafka.Event)
 

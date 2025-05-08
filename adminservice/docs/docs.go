@@ -36,7 +36,25 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Task not found for today",
+                        "description": "No token",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid or expired token",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "User is not admin",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Record not found in DB",
                         "schema": {
                             "$ref": "#/definitions/entity.Response"
                         }
@@ -74,13 +92,31 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "201": {
-                        "description": "Successfully created daily tasks",
+                        "description": "Successfully created today's task",
                         "schema": {
                             "$ref": "#/definitions/entity.DailyTasks"
                         }
                     },
                     "400": {
-                        "description": "Invalid request format or validation error",
+                        "description": "No token or Invalid data",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid or expired token",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "User is not admin",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Response"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict: DailyTask already exists",
                         "schema": {
                             "$ref": "#/definitions/entity.Response"
                         }
@@ -113,7 +149,25 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "No tasks found for today or deletion error",
+                        "description": "No token or Invalid data",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid or expired token",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "User is not admin",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Record not found in DB",
                         "schema": {
                             "$ref": "#/definitions/entity.Response"
                         }
@@ -159,21 +213,27 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Invalid request format or validation error",
+                        "description": "No token or Invalid data",
                         "schema": {
-                            "$ref": "#/definitions/entity.ErrorResponse"
+                            "$ref": "#/definitions/entity.Response"
                         }
                     },
                     "401": {
-                        "description": "Unauthorized (invalid or missing token)",
+                        "description": "Invalid or expired token",
                         "schema": {
-                            "$ref": "#/definitions/entity.ErrorResponse"
+                            "$ref": "#/definitions/entity.Response"
                         }
                     },
                     "403": {
-                        "description": "Forbidden (user is not admin)",
+                        "description": "User is not admin",
                         "schema": {
-                            "$ref": "#/definitions/entity.ErrorResponse"
+                            "$ref": "#/definitions/entity.Response"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict: Seasons are crossing",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Response"
                         }
                     },
                     "500": {
@@ -209,9 +269,21 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "No seasons found",
+                        "description": "No token or Invalid data",
                         "schema": {
-                            "$ref": "#/definitions/entity.ErrorResponse"
+                            "$ref": "#/definitions/entity.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid or expired token",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "User is not admin",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Response"
                         }
                     },
                     "500": {
@@ -244,9 +316,21 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Game settings not found",
+                        "description": "No token or Invalid data",
                         "schema": {
-                            "$ref": "#/definitions/entity.ErrorResponse"
+                            "$ref": "#/definitions/entity.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid or expired token",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "User is not admin",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Response"
                         }
                     },
                     "500": {
@@ -281,10 +365,34 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Successfully updated settings",
                         "schema": {
-                            "$ref": "#/definitions/entity.SettingsJson"
+                            "$ref": "#/definitions/entity.DetailSeasonJson"
+                        }
+                    },
+                    "400": {
+                        "description": "No token or Invalid data",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid or expired token",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "User is not admin",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
                         }
                     }
                 }

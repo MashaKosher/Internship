@@ -30,7 +30,8 @@ func (p *SeasonProducer) Close() {
 func (p *SeasonProducer) SendSeasonInfo(season entity.SeasonOut) {
 	p.logger.Info("Season Producer created successfully")
 
-	message := utils.CreateMessage(season, p.cfg.Kafka.SeasonTopicSend, p.cfg.Kafka.Partition)
+	// message := utils.CreateMessage(season, p.cfg.Kafka.SeasonTopicSend, p.cfg.Kafka.Partition, p.logger)
+	message := utils.CreateMessage(season, p.cfg.Kafka.SeasonTopicSend, -1, p.logger)
 
 	deliveryChan := make(chan kafka.Event)
 

@@ -35,13 +35,13 @@ func initPlanRoutes(deps di.Container) *seasonRoutes {
 //	}
 //
 // @Success 201 {object} entity.DetailSeasonJson "Successfully created season plan"
-// @Failure 400 {object} entity.ErrorResponse "Invalid request format or validation error"
-// @Failure 401 {object} entity.ErrorResponse "Unauthorized (invalid or missing token)"
-// @Failure 403 {object} entity.ErrorResponse "Forbidden (user is not admin)"
+// @Failure 400 {object} entity.Response "No token or Invalid data"
+// @Failure 401 {object} entity.Response "Invalid or expired token"
+// @Failure 403 {object} entity.Response "User is not admin"
+// @Failure 409 {object} entity.Response "Conflict: Seasons are crossing"
 // @Failure 500 {object} entity.ErrorResponse "Internal server error"
 // @Router /deatil-plan [post]
 func (sr *seasonRoutes) planSeason(w http.ResponseWriter, r *http.Request) {
-
 	var season entity.DetailSeasonJson
 
 	if err := json.NewDecoder(r.Body).Decode(&season); err != nil {
@@ -55,14 +55,19 @@ func (sr *seasonRoutes) planSeason(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := sr.u.PlanSeasons(season); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	if err := sr.u.PlanSeason(season); err != nil {
+		if err == entity.ErrSeasonIsNil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		} else if err == entity.ErrSeasonsAreCrossing {
+			http.Error(w, err.Error(), http.StatusConflict)
+		} else {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(season)
-
 }
 
 // @Summary Get all seasons
@@ -71,19 +76,19 @@ func (sr *seasonRoutes) planSeason(w http.ResponseWriter, r *http.Request) {
 // @Accept json
 // @Produce json
 // @Success 200 {array} entity.Season "Successfully retrieved all seasons"
-// @Failure 400 {object} entity.ErrorResponse "No seasons found"
+// @Failure 400 {object} entity.Response "No token or Invalid data"
+// @Failure 401 {object} entity.Response "Invalid or expired token"
+// @Failure 403 {object} entity.Response "User is not admin"
 // @Failure 500 {object} entity.ErrorResponse "Internal server error"
 // @Router /seasons [get]
 func (sr *seasonRoutes) seasons(w http.ResponseWriter, r *http.Request) {
-
 	seasons, err := sr.u.Seasons()
-
 	if err != nil {
 		if err == entity.ErrRecordNotFound {
 			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
+		} else {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
-		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 

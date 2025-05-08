@@ -29,6 +29,6 @@ func (settings *SettingsJson) ToDB() GameSettings {
 	return GameSettings{
 		LoseAmount:  settings.LoseAmount,
 		WinAmount:   settings.WinAmount,
-		WaitingTime: time.Duration(settings.WaitingTime),
+		WaitingTime: time.Second * time.Duration(settings.WaitingTime),
 	}
 }

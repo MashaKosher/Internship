@@ -30,7 +30,8 @@ func (p *DailyTaskProducer) Close() {
 func (p *DailyTaskProducer) SendDailyTask(task entity.DailyTasks) {
 	p.logger.Info("Task Producer created successfully")
 
-	message := utils.CreateMessage(task, p.cfg.Kafka.DailyTaskTopicSend, p.cfg.Kafka.Partition)
+	// message := utils.CreateMessage(task, p.cfg.Kafka.DailyTaskTopicSend, p.cfg.Kafka.Partition, p.logger)
+	message := utils.CreateMessage(task, p.cfg.Kafka.DailyTaskTopicSend, -1, p.logger)
 
 	// Канал для получения событий доставки
 	deliveryChan := make(chan kafka.Event)

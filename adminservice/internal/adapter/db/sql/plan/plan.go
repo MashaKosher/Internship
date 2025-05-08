@@ -3,7 +3,6 @@ package plan
 import (
 	"adminservice/internal/entity"
 	"errors"
-	"log"
 
 	"gorm.io/gorm"
 )
@@ -17,43 +16,22 @@ func New(db *gorm.DB) *PlanRepo {
 }
 
 func (r *PlanRepo) AddNewSeason(season *entity.Season) error {
-	if err := r.DB.Create(season).Error; err != nil {
-		return err
+	if season == nil {
+		return entity.ErrSeasonIsNil
 	}
-	return nil
-}
 
-func (r *PlanRepo) FindSeasonCross(season *entity.Season) error {
-	var counter int64
-
-	err := r.DB.Model(&entity.Season{}).Where("start_date <= ? AND end_date >= ?", season.StartDate, season.StartDate).Count(&counter).Error
+	var count int64
+	err := r.DB.Model(&entity.Season{}).
+		Where("start_date <= ? AND end_date >= ?", season.EndDate, season.StartDate).
+		Count(&count).Error
 	if err != nil {
 		return err
 	}
-	if counter > 0 {
-		return errors.New("sesons are crossing")
+	if count > 0 {
+		return entity.ErrSeasonsAreCrossing
 	}
 
-	err = r.DB.Model(&entity.Season{}).Where("start_date <= ? AND end_date >= ?", season.StartDate, season.EndDate).Count(&counter).Error
-	if err != nil {
-		return err
-	}
-	if counter > 0 {
-		return errors.New("sesons are crossing")
-	}
-
-	// Также проверяем, если новый сезон начинается после существующего
-	err = r.DB.Model(&entity.Season{}).Where("start_date >= ? AND end_date <= ?", season.StartDate, season.EndDate).Count(&counter).Error
-	if err != nil {
-		return err
-	}
-	if counter > 0 {
-		return errors.New("sesons are crossing")
-	}
-
-	log.Println("Counter: ", counter)
-
-	return nil
+	return r.DB.Create(season).Error
 }
 
 func (r *PlanRepo) Seasons() ([]entity.Season, error) {

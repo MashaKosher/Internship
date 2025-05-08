@@ -23,8 +23,12 @@ func initSettingsRoutes(deps di.Container) *settingsRoutes {
 // @Accept  json
 // @Produce  json
 // @Param settings body entity.SettingsJson true "Game settings object"
-// @Success 200 {object} entity.SettingsJson
-// @Router			/settings [put]
+// @Success 201 {object} entity.DetailSeasonJson "Successfully updated settings"
+// @Failure 400 {object} entity.Response "No token or Invalid data"
+// @Failure 401 {object} entity.Response "Invalid or expired token"
+// @Failure 403 {object} entity.Response "User is not admin"
+// @Failure 500 {object} entity.ErrorResponse "Internal server error"
+// @Router	/settings [put]
 func (gr *settingsRoutes) updatGameSettings(w http.ResponseWriter, r *http.Request) {
 	var settings entity.SettingsJson
 
@@ -40,7 +44,11 @@ func (gr *settingsRoutes) updatGameSettings(w http.ResponseWriter, r *http.Reque
 	}
 
 	if err := gr.u.UpdateSettings(settings); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		if err == entity.ErrGameSettingsIsNil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -54,7 +62,9 @@ func (gr *settingsRoutes) updatGameSettings(w http.ResponseWriter, r *http.Reque
 // @Accept json
 // @Produce json
 // @Success 200 {object} entity.SettingsJson "Successfully retrieved game settings"
-// @Failure 400 {object} entity.ErrorResponse "Game settings not found"
+// @Failure 400 {object} entity.Response "No token or Invalid data"
+// @Failure 401 {object} entity.Response "Invalid or expired token"
+// @Failure 403 {object} entity.Response "User is not admin"
 // @Failure 500 {object} entity.ErrorResponse "Internal server error"
 // @Router /settings [get]
 func (gr *settingsRoutes) gameSettings(w http.ResponseWriter, r *http.Request) {

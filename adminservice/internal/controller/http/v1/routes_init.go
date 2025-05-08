@@ -16,7 +16,7 @@ func InitAdminRoutes(r *chi.Mux, deps di.Container) {
 	statistic := initStatisticRoutes(deps)
 
 	r.Route("/", func(r chi.Router) {
-		r.Use(middleware.CheckToken(deps.Config, deps.Bus))
+		r.Use(middleware.CheckToken(deps.Config, deps.Bus, deps.Logger))
 
 		// Plan
 		r.Post("/deatil-plan", plans.planSeason)

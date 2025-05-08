@@ -1,6 +1,7 @@
 package kafkautils
 
 import (
+	"adminservice/internal/di"
 	"adminservice/internal/entity"
 	"encoding/json"
 	"fmt"
@@ -9,9 +10,8 @@ import (
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
-func CreateMessage(entity any, topic string, partition int32) kafka.Message {
-
-	value := serializeAuthRequest(entity)
+func CreateMessage(entity any, topic string, partition int32, logger di.LoggerType) kafka.Message {
+	value := serializeEntity(entity, logger)
 	return kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: partition},
 		Value:          value,
@@ -19,11 +19,11 @@ func CreateMessage(entity any, topic string, partition int32) kafka.Message {
 	}
 }
 
-func serializeAuthRequest(request any) []byte {
+func serializeEntity(request any, logger di.LoggerType) []byte {
 
 	value, err := json.Marshal(request)
 	if err != nil {
-		log.Fatal("Error marshaling answer: " + err.Error())
+		logger.Fatal("Error marshaling answer: " + err.Error())
 	}
 
 	return value

@@ -35,9 +35,8 @@ func (p *AuthProducer) CheckToken(accessToken, refreshToken string) {
 	request.AccessToken = accessToken
 	request.RefreshToken = refreshToken
 
-	message := utils.CreateMessage(request, p.cfg.Kafka.AuthTopicRecieve, p.cfg.Kafka.Partition)
+	message := utils.CreateMessage(request, p.cfg.Kafka.AuthTopicRecieve, p.cfg.Kafka.Partition, p.logger)
 
-	// Канал для получения событий доставки
 	deliveryChan := make(chan kafka.Event)
 
 	err := p.producer.Produce(&message, deliveryChan)
@@ -48,7 +47,6 @@ func (p *AuthProducer) CheckToken(accessToken, refreshToken string) {
 
 	p.logger.Info("Message sent, waiting for delivery confirmation...")
 
-	// Ожидаем подтверждения доставки
 	go func() {
 		event := <-deliveryChan
 		switch e := event.(type) {

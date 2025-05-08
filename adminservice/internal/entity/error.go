@@ -10,4 +10,19 @@ type ErrorResponse struct {
 	Error string `json:"message"`
 }
 
-var ErrRecordNotFound = errors.New("record not found in DB")
+// Custom DB Errors
+var (
+	// General
+	ErrRecordNotFound = errors.New("record not found in DB")
+
+	// Daily Task
+	ErrDailytaskIsNil         = errors.New("daily task entity is nil")
+	ErrDailyTaskAlreadyExists = errors.New("there is already task for today")
+
+	//Plan Season
+	ErrSeasonIsNil        = errors.New("season entity is nil")
+	ErrSeasonsAreCrossing = errors.New("seasons are crossing")
+
+	//Game Settings
+	ErrGameSettingsIsNil = errors.New("game settings entity is nil")
+)
