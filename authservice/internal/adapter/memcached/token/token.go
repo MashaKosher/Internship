@@ -21,13 +21,7 @@ const tokenExpirationTime = 900 // time in secoinds
 
 func (cr *CacheTokenRepo) AddTokenToCache(accessToken string, userId int) {
 
-	var key string
-	if len(accessToken) < 250 {
-		key = accessToken
-	} else {
-		key = accessToken[:250]
-	}
-
+	key := getKey(accessToken)
 	err := cr.Client.Set(&memcache.Item{
 		Key:        key,
 		Value:      []byte(strconv.Itoa(userId)),
@@ -40,13 +34,8 @@ func (cr *CacheTokenRepo) AddTokenToCache(accessToken string, userId int) {
 }
 
 func (cr *CacheTokenRepo) GetTokenFromCache(accessToken string) (int, error) {
-	var key string
-	if len(accessToken) < 250 {
-		key = accessToken
-	} else {
-		key = accessToken[:250]
-	}
 
+	key := getKey(accessToken)
 	stringID, err := cr.Client.Get(key)
 	if err != nil {
 		if err == memcache.ErrCacheMiss {
@@ -63,4 +52,13 @@ func (cr *CacheTokenRepo) GetTokenFromCache(accessToken string) (int, error) {
 	}
 
 	return id, nil
+}
+
+// memcached has key constarint (<= 250 chars)
+func getKey(accessToken string) string {
+	if len(accessToken) < 250 {
+		return accessToken
+	}
+	return accessToken[:250]
+
 }

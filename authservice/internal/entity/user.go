@@ -35,12 +35,6 @@ type UserSignUpOutDTO struct {
 	ReferalID int    `json:"referal-id" validate:"required,min=1,gte=0"`
 }
 
-// func (user *UserSignUpDTO) ToUserInDTO() UserInDTO{
-// 	return user.UserInDTO{
-// 		U
-// 	}
-// }
-
 type UserResponse struct {
 	ID           uint   `json:"id"`
 	Username     string `json:"username"`

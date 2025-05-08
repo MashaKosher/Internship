@@ -14,8 +14,7 @@ func CreateMessage[T entity.AuthAnswer | entity.UserSignUpOutDTO](entity T, topi
 	return kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: partition},
 		Value:          value,
-		// Key:            []byte("a"),
-		Key: nil,
+		Key:            nil,
 	}
 }
 

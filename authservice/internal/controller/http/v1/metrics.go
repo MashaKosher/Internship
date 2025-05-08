@@ -10,7 +10,6 @@ func InitMetricsRoutes(app *fiber.App) {
 	app.Get("/metrics", prometheusHandler())
 }
 
-// Адаптер для promhttp.Handler() в Fiber
 func prometheusHandler() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		fasthttpadaptor.NewFastHTTPHandler(promhttp.Handler())(c.Context())

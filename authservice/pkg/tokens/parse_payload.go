@@ -1,8 +1,7 @@
 package tokens
 
 import (
-	"errors"
-	"fmt"
+	"authservice/internal/entity"
 
 	"github.com/golang-jwt/jwt"
 )
@@ -12,7 +11,7 @@ func GetIdFromValidatedToken(validatedToken *jwt.Token) (int, error) {
 
 	validatedUserID, ok := unvalidatedUserID.(float64)
 	if !ok {
-		return -1, errors.New("invalid ID value:" + fmt.Sprint(unvalidatedUserID))
+		return -1, entity.ErrInavlidID
 	}
 
 	return int(validatedUserID), nil
@@ -23,7 +22,7 @@ func GetTypeFromValidatedToken(validatedToken *jwt.Token) (string, error) {
 
 	validatedTokenType, ok := unvalidatedTokenType.(string)
 	if !ok {
-		return "", errors.New("invalid Token type:" + fmt.Sprint(unvalidatedTokenType))
+		return "", entity.ErrInvalidTokenType
 	}
 
 	return validatedTokenType, nil

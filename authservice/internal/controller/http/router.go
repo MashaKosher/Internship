@@ -18,11 +18,11 @@ func NewRouter(app *fiber.App, deps di.Container) {
 	go func() {
 		for {
 			customMiddleware.UpdateMetrics()
-			time.Sleep(5 * time.Second) // Обновление каждые 5 секунд
+			time.Sleep(5 * time.Second)
 		}
 	}()
 
-	// Эндпоинт для Prometheus (исправленный)
+	// Prometheus routes init
 	routes.InitMetricsRoutes(app)
 
 	// Swagger route initialize

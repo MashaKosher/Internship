@@ -18,7 +18,7 @@ func mustServices(db di.DBType, logger di.LoggerType, RSAKeys di.RSAKeys, signUp
 
 func createAuthUseCase(db di.DBType, logger di.LoggerType, RSAKeys di.RSAKeys, signUpProducer kafkaRepo.SignUpProducer, cache di.Cache) *auth.UseCase {
 	return auth.New(
-		authRepo.New(db), // создаем конкретный репозиторий и передаем в конретный Use Case
+		authRepo.New(db),
 		logger,
 		RSAKeys,
 		signUpProducer,

@@ -17,11 +17,6 @@ const docTemplate = `{
     "paths": {
         "/auth/change-password": {
             "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
                 "description": "Changes password for authenticated user. Requires valid access token in cookies.",
                 "consumes": [
                     "application/json"
@@ -46,25 +41,81 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Password successfully changed",
+                        "description": "Tokens are valid, returns user data",
                         "schema": {
                             "$ref": "#/definitions/entity.UserInDTO"
                         }
                     },
                     "400": {
-                        "description": "Invalid input data",
+                        "description": "Bad Request - Missing or empty tokens",
                         "schema": {
                             "$ref": "#/definitions/entity.Error"
                         }
                     },
                     "401": {
-                        "description": "Unauthorized - Invalid or expired token",
+                        "description": "Unauthorized - Invalid or expired tokens",
                         "schema": {
                             "$ref": "#/definitions/entity.Error"
                         }
                     },
                     "403": {
-                        "description": "Forbidden - Password doesn't meet requirements",
+                        "description": "Forbidden - Token validation failed",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - User not found",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/check": {
+            "get": {
+                "description": "Verifies both access and refresh JWT tokens from cookies. Returns user data if refresh token is valid. Clears cookies on any error.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Check Token"
+                ],
+                "summary": "Verify both tokens",
+                "responses": {
+                    "200": {
+                        "description": "Tokens are valid, returns user data",
+                        "schema": {
+                            "$ref": "#/definitions/entity.UserInDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request - Missing or empty tokens",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or expired tokens",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - Token validation failed",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - User not found",
                         "schema": {
                             "$ref": "#/definitions/entity.Error"
                         }
@@ -95,6 +146,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/entity.UserInDTO"
                         }
                     },
+                    "400": {
+                        "description": "Bad Request - Missing or empty tokens",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    },
                     "401": {
                         "description": "Unauthorized - Invalid or expired token",
                         "schema": {
@@ -103,6 +160,12 @@ const docTemplate = `{
                     },
                     "403": {
                         "description": "Forbidden - Token validation failed",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - User not found",
                         "schema": {
                             "$ref": "#/definitions/entity.Error"
                         }
@@ -133,6 +196,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/entity.UserInDTO"
                         }
                     },
+                    "400": {
+                        "description": "Bad Request - Missing or empty tokens",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    },
                     "401": {
                         "description": "Unauthorized - Invalid or expired token",
                         "schema": {
@@ -141,6 +210,65 @@ const docTemplate = `{
                     },
                     "403": {
                         "description": "Forbidden - Token validation failed",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - User not found",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/delete": {
+            "delete": {
+                "description": "Permanently deletes user account after validating both access and refresh tokens. Clears all auth cookies on any error.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Delete user account",
+                "responses": {
+                    "200": {
+                        "description": "Tokens are valid, returns user data",
+                        "schema": {
+                            "$ref": "#/definitions/entity.UserInDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request - Missing or empty tokens",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or expired tokens",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - Token validation failed",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - User not found",
                         "schema": {
                             "$ref": "#/definitions/entity.Error"
                         }
@@ -197,8 +325,8 @@ const docTemplate = `{
                             "$ref": "#/definitions/entity.Error"
                         }
                     },
-                    "401": {
-                        "description": "Unauthorized",
+                    "404": {
+                        "description": "Not Found - User not found",
                         "schema": {
                             "$ref": "#/definitions/entity.Error"
                         }
@@ -251,12 +379,6 @@ const docTemplate = `{
                     },
                     "401": {
                         "description": "Unauthorized - Only existing admins can create new admins",
-                        "schema": {
-                            "$ref": "#/definitions/entity.Error"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden - Insufficient permissions",
                         "schema": {
                             "$ref": "#/definitions/entity.Error"
                         }

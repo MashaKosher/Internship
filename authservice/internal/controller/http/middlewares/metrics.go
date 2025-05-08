@@ -46,7 +46,7 @@ var (
 func UpdateMetrics() {
 	var m runtime.MemStats
 	runtime.ReadMemStats(&m)
-	memUsageMB.Set(float64(m.Alloc) / (1024 * 1024)) // Преобразуем байты в МБ
+	memUsageMB.Set(float64(m.Alloc) / (1024 * 1024))
 
 	percent, _ := cpu.Percent(0, false)
 	cpuUsage.Set(percent[0])
@@ -61,8 +61,6 @@ func MetricsMiddleware(c *fiber.Ctx) error {
 	method := c.Method()
 	path := c.Path()
 
-	// duration := time.Since(start).Seconds()
-	// httpRequestDuration.WithLabelValues(path).Observe(duration)
 	timer := prometheus.NewTimer(httpRequestDuration.WithLabelValues(method, path))
 	defer timer.ObserveDuration()
 

@@ -78,30 +78,66 @@ paths:
       - application/json
       responses:
         "200":
-          description: Password successfully changed
+          description: Tokens are valid, returns user data
           schema:
             $ref: '#/definitions/entity.UserInDTO'
         "400":
-          description: Invalid input data
+          description: Bad Request - Missing or empty tokens
           schema:
             $ref: '#/definitions/entity.Error'
         "401":
-          description: Unauthorized - Invalid or expired token
+          description: Unauthorized - Invalid or expired tokens
           schema:
             $ref: '#/definitions/entity.Error'
         "403":
-          description: Forbidden - Password doesn't meet requirements
+          description: Forbidden - Token validation failed
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "404":
+          description: Not Found - User not found
           schema:
             $ref: '#/definitions/entity.Error'
         "500":
           description: Internal server error
           schema:
             $ref: '#/definitions/entity.Error'
-      security:
-      - ApiKeyAuth: []
       summary: Change user password
       tags:
       - Change Password
+  /auth/check:
+    get:
+      description: Verifies both access and refresh JWT tokens from cookies. Returns
+        user data if refresh token is valid. Clears cookies on any error.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Tokens are valid, returns user data
+          schema:
+            $ref: '#/definitions/entity.UserInDTO'
+        "400":
+          description: Bad Request - Missing or empty tokens
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "401":
+          description: Unauthorized - Invalid or expired tokens
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "403":
+          description: Forbidden - Token validation failed
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "404":
+          description: Not Found - User not found
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/entity.Error'
+      summary: Verify both tokens
+      tags:
+      - Check Token
   /auth/check/access:
     get:
       description: Verifies JWT refresh token from cookies and returns user data if
@@ -113,12 +149,20 @@ paths:
           description: Refresh token is valid
           schema:
             $ref: '#/definitions/entity.UserInDTO'
+        "400":
+          description: Bad Request - Missing or empty tokens
+          schema:
+            $ref: '#/definitions/entity.Error'
         "401":
           description: Unauthorized - Invalid or expired token
           schema:
             $ref: '#/definitions/entity.Error'
         "403":
           description: Forbidden - Token validation failed
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "404":
+          description: Not Found - User not found
           schema:
             $ref: '#/definitions/entity.Error'
         "500":
@@ -139,12 +183,20 @@ paths:
           description: Refresh token is valid
           schema:
             $ref: '#/definitions/entity.UserInDTO'
+        "400":
+          description: Bad Request - Missing or empty tokens
+          schema:
+            $ref: '#/definitions/entity.Error'
         "401":
           description: Unauthorized - Invalid or expired token
           schema:
             $ref: '#/definitions/entity.Error'
         "403":
           description: Forbidden - Token validation failed
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "404":
+          description: Not Found - User not found
           schema:
             $ref: '#/definitions/entity.Error'
         "500":
@@ -154,6 +206,42 @@ paths:
       summary: Verify refresh token
       tags:
       - Check Token
+  /auth/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Permanently deletes user account after validating both access and
+        refresh tokens. Clears all auth cookies on any error.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Tokens are valid, returns user data
+          schema:
+            $ref: '#/definitions/entity.UserInDTO'
+        "400":
+          description: Bad Request - Missing or empty tokens
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "401":
+          description: Unauthorized - Invalid or expired tokens
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "403":
+          description: Forbidden - Token validation failed
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "404":
+          description: Not Found - User not found
+          schema:
+            $ref: '#/definitions/entity.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/entity.Error'
+      summary: Delete user account
+      tags:
+      - User
   /auth/login:
     post:
       consumes:
@@ -182,8 +270,8 @@ paths:
           description: Invalid input data
           schema:
             $ref: '#/definitions/entity.Error'
-        "401":
-          description: Unauthorized
+        "404":
+          description: Not Found - User not found
           schema:
             $ref: '#/definitions/entity.Error'
         "500":
@@ -219,10 +307,6 @@ paths:
             $ref: '#/definitions/entity.Error'
         "401":
           description: Unauthorized - Only existing admins can create new admins
-          schema:
-            $ref: '#/definitions/entity.Error'
-        "403":
-          description: Forbidden - Insufficient permissions
           schema:
             $ref: '#/definitions/entity.Error'
         "409":

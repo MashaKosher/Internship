@@ -8,5 +8,6 @@ type (
 		FindUserByName(username string) (entity.User, error)
 		FindUserById(userId int) (entity.User, error)
 		ChangeUserPassword(userID int, newPassword string) error
+		DeleteUser(userID int) error
 	}
 )

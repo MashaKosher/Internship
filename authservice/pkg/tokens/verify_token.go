@@ -2,7 +2,7 @@ package tokens
 
 import (
 	"authservice/internal/di"
-	"errors"
+	"authservice/internal/entity"
 	"fmt"
 
 	"time"
@@ -14,7 +14,7 @@ func TokenVerify(token string, logger di.LoggerType, keys di.RSAKeys) (*jwt.Toke
 	publicKey := keys.PublicKey
 	validatedToken, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
 		if t.Method.Alg() != jwt.GetSigningMethod("RS256").Alg() {
-			return nil, errors.New("invalid signing method")
+			return nil, entity.ErrInvalidSigningMethod
 		}
 		return publicKey, nil
 	})
@@ -25,7 +25,7 @@ func TokenVerify(token string, logger di.LoggerType, keys di.RSAKeys) (*jwt.Toke
 		expirationTime := time.Unix(int64(exp), 0)
 		logger.Info(fmt.Sprint("Now: ", time.Now(), " Exp: ", expirationTime))
 		if time.Now().After(expirationTime) {
-			return nil, errors.New("token expired")
+			return nil, entity.ErrTokenExpired
 		}
 
 	}
@@ -35,7 +35,7 @@ func TokenVerify(token string, logger di.LoggerType, keys di.RSAKeys) (*jwt.Toke
 
 func VerifyTokenType(must, actually string) error {
 	if must != actually {
-		return errors.New("Token must have type " + must)
+		return entity.ErrInvalidTokenType
 	}
 	return nil
 }
